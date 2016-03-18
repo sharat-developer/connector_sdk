@@ -73,7 +73,7 @@
               { name: 'has_access_to_all_future_projects', type: 'boolean' },          
               { name: 'created_at', type: 'date_time' },
               { name: 'updated_at', type: 'date_time' },
-          	]
+            ]
           }
       	]
       }
