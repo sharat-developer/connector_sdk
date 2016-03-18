@@ -8,3 +8,5 @@
 #### OAuth2 adapter samples
 - [Podio connector](https://github.com/workato/adapter_sdk/blob/master/oauth2/podio_connector.rb)
   Learn how to addd action and connection section for a OAuth2 adapter.
+- [ProductHunt connector](https://github.com/workato/adapter_sdk/blob/master/oauth2/producthunt_connector.rb)
+  Learn how to add actions, triggers and connection section for a OAuth2 adapter.
