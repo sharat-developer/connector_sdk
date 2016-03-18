@@ -53,13 +53,8 @@
         ]
       }
     },
+    
     post: {
-      # preview: ->(connection) {
-      #   get("https://api.producthunt.com/v1/posts/54376")['post']
-      # },
-      # fields: (connection, previe_fields) {
-      #   preview_fields
-      # }
       fields: ->() {
         [
           { name: 'category_id', type: :integer },
@@ -80,6 +75,7 @@
         ]
       }
     },
+
     vote: {
       fields: ->() {
         [
@@ -90,6 +86,7 @@
         ]
       }
     },
+
     comment: {
       fields: ->() {
         [
