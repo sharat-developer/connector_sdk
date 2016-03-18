@@ -1,6 +1,6 @@
 #### Basic auth adapter samples
 - [Harvest app connector](https://github.com/workato/adapter_sdk/blob/master/basic_auth/harvest_connector.rb)
-  Learn how to addd action and connection section.
+  Learn how to add action and connection section.
 
 - [Freshdesk connector](https://github.com/workato/adapter_sdk/blob/master/basic_auth/freshdesk_connector.rb)
   Learn how to addd action, trigger, connection section and reusable schema.
