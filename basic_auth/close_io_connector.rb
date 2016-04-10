@@ -14,7 +14,7 @@
       type: 'basic_auth',
       
       # close.io uses api key only for authentication. treats apikey as username and password left blank
-      # "https://app.close.io/api/v1/me/" -u {api_key}: 
+      # curl -u "{your api_key}:" "https://app.close.io/api/v1/me/"
       credentials: ->(connection) {
         user(connection['api_key'])
         password("")
@@ -83,7 +83,7 @@
 
       poll: ->(connection, input, skip_size) {
         skip_size = skip_size || 0
-        since = (input['since'] || Time.now).to_date
+        since = (input['since'] || Time.now).to_time.iso8601
         
         results = get("https://app.close.io/api/v1/lead/").
                   params(query: "created > #{since}",

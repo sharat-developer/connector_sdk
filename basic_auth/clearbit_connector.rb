@@ -14,7 +14,7 @@
       type: 'basic_auth',
       
       # clearbit uses api key only for authentication. treats api key as username and password left blank
-      # "https://person.clearbit.com/v1/people/email/eeshansim@gmail.com" -u {api_key}: 
+      # curl -u "{your api_key}:" "https://person.clearbit.com/v1/people/email/eeshansim@gmail.com"
       credentials: ->(connection) {
         user(connection['api_key'])
         password("")
