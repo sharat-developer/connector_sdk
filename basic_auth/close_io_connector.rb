@@ -73,30 +73,24 @@
 
       input_fields: ->() {
         [
-          {
-            name: 'since',
-            type: :date,
-            hint: 'Defaults to leads created after the recipe is first started'
-          }
+          { name: 'since', type: :timestamp,
+            hint: 'Defaults to leads created after the recipe is first started' }
         ]
       },
 
-      poll: ->(connection, input, skip_size) {
-        skip_size = skip_size || 0
-        since = (input['since'] || Time.now).to_time.iso8601
+      poll: ->(connection, input, last_created_since) {
+        since = last_updated_since || input['since'] || Time.now
         
+        # Close.io currently does not support _order_by parameter for leads, defaults to order by date_update
         results = get("https://app.close.io/api/v1/lead/").
-                  params(query: "created > #{since}",
-                         _limit: 2,
-                         _skip: skip_size)
-        
-        leads = results['data']
+                  params(query: "updated > #{since.to_time.iso8601}",
+                         _limit: 5)
 
-        next_skip_size = results['has_more'] ? (skip_size + leads.length) : 0
+        next_updated_since = results['data'].last['date_updated'] unless results['data'].length == 0
 
         {
-          events: leads,
-          next_poll: next_skip_size,
+          events: results['data'],
+          next_poll: next_updated_since,
           can_poll_more: results['has_more']
         }
       },
