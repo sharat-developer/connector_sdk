@@ -3,7 +3,11 @@
   <head>
     <script src="documentup.min.js"></script>
     <script>
-      DocumentUp.document("workato/connector_sdk");
+      DocumentUp.document({
+        repo: "workato/connector_sdk",
+        name: "Workato SDK",
+        issues: false
+      });
     </script>
   </head>
   <body></body>
