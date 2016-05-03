@@ -70,7 +70,31 @@ It is very useful to be able to query resources instead of locating them based o
 
 Typically, a basic authentication requires a username and password combination when making requests. Make sure to include those two fields in the connection fields definition.
 
-![Basic Auth image](images/basic-auth.png)
+```ruby
+connection: {
+
+  fields: [
+    {
+      name: 'username',
+      optional: true,
+      hint: 'Your email used for login'
+    },
+    {
+      name: 'password',
+      control_type: 'password',
+    }
+  ],
+
+  authorization: {
+    type: 'basic_auth',
+
+    credentials: ->(connection) {
+      user(connection['username'])
+      password(connection['password'])
+    }
+  }
+}
+```
 
 To set up a basic authentication, simply define type: ‘basic_auth’ and include the appropriate values in `user()` and `password()` in the credentials section.
 
@@ -78,7 +102,29 @@ To set up a basic authentication, simply define type: ‘basic_auth’ and inclu
 
 Some APIs expect different conventions from a standard basic authentication.
 
-![Close.io auth image](images/closeio-basic-auth.png)
+```ruby
+connection: {
+
+  fields: [
+    {
+      name: 'api_key',
+      optional: false,
+      hint: 'Profile (top right) > Settings > Your API Keys'
+    }
+  ],
+
+  authorization: {
+    type: 'basic_auth',
+
+    # close.io uses api key only for authentication. treats apikey as username and password left blank
+    # curl -u "{your api_key}:" "https://app.close.io/api/v1/me/"
+    credentials: ->(connection) {
+      user(connection['api_key'])
+      password("")
+    }
+  }
+}
+```
 
 In this example Close.io API expects an API Key generated inthe individual User’s account. It should be used as a username with a blank password in the standard basic authentication format.
 
@@ -86,7 +132,30 @@ So, to adjust the connections portion of the code to suit this behaviour, simply
 
 In the credentials section, pass the api_key into `user()` and an empty string (“”) to `password()`
 
-![API_token basic auth](images/api-token.png)
+```ruby
+connection: {
+
+  fields: [
+    {
+      name: 'api_token',
+      control_type: 'password',
+      label: 'Toggl API token',
+      hint: 'Available in "My Profile" page'
+    }
+  ],
+
+  authorization: {
+    type: 'basic_auth',
+
+    # Toggl API expect the token to be sent as user name and the string 'api_token' as the password
+    # curl -u "{your api_token}:api_token" "https://www.toggl.com/api/v8/me"
+    credentials: ->(connection) {
+      user(connection['api_token'])
+      password('api_token')
+    }
+  }
+}
+```
 
 Another variation is to have a generated api_token replace the user name and have the string “api_token” replacing password in the basic authentication format.
 
@@ -105,13 +174,61 @@ After defining this, calls will have the appropriate params appended.
 Example:
 `\<BASE_URL>/users?api_key=NB674921`
 
-![API_key auth](images/api-key-auth.png)
+```ruby
+connection: {
+
+  fields: [
+    {
+      name: 'helpdesk',
+      control_type: 'subdomain',
+      url: '.freshdesk.com',
+      hint: 'Your helpdesk name as found in your Freshdesk URL'
+    },
+    {
+      name: 'api_key',
+      control_type: 'password',
+      label: 'API key'
+    }
+  ],
+
+  authorization: {
+    type: 'api_key',
+
+    credentials: ->(connection) {
+      params(api_key: connection['api_key'])
+    }
+  }
+}
+```
 
 ### OAuth 2.0
 
 For a more secure method of authentication, we recommend using OAuth 2.0. It is an open standard and is generally a more secure way for users to log into third party websites without exposing their credentials.
 
-![OAuth image](images/oauth.png)
+```ruby
+connection: {
+
+  authorization: {
+    type: 'oauth2',
+
+    authorization_url: ->() {
+      'https://www.pushbullet.com/authorize?response_type=code'
+    },
+
+    token_url: ->() {
+      'https://api.pushbullet.com/oauth2/token'
+    },
+
+    client_id: 'YOUR_PUSHBULLET_CLIENT_ID',
+
+    client_secret: 'YOUR_PUSHBULLET_CLIENT_SECRET',
+
+    credentials: ->(connection, access_token) {
+      headers('Authorization': "Bearer #{access_token}")
+    }
+  }
+}
+```
 
 The Workato connector SDK currently supports the authorization code grant variant of the OAuth2 standard.
 
@@ -128,11 +245,34 @@ https://www.workato.com/oauth/callback
 Adjust headers format as required in the credentials section
 
 For example, Pushbullet expects the header to include token in this format:
-`Access-Token: \<access token>`
+`OAuth2: \<access token>`
 
 So to adjust to suit this requirement, define the credentials portion like so:
 
-![OAuth 2 different header key image](images/oauth-alt-header.png)
+```ruby
+connection: {
+
+  authorization: {
+    type: 'oauth2',
+
+    authorization_url: ->() {
+      'https://podio.com/oauth/authorize'
+    },
+
+    token_url: ->() {
+      'https://podio.com/oauth/token'
+    },
+
+    client_id: 'YOUR_PODIO_CLIENT_ID',
+
+    client_secret: 'YOUR_PODIO_CLIENT_SECRET',
+
+    credentials: ->(connection, access_token) {
+      headers('Authorization': "OAuth2 #{access_token}")
+    }
+  }
+}
+```
 
 Note:
 SDK makes a POST request to token endpoint. Will not currently work for APIs expecting a different type of request.
@@ -147,7 +287,27 @@ The most important thing is to identify which endpoint will address the purpose 
 
 ![close.io get lead object image](images/closeio-doc.png)
 
-![close.io get lead sdk image](images/closeio-get-lead.png)
+```ruby
+actions: {
+
+  get_lead_by_id: {
+
+    input_fields: ->() {
+      [
+        { name: "lead_id", optional: false }
+      ]
+    },
+
+    execute: ->(connection, input) {
+      get("https://app.close.io/api/v1/lead/#{input['lead_id']}/")
+    },
+
+    output_fields: ->(object_definitions) {
+      object_definitions['lead']
+    }
+  }
+}
+```
 
 A very simple action looks like this. A get request to the Close.io leads endpoint. In this case, the particular lead’s details is appended in the endpoint.
 
@@ -157,15 +317,37 @@ Other endpoints require parameters to access certain details, instead of accessi
 
 A GET request can have parameters added to the request like so:
 
-![.params method image](images/param-method.png)
+```ruby
+execute: ->(connection, input) {
+  {
+    'companies': get("https://#{connection['deployment']}.api.accelo.com/api/v0/companies.json").
+                 params(_search: input['company_name'])['response']
+  }
+}
+```
 
 A POST or PUT or PATCH request can have payloads attached as well. There are 2 ways you can do this.
 
 Add payloads to the method
-![add payload as second parameter in post request image](images/param-parameter.png)
+
+```ruby
+execute: ->(connection, input) {
+  {
+    'users': get("https://#{connection['helpdesk']}.freshdesk.com/api/users.json", input)['results']
+  }
+}
+```
 
 Add payloads using the payload method
-![.payload method image](images/payload-method.png)
+
+```ruby
+execute: ->(connection,input) {
+  post("https://api.pushbullet.com/v2/pushes").
+    payload(email: input['email'],
+            title: input['title'],
+            body: input['body'])
+}
+```
 
 ### Methods
 
@@ -210,7 +392,44 @@ Ruby methods
 
 ## Trigger
 
-![sample trigger image](images/trigger.png)
+```ruby
+triggers: {
+  new_company: {
+
+    type: :paging_desc,
+
+    input_fields: ->() {
+      [
+        { name: 'created_after', type: :timestamp, optional: false }
+      ]
+    },
+
+    poll: ->(connection, input, last_created_since) {
+      created_since = (last_created_since || input['created_after'] || Time.now).to_i # Accelo expects Unix Time Stamp
+
+      companies = get("https://#{connection['deployment']}.api.accelo.com/api/v0/companies.json").
+                 params(_filters: "date_created_after(#{created_since})",
+                        _limit: 2,
+                        _fields: 'date_created,website,status,phone,fax')['response']
+
+      next_created_since = companies.last['date_created'] unless companies.blank?
+
+      {
+        events: companies,
+        next_page: next_created_since
+      }
+    },
+
+    dedup: ->(company) {
+      company['id']
+    },
+
+    output_fields: ->(object_definitions) {
+      object_definitions['company']
+    }
+  }
+}
+```
 
 ### type (optional)
 
@@ -256,7 +475,32 @@ Object Definitions is an important component of the SDK. It allows you to define
 
 The most basic way to build an object definition is to define the field name and type
 
-![object definition image](images/static-object-definition.png)
+```ruby
+object_definitions: {
+  push: {
+    fields: ->() {
+      [
+        { name: 'active', type: :boolean },
+        { name: 'body' },
+        { name: 'created' },
+        { name: 'direction' },
+        { name: 'dismissed', type: :boolean },
+        { name: 'iden' },
+        { name: 'modified' },
+        { name: 'receiver_email' },
+        { name: 'receiver_email_normalized' },
+        { name: 'receiver_iden' },
+        { name: 'sender_email' },
+        { name: 'sender_email_normalized' },
+        { name: 'sender_iden' },
+        { name: 'sender_name' },
+        { name: 'title' },
+        { name: 'type' },
+      ]
+    }
+  }
+}
+```
 
 In this example, the object “Comment” is being defined. It has 6 fields. The fields are all defined in the fields lambda literal `->()`
 
@@ -264,7 +508,17 @@ Defined as an array of objects. Each field object corresponds to a field in the 
 
 ### Dynamic Definition
 
-![dynamic schema image](images/dynamic-object-definition.png)
+```ruby
+object_definitions: {
+
+  form: {
+    fields: ->(connection) {
+      get("https://api.unbounce.com/pages/#{connection['page_id']}/form_fields")['formFields'].
+        map { |field| { name: field['id'] } }
+    }
+  }
+}
+```
 
 ### Components
 
@@ -301,9 +555,17 @@ Typically, this should be a request that will always be accessible to any user.
 
 Here are some examples:
 
-![clearbit test image](images/test-clearbit.png)
+```ruby
+test: ->(connection) {
+  get("https://person.clearbit.com/v1/people/email/eeshansim@gmail.com")
+}
+```
 
-![clicktime test image](images/test-clicktime.png)
+```ruby
+test: ->(connection) {
+  get("https://app.clicktime.com/api/1.3/session")
+}
+```
 
 # Example Adapters
 
