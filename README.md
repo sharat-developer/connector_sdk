@@ -103,7 +103,7 @@ Define
 After defining this, calls will have the appropriate params appended.
 
 Example:
-> \<BASE_URL>/users?api_key=NB674921
+`\<BASE_URL>/users?api_key=NB674921`
 
 ![API_key auth](images/api-key-auth.png)
 
@@ -116,7 +116,7 @@ For a more secure method of authentication, we recommend using OAuth 2.0. It is 
 The Workato connector SDK currently supports the authorization code grant variant of the OAuth2 standard.
 
 Required components in OAuth 2.0 type connection
-1. Type (defined as ‘oauth2’)
+1. Type (use ‘oauth2’)
 2. Authorization_url
 3. Token_url
 4. Client_id and client_secret
@@ -128,7 +128,7 @@ https://www.workato.com/oauth/callback
 Adjust headers format as required in the credentials section
 
 For example, Pushbullet expects the header to include token in this format:
-> Access-Token: \<access token>
+`Access-Token: \<access token>`
 
 So to adjust to suit this requirement, define the credentials portion like so:
 
@@ -214,13 +214,13 @@ Ruby methods
 
 ### type (optional)
 
-`:paging_desc`: Descending order feature that sorts events (below)
+`:paging_desc` - Descending order feature that sorts events (below)
 
 ### poll
 
 Poll block is where you can define the behaviour of the trigger. It accepts [ruby syntax](http://ruby-doc.org/).
 
-`since`: This parameter acts as a filter for the trigger. Typically, it is a datetime type data that tells the trigger to pick up events/records after a certain date and time.
+`since` - This parameter acts as a filter for the trigger. Typically, it is a datetime type data that tells the trigger to pick up events/records after a certain date and time.
 
 It is usually a datetime type data. It can also take on record IDs, assuming that IDs are always incremental.
 
@@ -245,8 +245,6 @@ This is a boolean type component. It tells the Workato Trigger Poll Framework wh
 Dedup component is basically to identify individual records. This component is given the parameter “event”, which corresponds to individual items in the array passed into “Events”.
 
 A typical dedup input is event[‘id’] where event is replaced make the code more readable.
-
-![dedup sample image](images/dedup.png)
 
 In this case, the trigger handles leads. Individual leads can be identified by their unique ids lead[‘id’].
 
@@ -289,8 +287,8 @@ Supported types:
 #### control_type
 
 Some of the available values are
-‘url’: the data field will show a link
-‘select’: the data field will be a pick list (make sure to include the pick_list property
+url: the data field will show a link
+select: the data field will be a pick list (make sure to include the pick_list property
 
 Other supported types:
 timestamp, checkbox, phone, email, text, number, text-area
