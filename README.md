@@ -1,4 +1,4 @@
-[![Workato](images/logo.png)](https://www.workato.com)
+[![Workato](images/workato_logo.png)](https://www.workato.com)
 
 # Introduction
 
