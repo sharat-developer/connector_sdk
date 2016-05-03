@@ -307,7 +307,7 @@ Here are some examples:
 
 # Example Adapters
 
-## Basic Authentication
+## Basic Authentication Samples
 - [Harvest app connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/harvest_connector.rb)
 
 - [Freshdesk connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/freshdesk_connector.rb)
@@ -322,7 +322,7 @@ Here are some examples:
 
 - [Unbounce connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/unbounce_connector.rb)
 
-## OAuth2
+## OAuth2 Samples
 - [Podio connector](https://github.com/workato/connector_sdk/blob/master/oauth2/podio_connector.rb)
 
 - [ProductHunt connector](https://github.com/workato/connector_sdk/blob/master/oauth2/producthunt_connector.rb)
@@ -331,7 +331,7 @@ Here are some examples:
 
 - [Pushbullet connector](https://github.com/workato/connector_sdk/blob/master/oauth2/pushbullet_connector.rb)
 
-## Custom Authentication
+## Custom Authentication Samples
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
 - [SafetyCulture app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/safetyculture_connector.rb)
