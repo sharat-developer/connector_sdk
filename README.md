@@ -567,6 +567,10 @@ test: ->(connection) {
 }
 ```
 
+# Sign up
+
+Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the developer program
+
 # Example Adapters
 
 ## Basic Authentication Samples
