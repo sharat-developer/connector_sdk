@@ -139,15 +139,14 @@
       type: :paging_desc,
 
       input_fields: ->(object_definition) {
-        [{ name: 'since', type: :timestamp }]
+        [{ name: 'since', type: :timestamp, optional: false, hint: 'Select earliest updated date' }]
       },
 
       poll: ->(connection,input,next_page) {
-        since = (input['since'] || Time.now).to_time.utc.iso8601
-
         params = {
-          'updatedDate' => '{"start":"' + since + '"}',
+          'updatedDate' => '{"start":"' + input['since'].to_time.utc.iso8601 + '"}',
           'sortField' => 'UpdatedDate',
+          'sortOrder' => 'Desc',
           'pageSize' => '10',
           'nextPageToken' => next_page
         }
