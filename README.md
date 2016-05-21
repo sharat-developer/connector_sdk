@@ -502,7 +502,7 @@ object_definitions: {
 }
 ```
 
-In this example, the object “Comment” is being defined. It has 6 fields. The fields are all defined in the fields lambda literal `->()`
+In this example, the object “Push” is being defined in the fields lambda literal `->()`
 
 Defined as an array of objects. Each field object corresponds to a field in the comment object.
 
