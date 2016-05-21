@@ -136,32 +136,28 @@
 
     new_or_updated_task: {
 
+      type: :paging_desc,
+
       input_fields: ->(object_definition) {
-        [
-          { name: 'since', type: :timestamp }
-        ]
+        [{ name: 'since', type: :timestamp }]
       },
 
-      poll: ->(connection,input,last_updated_at) {
-        since = (last_updated_at || input['since'] || Time.now).to_time.utc.iso8601
+      poll: ->(connection,input,next_page) {
+        since = (input['since'] || Time.now).to_time.utc.iso8601
 
-        updated_since = '{"start":"' + since + '"}'
+        params = {
+          'updatedDate' => '{"start":"' + since + '"}',
+          'sortField' => 'UpdatedDate',
+          'pageSize' => '10',
+          'nextPageToken' => next_page
+        }
 
-        tasks = get("https://www.wrike.com/api/v3/tasks?updatedDate=#{updated_since}").
-                  params(sortField: 'UpdatedDate',
-                         pageSize: 10)['data']
-
-        next_updated_at = tasks.first['updatedDate'] unless tasks.length == 0
+        response = get("https://www.wrike.com/api/v3/tasks", params)
 
         {
-          events: tasks,
-          next_poll: next_updated_at,
-          can_poll_more: tasks.length == 10
+          events: response['data'],
+          next_page: response['nextPageToken'],
         }
-      },
-
-      dedup: ->(task) {
-        task['id']
       },
 
       output_fields: ->(object_definitions) {
