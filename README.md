@@ -597,6 +597,8 @@ Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the develop
 
 - [Pushbullet connector](https://github.com/workato/connector_sdk/blob/master/oauth2/pushbullet_connector.rb)
 
+- [Wrike connector](https://github.com/workato/connector_sdk/blob/master/oauth2/wrike_connector.rb)
+
 ## Custom Authentication Samples
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
