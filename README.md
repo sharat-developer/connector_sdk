@@ -568,13 +568,26 @@ test: ->(connection) {
 ```
 
 ## Pick List
-A pick list is 
+A pick list is list of choices predefined for a user to select instead of having to input the actual values.
+It is useful when there is a list of accepted values for a field or when the field requires a value that is not visible. For example, a field that requires User ID will require a pick list that displays the User names and pass the corresponding User's ID to that field.
 
 ### Defining a pick list
-There are two ways to define a pick list: dynamically or statically.
+There are 2 ways to define a pick list: dynamically or statically.
 
 Static example:
+
+Pick list is defined as a array of selections. Each selection is an array made up of 2 elements.
+
+The first element in the selection array is the value displayed and the second element is the value of that selection.
 ```ruby
+pick_lists: {
+  folder: ->(connection) {
+    [
+      ["Root","111390"],
+      ["Recycle Bin","235611"]
+    ]
+  }
+}
 ```
 
 Dynamic example:
