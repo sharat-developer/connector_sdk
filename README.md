@@ -567,6 +567,36 @@ test: ->(connection) {
 }
 ```
 
+## Pick List
+A pick list is 
+
+### Defining a pick list
+There are two ways to define a pick list: dynamically or statically.
+
+Static example:
+```ruby
+```
+
+Dynamic example:
+```ruby
+pick_lists: {
+  folder: ->(connection) {
+    get("https://www.wrike.com/api/v3/folders")['data'].
+      map { |folder| [folder['title'], folder['id']] }
+  }
+}
+```
+After making a GET requests for all folders available, the pick list is populated with folder `id`s and displays the corresponding folder `title`
+
+### Usage
+```ruby
+input_fields: ->(object_definitions) {
+  [
+    { name: 'folder_id', control_type: 'select', pick_list: 'folder' }
+  ]
+}
+```
+
 # Sign up
 
 Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the developer program
