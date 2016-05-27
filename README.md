@@ -646,3 +646,5 @@ Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the develop
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
 - [SafetyCulture app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/safetyculture_connector.rb)
+
+- [Knack HQ connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/knack_hq_connector.rb)
