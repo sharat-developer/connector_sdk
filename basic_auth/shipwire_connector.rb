@@ -47,8 +47,7 @@
           {	name: 'enqueuedDimentions', type: :object, properties: [{	name: 'resourceLocation'}]},
           {	name: 'innerPack', type: :object, properties: [{	name: 'resourceLocation'}]},
           {	name: 'masterCase', type: :object, properties: [{	name: 'resourceLocation'}]},
-          {	name: 'pallet', type: :object, properties: [{	name: 'resourceLocation'}]},          
-#          { name: 'classification'},
+          {	name: 'pallet', type: :object, properties: [{	name: 'resourceLocation'}]}
         ]
       }
     },
@@ -192,7 +191,6 @@
     	input_fields: ->() {
       	[
         	{ name: 'since', type: :timestamp },
-          # 'processed', 'canceled', 'completed', 'delivered', 'returned', 'submitted', 'held', 'tracked')
           {	name: 'status', control_type: 'select', hint: 'type of order to be tracked. Leave blank to track all orders',
             	picklist: [['processed'],['canceled'], ['completed'], ['delivered'], ['returned'], ['submitted'], ['held'], ['tracked']]}
         ]
