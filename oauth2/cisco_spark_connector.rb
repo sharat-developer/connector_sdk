@@ -142,10 +142,6 @@
 
   triggers: {
     new_message: {
-      title: 'New message',
-
-      description: "New <span class=\"provider\">message</span> in <span class=\"provider\">Cisco Spark</span>",
-
       type: "paging_desc",
 
       input_fields: ->(object_definitions) {
