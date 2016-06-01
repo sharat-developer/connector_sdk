@@ -165,8 +165,6 @@
         delete("https://api.ciscospark.com/v1/webhooks/#{webhook['id']}")
       },
 
-      poll: ->(connection, input, last_updated_since) {{}},
-
       dedup: ->(message) {
         message['id']
       },
