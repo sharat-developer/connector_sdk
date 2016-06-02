@@ -2,6 +2,10 @@
 
 # Introduction
 
+Welcome to the Workato Developer Program website. Here you will find the documentation you need to build application adapters using our SDK. If you are interested in applying to the Developer Program, please fill out [this form](http://bit.ly/WorkatoSDKRequest).
+
+Also, Workato offers a [HTTP REST connector](http://bit.ly/WorkatoHTTPConnector) where you can create your own app connectors without having to code.
+
 ## Recipe
 
 A Workato recipe is a set of predefined instructions to be executed. It is made up of a trigger and one or more actions.
@@ -660,10 +664,6 @@ input_fields: ->(object_definitions) {
   ]
 }
 ```
-
-# Sign up
-
-Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the developer program
 
 # Example Adapters
 
