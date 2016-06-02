@@ -54,15 +54,12 @@
         
         emotional_tones = response['tone_categories'].first
         dominant_emotion_tone = emotional_tones['tones'].sort { |a,b| b['score'] <=> a['score'] }.first
-        puts 'emotion'
         
         writing_tones = response['tone_categories'].second
         dominant_writing_tone = writing_tones['tones'].sort { |a,b| b['score'] <=> a['score'] }.first
-        puts 'writing'
         
         social_tones = response['tone_categories'].third
         dominant_social_tone = social_tones['tones'].sort { |a,b| b['score'] <=> a['score'] }.first
-        puts 'social'
         
         {
           'dominant_emotion_tone': dominant_emotion_tone,
