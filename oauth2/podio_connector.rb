@@ -143,7 +143,7 @@
 	},
 
 	output_fields: ->(object_definitions){
-	   object_definitions['tag']
+	   { name: 'tags', type = 'array', of: 'object', properties: object_definitions['tag']}
 	}
    },
 
