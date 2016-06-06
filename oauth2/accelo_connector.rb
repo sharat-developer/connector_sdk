@@ -79,6 +79,9 @@
 
   triggers: {
     new_company: {
+
+      type: :paging_desc,
+
       input_fields: ->() {
         [
           { name: 'created_after', type: :timestamp, optional: false }
@@ -96,13 +99,14 @@
 
         {
           events: companies,
-          next_poll: next_created_since,
-          can_poll_more: companies.length >= 2
+          next_page: next_created_since
         }
       },
+
       dedup: ->(company) {
         company['id']
       },
+
       output_fields: ->(object_definitions) {
         object_definitions['company']
       }

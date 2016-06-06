@@ -97,6 +97,9 @@
   triggers: {
 
     new_or_updated_audit: {
+
+      type: :paging_desc,
+
       input_fields: ->() {
         [
           { name: 'since', type: :timestamp, optional: false,
@@ -115,6 +118,7 @@
 
         response = get("https://api.safetyculture.io/audits/search").
                   params(modified_after: updated_since.to_time.utc.iso8601,
+                         order: :desc,
                          limit: 2,
                          completed: input['completed'])
         
@@ -126,8 +130,7 @@
 
         {
           events: audits,
-          next_poll: next_updated_since,
-          can_poll_more: response['count'] < response['total'] 
+          next_page: next_updated_since,
         }
       },
 
