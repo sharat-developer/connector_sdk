@@ -502,7 +502,7 @@ object_definitions: {
 }
 ```
 
-In this example, the object “Comment” is being defined. It has 6 fields. The fields are all defined in the fields lambda literal `->()`
+In this example, the object “Push” is being defined in the fields lambda literal `->()`
 
 Defined as an array of objects. Each field object corresponds to a field in the comment object.
 
@@ -567,6 +567,53 @@ test: ->(connection) {
 }
 ```
 
+## Pick List
+A pick list is list of choices predefined for a user to select instead of having to input the actual values.
+It is useful when there is a list of accepted values for a field or when the field requires a value that is not visible. For example, a field that requires User ID will require a pick list that displays the User names and pass the corresponding User's ID to that field.
+
+### Defining a pick list
+There are 2 ways to define a pick list: dynamically or statically.
+
+Static example:
+
+Pick list is defined as a array of selections. Each selection is an array made up of 2 elements.
+
+The first element in the selection array is the value displayed and the second element is the value of that selection.
+```ruby
+pick_lists: {
+  folder: ->(connection) {
+    [
+      ["Root","111390"],
+      ["Recycle Bin","235611"]
+    ]
+  }
+}
+```
+
+Dynamic example:
+```ruby
+pick_lists: {
+  folder: ->(connection) {
+    get("https://www.wrike.com/api/v3/folders")['data'].
+      map { |folder| [folder['title'], folder['id']] }
+  }
+}
+```
+After making a GET requests for all folders available, the pick list is populated with folder `id`s and displays the corresponding folder `title`
+
+### Usage
+```ruby
+input_fields: ->(object_definitions) {
+  [
+    { name: 'folder_id', control_type: 'select', pick_list: 'folder' }
+  ]
+}
+```
+
+# Sign up
+
+Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the developer program
+
 # Example Adapters
 
 ## Basic Authentication Samples
@@ -584,6 +631,8 @@ test: ->(connection) {
 
 - [Unbounce connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/unbounce_connector.rb)
 
+- [Watson Tone Analyzer connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/watson_tone_analyzer_connector.rb)
+
 ## OAuth2 Samples
 - [Podio connector](https://github.com/workato/connector_sdk/blob/master/oauth2/podio_connector.rb)
 
@@ -595,6 +644,8 @@ test: ->(connection) {
 
 ## API Key Authentication Samples
 - [Gender API connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/gender_api_connector.rb)
+
+- [Wrike connector](https://github.com/workato/connector_sdk/blob/master/oauth2/wrike_connector.rb)
 
 ## Custom Authentication Samples
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
