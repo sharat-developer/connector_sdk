@@ -69,7 +69,9 @@
 
   triggers: {
 
-    new_lead: {
+    new_or_updated_lead: {
+
+      type: :paging_desc,
 
       input_fields: ->() {
         [
@@ -78,7 +80,7 @@
         ]
       },
 
-      poll: ->(connection, input, last_created_since) {
+      poll: ->(connection, input, last_updated_since) {
         since = last_updated_since || input['since'] || Time.now
         
         # Close.io currently does not support _order_by parameter for leads, defaults to order by date_update
@@ -90,8 +92,7 @@
 
         {
           events: results['data'],
-          next_poll: next_updated_since,
-          can_poll_more: results['has_more']
+          next_page: next_updated_since,
         }
       },
 

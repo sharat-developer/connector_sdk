@@ -2,6 +2,10 @@
 
 # Introduction
 
+Welcome to the Workato Developer Program website. Here you will find the documentation you need to build application adapters using our SDK. If you are interested in applying to the Developer Program, please fill out [this form](http://bit.ly/WorkatoSDKRequest).
+
+Also, Workato offers a [HTTP Connector](http://bit.ly/WorkatoHTTPConnector) where you can create your own app connectors without having to code.
+
 ## Recipe
 
 A Workato recipe is a set of predefined instructions to be executed. It is made up of a trigger and one or more actions.
@@ -467,6 +471,57 @@ A typical dedup input is event[‘id’] where event is replaced make the code m
 
 In this case, the trigger handles leads. Individual leads can be identified by their unique ids lead[‘id’].
 
+## Webhook Trigger
+
+```ruby
+triggers: {
+  new_message: {
+    type: :paging_desc,
+
+    input_fields: ->(object_definitions) {
+      object_definitions['room'].only('id')
+    },
+
+    webhook_subscribe: ->(webhook_url, connection, input, flow_id) {
+      post('https://api.ciscospark.com/v1/webhooks',
+           name: "Workato recipe #{flow_id}",
+           targetUrl: webhook_url,
+           resource: 'messages',
+           event: 'created',
+           filter: "roomId=#{input['id']}")
+    },
+
+    webhook_notification: ->(input, payload) {
+      payload['data']
+    },
+
+    webhook_unsubscribe: ->(webhook) {
+      delete("https://api.ciscospark.com/v1/webhooks/#{webhook['id']}")
+    },
+
+    dedup: ->(message) {
+      message['id']
+    },
+
+    output_fields: ->(object_definitions) {
+      object_definitions['message']
+    }
+  }
+}
+```
+
+### webhook_subscribe
+
+This block is called when the recipe is being started to run necessery API calls to subscribe for further webhook notifications. The endpoint that supposed to be register is passed in `webhook_url` parameter with other data that could be useful while registering the webhook.
+
+### webhook_unsubscribe
+
+This block will be called after recipe start to unsubscribe from webhook notifications.
+
+### webhook_notification
+
+POST/PUT HTTP requests can be used to notify about new trigger events. JSON-encoded payload is expected. This block is called to extract trigger output data from webhook notification payload (`payload` attribute). Original trigger input is also available in this block (`input` attribute)
+
 ## Object Definition
 
 Object Definitions is an important component of the SDK. It allows you to define your schema for objects to be used in the actions and triggers. It allows you to easily define outputs and inputs later on.
@@ -610,10 +665,6 @@ input_fields: ->(object_definitions) {
 }
 ```
 
-# Sign up
-
-Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the developer program
-
 # Example Adapters
 
 ## Basic Authentication Samples
@@ -647,7 +698,11 @@ Fill out [this form](http://bit.ly/WorkatoSDKRequest) to sign up for the develop
 
 - [Wrike connector](https://github.com/workato/connector_sdk/blob/master/oauth2/wrike_connector.rb)
 
+- [Cisco Spark connector](https://github.com/workato/connector_sdk/blob/master/oauth2/cisco_spark_connector.rb)
+
 ## Custom Authentication Samples
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
 - [SafetyCulture app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/safetyculture_connector.rb)
+
+- [Knack HQ connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/knack_hq_connector.rb)
