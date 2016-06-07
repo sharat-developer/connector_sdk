@@ -697,6 +697,9 @@ input_fields: ->(object_definitions) {
 
 - [Cisco Spark connector](https://github.com/workato/connector_sdk/blob/master/oauth2/cisco_spark_connector.rb)
 
+## API Key Authentication Samples
+- [Gender API connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/gender_api_connector.rb)
+
 ## Custom Authentication Samples
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
