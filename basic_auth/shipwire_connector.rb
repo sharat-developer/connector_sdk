@@ -36,15 +36,251 @@
           { name: 'itemCount'},
           { name: 'vendorID'},
           { name: 'vendorExternalId'},
-          { name: 'dimensions', type: :object, properties: [{ name: 'resourceLocation'}]},
-          { name: 'values', type: :object, properties: [{name: 'resourceLocation'}]},
-          { name: 'alternateNames', type: :object, properties: [{ name: 'resourceLocation'}]},
-          { name: 'technicalData', type: :object, properties: [{ name: 'resourceLocation'}]},
-          { name: 'flags', type: :object, properties: [{ name: 'resourceLocation'}]},
-          { name: 'enqueuedDimentions', type: :object, properties: [{ name: 'resourceLocation'}]},
-          { name: 'innerPack', type: :object, properties: [{ name: 'resourceLocation'}]},
-          { name: 'masterCase', type: :object, properties: [{ name: 'resourceLocation'}]},
-          { name: 'pallet', type: :object, properties: [{ name: 'resourceLocation'}]},
+          { name: 'dimensions', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties: 
+          			[
+          				{ name: 'weight'},
+		          		{ name: 'weightUnit'},
+		          		{ name: 'height'},
+		          		{ name: 'heightUnit'},
+		          		{ name: 'length'},
+		          		{ name: 'lengthUnit'}		
+          			]
+          		}
+          	]
+          },
+          { name: 'values', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties: 
+          			[
+          				{ name: 'costValueCurrency'},
+          				{ name: 'wholesaleValue'},
+          				{ name: 'costValue'},
+          				{ name: 'wholesaleValueCurrency'},
+          				{ name: 'retailValue'},
+          				{ name: 'retailValueCurrency'}
+          			]
+          			
+          		}
+          	]
+          },
+          { name: 'alternateNames', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties:
+          			[
+          				{ name: 'previous'},
+          				{ name: 'next'},
+          				{ name: 'total', type: :integer},
+          				{ name: 'items', type: :array},
+          				{ name: 'offset', type: :integer}
+          			]
+          		}
+          	]
+          },
+          { name: 'technicalData', type: :object, properties: [
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties: 
+          			[
+          				{ name: 'battery', type: :object, properties:[{ name: 'resourceLocation'}]}	
+          			]
+          	]
+          },
+          { name: 'flags', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties:
+          			[
+          				{ name: 'isMedia'},
+          				{ name: 'isDeletable'},
+          				{ name: 'hasPallet'},
+          				{ name: 'isPackagedReadyToShip'},
+          				{ name: 'hasMasterCase'},
+          				{ name: 'isFragile'},
+          				{ name: 'isArchivable'},
+          				{ name: 'isLiquid'},
+          				{ name: 'isDangerous'},
+          				{ name: 'isPerishable'},
+          				{ name: 'hasEditRestrictions'},
+          				{ name: 'hasInnerPack'},
+          				{ name: 'isAdult'}
+          			]
+          		}
+          	]
+          },
+          { name: 'enqueuedDimentions', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties:
+          			[
+          				{ name: 'offset'},
+          				{ name: 'total'},
+          				{ name: 'previous'},
+          				{ name: 'next'},
+          				{ name: 'items'}
+          			]
+          		}
+          	]
+          },
+          { name: 'innerPack', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties: 
+          			[
+          				{ name: 'description'},
+          				{ name: 'dimensions', type: :object, properties: 
+          					[
+          						{ name: 'resourceLocation'},
+          						{ name: 'resource', type: :object, properties:
+          							[
+          								{ name: 'height'},
+          								{ name: 'HeightUnit'},
+          								{ name: 'length'},
+          								{ name: 'LengthUnit'},
+          								{ name: 'weight'},
+          								{ name: 'weightUnit'},
+          								{ name: 'width'},
+          								{ name: 'widthUnit'}
+          							]
+          						}
+          					]
+          				},
+          				{ name: 'externalID'},
+          				{ name: 'flags', type: :object, properties: 
+          					[
+          						{ name: 'resourceLocation'},
+          						{ name: 'resource' type: :object, properties: 
+          							[
+          								{ name: 'isPackagedReadyToShip', type: :integer}	
+          							]
+          						}	
+          					]
+          				},
+          				{ name: 'individualItemsPerCase'},
+          				{ name: 'ProductId'},
+          				{ name: 'sku'},
+          				{ name: 'values', type: :object, properties:
+				          	[
+				          		{ name: 'resourceLocation'},
+				          		{ name: 'resource', type: :object, properties: 
+				          			[
+				          				{ name: 'costValueCurrency'},
+				          				{ name: 'wholesaleValue'},
+				          				{ name: 'costValue'},
+				          				{ name: 'wholesaleValueCurrency'},
+				          				{ name: 'retailValue'},
+				          				{ name: 'retailValueCurrency'}
+				          			]
+				          			
+				          		}
+				          	]
+          				},
+          			]
+          		}
+          	]
+          },
+          { name: 'masterCase', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties: 
+          			[
+          				{ name: 'sku'},
+          				{ name: 'dimensions', type: :object, properties: 
+          					[
+          						{ name: 'resourceLocation'},
+          						{ name: 'resource', type: :object, properties: 
+          							[
+          								{ name: 'weight'},
+          								{ name: 'weightUnit'},
+          								{ name: 'height'},
+          								{ name: 'heightUnit'},
+          								{ name: 'length'},
+          								{ name: 'lengthUnit'}
+          							]
+          						}
+          					]
+          				},
+          				{ name: 'values', type: :object, properties:
+          					[
+          						{ name: 'resourceLocation'},
+          						{ name: 'resource', type: :object, properties: 
+          							[
+          								{ name: 'costvalueCurrency'},
+          								{ name: 'wholesaleValue'},
+          								{ name: 'costValue'},
+          								{ name: 'wholesaleValueCurrency'},
+          								{ name: 'retailValue'},
+          								{ name: 'retailValueCurrency'}
+          							]
+          						},
+          					]
+          				},
+          				{ name: 'externalId', type: :integer},
+          				{ name: 'individualItemsPerCase', type: :integer},
+          				{ name: 'flags', type: :object, properties: 
+          					[
+          						{ name: 'resourceLocation'},
+          						{ name: 'resource', type: :object, properties:[{ name: 'isPackagedReadyToShip'}]}
+          					]
+          				},
+          				{ name: 'productId'},
+          				{ name: 'description'}
+          			]
+          		},
+          	]#endof mastercase
+          },
+          { name: 'pallet', type: :object, properties: 
+          	[
+          		{ name: 'resourceLocation'},
+          		{ name: 'resource', type: :object, properties: 
+          			[
+          				{ name: 'description'},
+          				{ name: 'dimensions', type: :object, properties: 
+          					[
+          						{ name: 'weight'},
+          						{ name: 'weightUnit'},
+          						{ name: 'height'},
+          						{ name: 'heightUnit'},
+          						{ name: 'length'},
+          						{ name: 'lengthUnit'}		
+          					]
+          				},
+          				{ name: 'externalId'},
+          				{ name: 'flags', type: :object, properties: 
+          					[
+          						{ name: 'resourceLocation'},
+          						{ name: 'resource', type: :object, properties: 
+          							[
+          								{ name: 'isPackagedReadyToShip'},
+          								
+          							]
+          						}
+          					]
+          				},
+          				{ name: 'individualItemsPerCase'},
+          				{ name: 'productId'},
+          				{ name: 'sku'},
+          				{ name: 'values', type: :object, properties: 
+          					[
+          						{ name: 'resourceLocation'},
+          						{ name: 'resource', type: :object, properties:
+          							[
+		          						{ name: 'costValue'},
+		          						{ name: 'costValueCurrency'},
+		          						{ name: 'retailValue'},
+		          						{ name: 'retailValueCurrency'},
+		          						{ name: 'wholesaleValue'},
+		          						{ name: 'wholesaleValueCurrency'}
+          							]
+          					]
+          				}
+          			]
+          		}
+          	]
+          },
         ]
       }
     },
