@@ -29,31 +29,19 @@
               ]
             }
         },
-        sent_sms_status: {
-            fields: ->() {
-              [
-                  {name: 'groupId', type: :integer},
-                  {name: 'groupName'},
-                  {name: 'id', type: :integer},
-                  {name: 'name'},
-                  {name: 'description'}
-              ]
-            }
-        },
         sent_sms_info: {
             fields: ->() {
               [
                   {name: 'to'},
-                  {name: 'status', type: :object_definitions['sent_sms_status']},
+                  {name: 'status', type: :object, properties: [
+                      {name: 'groupId', type: :integer},
+                      {name: 'groupName'},
+                      {name: 'id', type: :integer},
+                      {name: 'name'},
+                      {name: 'description'}
+                  ]},
                   {name: 'smsCount', type: :integer},
                   {name: 'messageId'}
-              ]
-            }
-        },
-        send_sms_response: {
-            fields: ->() {
-              [
-                  {name: 'messages', type: :array, of: :object, properties: :object_definitions['sent_sms_info']}
               ]
             }
         },
@@ -69,13 +57,6 @@
                   {name: 'smsCount', type: :integer}
               ]
             }
-        },
-        received_sms_response: {
-            fields: ->() {
-              [
-                  {name: 'results', type: :array, of: :object, properties: :object_definitions['received_sms_info']}
-              ]
-            }
         }
     },
     actions: {
@@ -86,9 +67,9 @@
             execute: ->(connection, input) {
               post("https://api.infobip.com/sms/1/text/single", input)['send_sms_request']
             },
-            output_fields: ->(object_definitions) {
-              object_definitions['send_sms_response']
-            }
+            output_fields: ->(object_definitions) {[
+                { name: 'messages', type: :array, of: :object, properties: object_definitions['sent_sms_info'] }
+            ]}
         }
     },
     triggers: {
@@ -108,9 +89,9 @@
             dedup: ->(received_sms_info) {
               received_sms_info['messageId']
             },
-            output_fields: ->(object_definitions) {
-              object_definitions['received_sms_info']
-            }
+            output_fields: ->(object_definitions) {[
+                { name: 'results', type: :array, of: :object, properties: object_definitions['received_sms_info'] }
+            ]}
         }
     }
 }
