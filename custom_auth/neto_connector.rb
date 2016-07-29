@@ -72,7 +72,6 @@
 
     updated_customer: {
       description: 'Updated <span class="provider">customer</span> in <span class="provider">Neto</span>',
-      type: :paging_desc,
 
       input_fields: ->() {
         [
@@ -93,9 +92,9 @@
           "filter" => {
             "DateUpdatedFrom" => (updated_since).utc.strftime("%F %T"),
             "Page" => page,
-            "Limit" => limit
+            "Limit" => limit,
+            "OutputSelector" => ["Username", "ID", "EmailAddress", "DateUpdated"]
           },
-          "OutputSelector" => ["Username", "ID", "EmailAddress", "DateUpdated"]
         }
 
         customers = post("https://#{connection['domain']}.neto.com.au/do/WS/NetoAPI", payload).
@@ -103,7 +102,8 @@
 
         {
           events: customers,
-          next_page: ((page + 1) unless customers.length < limit)
+          next_poll: ((page + 1) unless customers.length < limit),
+          can_poll_more: customers.length == limit
         }
       },
 			
