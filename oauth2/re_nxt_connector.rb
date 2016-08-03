@@ -267,6 +267,15 @@
       output_fields: ->(object_definitions) {
         object_definitions['constituent']
       }
-    },
+    }, 
+  },
+
+  pick_lists: {
+    title: ->(connection) {
+        get("https://api.sky.blackbaud.com/constituent/v1/titles")['value'].
+          map { |title| [title, title] }},
+    suffix: ->(connection) {
+        get("https://api.sky.blackbaud.com/constituent/v1/suffixes")['value'].
+          map { |suffix| [suffix, suffix] }}
   }
 }
