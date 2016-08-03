@@ -44,35 +44,10 @@
     post("https://#{connection['domain']}.neto.com.au/do/WS/NetoAPI").headers('NETOAPI_ACTION': 'GetCustomer')
   },
 
-  actions: {
-    get_users: {
-      input_fields: ->(object_definitions) {
-        
-      },
-
-      execute: ->(connection, input) {
-        payload = {
-          "filter" => {
-            "DateUpdatedFrom" => (Time.now - 1.days).utc.strftime("%F %T"),
-            "Page" => 0,
-            "Limit" => 10
-          },
-          "OutputSelector" => ["Username","ID"]
-        }
-        
-        post("https://#{connection['domain']}.neto.com.au/do/WS/NetoAPI", payload).headers('NETOAPI_ACTION': 'GetCustomer')
-      },
-
-      output_fields: ->(object_definitions) {
-        object_definitions['customer']
-      }
-    }
-  },
-
   triggers: {
 
-    updated_customer: {
-      description: 'Updated <span class="provider">customer</span> in <span class="provider">Neto</span>',
+    new_updated_customer: {
+      description: 'New or Updated <span class="provider">customer</span> in <span class="provider">Neto</span>',
 
       input_fields: ->() {
         [
@@ -86,7 +61,7 @@
 
       poll: ->(connection, input, page) {
         page ||= 0
-        limit = 10
+        limit = 50
         updated_since = input['since'] || Time.now
         
         payload = {
