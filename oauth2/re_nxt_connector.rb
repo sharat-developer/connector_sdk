@@ -137,6 +137,45 @@
   },
 
   actions: {
+    update_constituent: {
+      input_fields: ->() {
+        [ { name: 'constituent_ID', type: :integer, optional: false },
+          { name: 'name', hint: 'For organizations only' },
+          { name: 'last', hint: 'Required for individual. All fields change on update.'},
+          { name: 'first', hint: 'For individuals only. All fields change on update.'},
+          { name: 'middle', hint: 'For individuals only. All fields change on update.'},
+          { name: 'preferred_name', hint: 'For individuals only. All fields change on update.' },
+          { name: 'title', hint: 'For individuals only. All fields change on update.', control_type: 'select', pick_list: 'title' },
+          { name: 'suffix', hint: 'For individuals only. All fields change on update.', control_type: 'select', pick_list: 'suffix' },         
+          { name: 'gender', hint: 'For individuals only. All fields change on update.', control_type: 'select', pick_list: [
+            ["Male","male"],
+            ["Female","female"],
+            ["Unknown","unknown"]]},
+          { name: "birthdate", hint: 'For individuals only. All fields change on update.', type: :date},
+          { name: 'deceased', hint: 'For individuals only. All fields change on update.', control_type: 'select', pick_list: [
+            ["true", true],
+            ["false", false]]}
+        ]
+      },
+
+      execute: ->(connection, input) {
+        birthdate = input['birthdate'].to_s.split("-")
+        if input['name'] != nil
+          info = {"name"=>input['name']}
+        else
+          if (input['last'].present? || input['first'].present? || input['middle'].present? || input['preferred_name'].present? || input['title'].present? || input['suffix'].present? || input['gender'].present? || input['birthdate'].present? || input['deceased'].present?)
+            info = {"last"=>input['last'], "first"=>input['first'], "middle"=>input['middle'], "preferred_name"=>input['preferred_name'], "title"=>input['title'], "suffix"=>input['suffix'], "gender"=>input['gender'], "birthdate"=>{"y"=>birthdate[0], "m"=>birthdate[1], "d"=>birthdate[2]}, "deceased"=>input['deceased']}
+          else
+            info = {}
+          end
+        end
+        patch("https://api.sky.blackbaud.com/constituent/v1/constituents/#{input['constituent_ID']}", info)
+      },
+
+      output_fields: ->(object_definitions) {
+      }
+    },
+
     search_constituent: {
       input_fields: ->() {
         [ { name: 'search_text', optional: false , hint: "Searches first/middle/last names and email addresses"} ]
