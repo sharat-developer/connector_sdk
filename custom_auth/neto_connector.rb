@@ -33,7 +33,8 @@
           { name: 'ID' },
           { name: 'EmailAddress', control_type: 'email' },
           { name: 'Username' },
-          { name: 'DateUpdated' }
+          { name: 'DateUpdated', type: :date_time },
+          { name: 'DateAdded', type: :date_time }
         ]
       }
     }
@@ -93,7 +94,7 @@
             "DateUpdatedFrom" => (updated_since).utc.strftime("%F %T"),
             "Page" => page,
             "Limit" => limit,
-            "OutputSelector" => ["Username", "ID", "EmailAddress", "DateUpdated"]
+            "OutputSelector" => ["Username", "ID", "EmailAddress", "DateUpdated", "DateAdded"]
           },
         }
 
@@ -102,17 +103,13 @@
 
         {
           events: customers,
-          next_poll: ((page + 1) unless customers.length < limit),
+          next_poll: (page + 1),
           can_poll_more: customers.length == limit
         }
       },
 			
-      document_id: ->(customer) {
-        customer['ID']
-      },
-      
-      sort_by: ->(customer) {
-        customer['DateUpdated']
+      dedup: ->(customer) {
+        customer['ID'] + "@" + customer['DateUpdated']
       },
 
       output_fields: ->(object_definitions) {
