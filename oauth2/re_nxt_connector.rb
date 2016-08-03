@@ -137,6 +137,27 @@
   },
 
   actions: {
+    search_constituent: {
+      input_fields: ->() {
+        [ { name: 'search_text', optional: false , hint: "Searches first/middle/last names and email addresses"} ]
+      },
+      execute: ->(connection, input) {
+        {
+        'constituents': get("https://api.sky.blackbaud.com/constituent/v1/constituents/search?searchText=#{input['search_text']}")['value']
+        }
+      },
+      output_fields: ->(object_definitions) {
+        [{
+          name: 'constituents',
+          type: :array, of: :object,
+          properties: [
+            { name: "id", type: :integer},
+            { name: "name" },
+            { name: "address" },
+            { name: "email" }]
+        }]
+      }
+    }
   },
   
   triggers: {
