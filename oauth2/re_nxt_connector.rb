@@ -13,18 +13,17 @@
         'https://oauth2.sky.blackbaud.com/token'
       },
 
-      client_id: 'e7be131e-7c9f-4950-98c2-35c39fe5e131',
+      client_id: 'YOUR_RE_NXT_CLIENT_ID',
 
-      client_secret: 'V+0qg8Pm5DTVT000GowrdCJhEwsVJ5wAxQys6RFNulc=',
+      client_secret: 'YOUR_RE_NXT_CLIENT_SECRET',
 
       credentials: ->(connection, access_token) {
-        headers('bb-api-subscription-key': "b0038b5e982d4d449e3436a427b81e0f", 'Authorization': "Bearer #{access_token}")
+        headers('bb-api-subscription-key': "YOUR_BB_API_SUBSCRIPTION_KEY", 'Authorization': "Bearer #{access_token}")
       }
     }
   },
   
   object_definitions: {
-
     constituent: {
       fields: ->() {
         [
@@ -94,45 +93,44 @@
       }
     },
     email: {
-        fields: ->() {
-          [
-            { name: "id" },
-            { name: "constituent_id" },
-            { name: "type" },
-            { name: "address" },
-            { name: "do_not_email", type: :boolean },
-            { name: "primary", type: :boolean },
-            { name: "inactive", type: :boolean }]
-        }
-    },
-     
+      fields: ->() {
+        [
+          { name: "id" },
+          { name: "constituent_id" },
+          { name: "type" },
+          { name: "address" },
+          { name: "do_not_email", type: :boolean },
+          { name: "primary", type: :boolean },
+          { name: "inactive", type: :boolean }]
+      }
+    }, 
     phone: {
-        fields: ->() {
-          [
-            { name: "id" },
-            { name: "constituent_id" },
-            { name: "type" },
-            { name: "number" },
-            { name: "do_not_call", type: :boolean },
-            { name: "primary", type: :boolean },
-            { name: "inactive", type: :boolean }]
-        }
+      fields: ->() {
+        [
+          { name: "id" },
+          { name: "constituent_id" },
+          { name: "type" },
+          { name: "number" },
+          { name: "do_not_call", type: :boolean },
+          { name: "primary", type: :boolean },
+          { name: "inactive", type: :boolean }]
+      }
     },
     address: {
-        fields: ->() {
-          [
-            { name: "id" },
-            { name: "constituent_id" },
-            { name: "type" },
-            { name: "formatted_address" },
-            { name: "preferred", type: :boolean },
-            { name: "do_not_mail", type: :boolean },
-            { name: "address_lines" },
-            { name: "city" },
-            { name: "state" },
-            { name: "postal_code" },
-            { name: "country" }]
-        }
+      fields: ->() {
+        [
+          { name: "id" },
+          { name: "constituent_id" },
+          { name: "type" },
+          { name: "formatted_address" },
+          { name: "preferred", type: :boolean },
+          { name: "do_not_mail", type: :boolean },
+          { name: "address_lines" },
+          { name: "city" },
+          { name: "state" },
+          { name: "postal_code" },
+          { name: "country" }]
+      }
     },
   },
 
