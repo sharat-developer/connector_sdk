@@ -70,7 +70,7 @@
           { name: "ShippingDiscount" },
           { name: "OrderType" },
           { name: "OrderStatus" },
-          { name: "OrderPayment", type: :array, of: :object, properties: [
+          { name: "OrderPayment", type: :array, of: :object, parse_output: :item_array_wrap, properties: [
             { name: "OrderPaymentId" },﻿
             { name: "OrderPaymentAmount" },﻿
             { name: "PaymentType" }
@@ -81,7 +81,7 @@
           { name: "DateInvoiced", type: :date_time },
           { name: "DatePaid", type: :date_time },
           { name: "DateCompleted", type: :date_time },
-          { name: "OrderLine", type: :array, of: :object, properties: [
+          { name: "OrderLine", type: :array, of: :object, parse_output: :item_array_wrap, properties: [
             { name: "ProductName" },
             { name: "ItemNotes" },
             { name: "PickQuantity" },
@@ -117,7 +117,7 @@
           { name: "InternalOrderNotes" },
           { name: "CompleteStatus" },
           { name: "UserGroup" },
-          { name: "StickyNotes", type: :array, of: :object, properties: [
+          { name: "StickyNotes", type: :array, of: :object, parse_output: :item_array_wrap, properties: [
             { name: "Title" },
             { name: "Description" }
           ]}
