@@ -8,7 +8,7 @@
         control_type: 'subdomain',
         url:'.hipchat.com',
         optional:false,
-        hint: 'enter your deployment ex.comapany_name'
+        hint: 'enter your deployment ex.company_name'
       },
       {
         name: 'auth_token',
@@ -17,6 +17,7 @@
         hint: 'Enter your authentication token'
       },
     ],
+
     authorization: {
       type: 'auth_token',
 
@@ -30,10 +31,10 @@
     message: {
       fields: ->() {
         [
-          { name:'parentMessageId', hint:"id of the message" },
-          { name:'message', optional:false },
-          { name:'room_id', hint:"you give either room_id or room_name,one is required" },
-          { name:'room_name', hint:"you give either room_id or room_name,one is required" }
+          { name:'parentMessageId', hint: "id of the message" },
+          { name:'message', optional: false },
+          { name:'room_id', hint: "you give either room_id or room_name,one is required" },
+          { name:'room_name', hint: "you give either room_id or room_name,one is required" }
         ]
       }
     }
@@ -48,7 +49,7 @@
       description: 'Post <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
 
       input_fields: ->(object_definitions) {
- 				object_definitions['message']
+        object_definitions['message']
       },
 
       execute: ->(connection, input) {
@@ -67,7 +68,7 @@
       description: 'Reply <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
 
       input_fields: ->(object_definitions) {
- 				object_definitions['message'].required("parentMessageId")
+        object_definitions['message'].required("parentMessageId")
       },
 
       execute: ->(connection, input) {
