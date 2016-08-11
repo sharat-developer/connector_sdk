@@ -118,12 +118,6 @@
     },
     
     metric: {
-#     	name	Each metric has a name that is unique to its class of metrics e.g. a gauge name must be unique amongst gauges. The name identifies a metric in subsequent API calls to store/query individual measurements and can be up to 255 characters in length. Valid characters for metric names are ‘A-Za-z0-9.:-_’. The metric namespace is case insensitive.
-# period	The period of a metric is an integer value that describes (in seconds) the standard reporting period of the metric. Setting the period enables Metrics to detect abnormal interruptions in reporting and aids in analytics.
-# description	The description of a metric is a string and may contain spaces. The description can be used to explain precisely what a metric is measuring, but is not required. This attribute is not currently exposed in the Librato UI.
-# display_name	More descriptive name of the metric which will be used in views on the Metrics website. Allows more characters than the metric name, including spaces, parentheses, colons and more.
-# attributes	The attributes hash configures specific components of a metric’s visualization.
-  		 # Provide a preview user to display in the recipe data tree.
       preview: ->(connection) {
         get("https://metrics-api.librato.com/v1/metrics")
       },
@@ -173,15 +167,8 @@
       }
     },
     update_alerts: {
-#             curl \
-#         -u <user>:<token> \
-#         -X PUT \
-#         -H "Content-Type: application/json" \
-#         -d '{"active": false, "name": "my.alert.name", "description": "Process went down", "conditions": [{"type": "absent", "metric_name": "service.alive", "source": "*", "duration": 900}]}' \
-#       "https://metrics-api.librato.com/v1/alerts/123"
       
         input_fields: ->(object_definitions) {
-        # Assuming here that the API only allows searching by these terms.
         object_definitions['alert']
         
       },
@@ -204,6 +191,7 @@
         ]
       }
     },
+    
     search_metrics: {
     	input_fields: ->(object_definitions){
         object_definitions['metric'].only('name')
@@ -211,18 +199,14 @@
       #https://metrics-api.librato.com/v1/metrics  
       execute: ->(connection, input) {
         {
-          #'alert': get("https://metrics-api.librato.com/v1/alerts?version=#{['version']}&name=#{['name']}}", input)
-          'metric': get("https://metrics-api.librato.com/v1/metrics?name=#{['name']}", input)
+          'metrics': get("https://metrics-api.librato.com/v1/metrics?name=#{['name']}", input)['metrics'] 
         }
       },
 
       output_fields: ->(object_definitions) {
         [
           {
-            name: 'metric',
-            type: :array,
-            of: :object,
-            properties: object_definitions['metric']
+            name: 'metrics', type: :array, of: :object, properties: object_definitions['metric']
           }
         ]
       }
@@ -255,23 +239,14 @@
                           sort: 'asc')['alerts']
 
           next_updated_since = alerts.last['updated_at'] unless alerts.blank? 
-        puts (next_updated_since)
-        puts (updated_since)
-        puts "cond 1 : " + (next_updated_since.to_f > updated_since.to_f).to_s
-        puts "cond 2 : " + (alerts.length >= 2).to_s
-        puts "cond 3 : " + (alerts.blank? ? "false" : "true")
+
         puts ((next_updated_since > updated_since) or (alerts.length >= 2) or (alerts.blank? ? false : true))
-        # Return three items:
-        # - The polled objects/events (default: empty/nil if nothing found)
-        # - Any data needed for the next poll (default: nil, uses one from previous poll if available)
-        # - Flag on whether more objects/events may be immediately available (default: false)
+
         {
           events: alerts,
           next_poll: next_updated_since,
-          # common heuristic when no explicit next_page available in response: full page means maybe more.
-          #can_poll_more: alerts.length >= 3
+
           can_poll_more: ((next_updated_since > updated_since) or (alerts.length >= 2) or (alerts.blank? ? false : true))
-          #can_poll_more: if next_updated_since < updated_since then false else alerts.length <= 2 unless alerts.blank?
         }
       },
 
@@ -283,6 +258,7 @@
         object_definitions['new_alert']
       }
     },
+    
     track_alert_status: {
       
       input_fields: ->() {
@@ -327,9 +303,32 @@
           {name: 'status'}
          ]
       }
-    }
+    },
     
-
+    triggered_alerts: {
+      type: :paging_desc,
+      
+      input_fields: ->(connection) {},
+      poll: ->(connection, input, page) {
+        
+        statuses = get("https://metrics-api.librato.com/v1/alerts/status").
+          params( length: '3', orderby: 'triggered_at')['firing']
+        
+        next_created_since = statuses.last['triggered_at'] unless statuses.blank?
+        {
+          events: statuses,
+          next_page: next_created_since
+         }
+      },
+      
+      dedup: ->(status) {
+        status['id'].to_s + "-" + status['triggered_at']  
+      },
+      output_fields: ->(object_definitions){
+         [{ name: 'statuses', type: :array, of: :object, properties: [{ name: 'id'}, { name: 'triggered_at'}]}]
+        }
+      
+    }
   }
 }
 
