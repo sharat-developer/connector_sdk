@@ -33,8 +33,7 @@
         [
           { name:'parentMessageId', hint: "id of the message" },
           { name:'message', optional: false },
-          { name:'room_id', hint: "you give either room_id or room_name,one is required" },
-          { name:'room_name', hint: "you give either room_id or room_name,one is required" }
+          { name:'room_id_or_room_name', hint:"give either room_id_or_room_name", optional: false }
         ]
       }
     }
@@ -49,14 +48,13 @@
       description: 'Post <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
 
       input_fields: ->(object_definitions) {
-        object_definitions['message']
+        object_definitions['message'].ignored('parentMessageId')
       },
 
       execute: ->(connection, input) {
-        h = input.reject { |k,v| k == 'message' }
-        room = h.map { |k,v| "#{v}" }.join(',')
+        payload = input.reject { |k,v| k == 'room_id_or_room_name' }
 
-        post("https://#{connection['deployment']}.hipchat.com/v2/room/#{room}/message", input)
+        post("https://#{connection['deployment']}.hipchat.com/v2/room/#{input['room_id_or_room_name']}/message", payload)
       },
 
       output_fields: ->(object_definitions) {
@@ -72,16 +70,14 @@
       },
 
       execute: ->(connection, input) {
-        h = input.reject{ |k,v| k=='message' }
-        h1 = h.reject{ |k,v| k=='parentMessageId' }
-        room = h1.map { |k,v| "#{v}" }.join(',')
+        payload = input.reject { |k,v| k == 'room_id_or_room_name' }
 
-        post("https://#{connection['deployment']}.hipchat.com/v2/room/#{room}/reply",input)
+        post("https://#{connection['deployment']}.hipchat.com/v2/room/#{input['room_id_or_room_name']}//reply", payload)
       },
 
       output_fields: ->(object_definitions) {
         object_definitions['message']
       }
-    },
+    }
   }
 }
