@@ -33,7 +33,7 @@
 
   object_definitions: {
 
-    actions: {
+    alert: {
       fields: ->() {
         [
           {name: 'from',type: :integer},
@@ -51,6 +51,45 @@
    test: ->(connection) {
     get("https://api.pingdom.com/api/2.0/actions")
   },
+  
+ actions: {
+   
+  get_detailed_check_information: {
+      
+    description: 'get <span class="provider">check information</span> in <span class="provider">pingdom</span>',
+      
+    input_fields: ->() {[
+        {name: 'checkid',type: :integer,label:'Enter your Check ID',hint: 'Go to Monitering->Uptime->select the check you will get your CheckId in the url at the end ',optional: false}
+      ]
+      },
+
+    execute: ->(connection, input) {
+        get("https://api.pingdom.com/api/2.0/checks/#{input['checkid']}")
+      },
+
+    output_fields: ->(object_definitions) {
+        [ 
+          {name: 'check',type: :object,properties:[
+           {name: 'id',type: :integer},
+           {name: 'name'},
+           {name: 'hostname'},
+           {name: 'status'},
+           {name: 'resolution',type: :integer},
+           {name: 'sendtoemail',type: :boolean},
+           {name: 'sendtosms',type: :boolean},
+           {name: 'sendtosms',type: :boolean},
+           {name: 'sendtotwitter',type: :boolean},
+           {name: 'sendtoiphone',type: :boolean},
+           {name: 'sendtoandroid',type: :boolean},
+           {name: 'sendnotificationwhendown',type: :integer},
+           {name: 'notifyagainevery',type: :integer},
+           {name: 'notifywhenbackup',type: :boolean},
+           {name: 'lasterrortime',type: :integer},
+           {name: 'lasttesttime',type: :integer}]}
+          ]
+      }
+    }
+   },
 
  triggers: {
 
@@ -80,14 +119,15 @@
         
         {
           events: response['actions']['alerts'],
-          next_page: (last_created_since.presence || Time.now)
+          next_page: (next_created_since.presence || Time.now)
         }
       },
 
         output_fields: ->(object_definitions) {
-        object_definitions['actions']
+        object_definitions['alert']
       }
     }
   },
 }
+
 
