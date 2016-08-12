@@ -31,9 +31,9 @@
       fields: ->() {
         [
           { name: "title", optional: false },
-          { name: "description", control_type: 'text-area' },
-          { name: "priority", optional: false, control_type: :select, pick_list: "priority" },
-          { name: "kind", optional: false, control_type: :select, pick_list: "kind" },
+          { name: "description" },
+          { name: "priority", optional: false, control_type: :select, pick_list: "priority", hint: 'Select priority' },
+          { name: "kind", optional: false, control_type: :select, pick_list: "kind", hint: 'Type of issue' },
 					{ name: "repository", type: :object, properties:[
             { name: "links", type: :object, properties: [
               { name: "self", type: :object, properties: [
@@ -115,7 +115,7 @@
     create_issues: {
       description: 'Create <span class="provider">Issue</span> in <span class="provider">Bitbucket</span>',
       input_fields: ->(object_definitions) {
-        object_definitions['issues'].only('title','description','priority','kind')
+        object_definitions['issues'].only('title','priority','kind')
       },
       execute: ->(connection,input) {
         post("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug']}/issues",input)
@@ -129,11 +129,11 @@
       description: 'Search <span class="provider">Issue</span> in <span class="provider">Bitbucket</span>',
       input_fields: ->(object_definitions) {
         [
-          { name: "id", type: :integer },
-					{ name: "title" },
-          { name: "kind" },
-					{ name: "priority" },
-          { name: "status" }
+          { name: "id", type: :integer, hint: 'Search using issue ID' },
+					{ name: "title", hint: 'Search using title' },
+          { name: "kind", hint: 'Search using kind' },
+					{ name: "priority", hint: 'Search using priority' },
+          { name: "status", hint: 'Search using status' }
         ]
       },
       execute: ->(connection,input) {
@@ -144,22 +144,6 @@
       },
       output_fields: ->(object_definitions) {
         object_definitions['issues']
-      }
-    },
-    
-    search_account: {
-      description: 'Search <span class="provider">Issue</span> in <span class="provider">Bitbucket</span>',
-      input_fields: ->(object_definitions) {
-        [
-          { name: "username" }
-        ]
-      },
-      execute: ->(connection,input) {
-        
-        get("https://api.bitbucket.org/2.0/account/#{connection['username']}/addons")
-      },
-      output_fields: ->(object_definitions) {
-        
       }
     },
     
@@ -205,16 +189,13 @@
           events: response['values'],
           next_page: [response['next'], Time.now]
         }
-      },
-      
+      },      
       document_id: ->(issues){
         issues['document_id']
-      },
-      
+      },     
       sort_by: ->(issues) {
         issues['updated_on']
       },
-
       output_fields: ->(object_definitions) {
         object_definitions['issues']
       }
