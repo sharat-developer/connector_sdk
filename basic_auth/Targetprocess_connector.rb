@@ -37,10 +37,6 @@
 
     project: {
       
-      preview: ->(connection) {
-        get("https://#{connection['company']}.tpondemand.com/api/v1/Projects?format=json")
-      },
-      
       fields: ->() {
         [
           {name: 'Id'},
@@ -66,10 +62,6 @@
     },
    
    userstory: {
-     
-     preview: ->(connection) {
-        get("https://#{connection['company']}.tpondemand.com/api/v1/UserStories?format=json")
-      },
      
      fields: ->(){
        [
@@ -468,9 +460,9 @@
       },
       
      poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       projects = get("https://#{connection['company']}.tpondemand.com/api/v1/Projects?format=json&where=(CreateDate gt '#{created_since}')&take=100&skip=0&orderByDesc=CreateDate")
+       projects = get("https://#{connection['company']}.tpondemand.com/api/v1/Projects?format=json&where=(CreateDate gt '#{created_since}')&take=100&orderByDesc=CreateDate")
       
        last_created_since =  projects['Items'].last['CreateDate'].to_time.utc.iso8601 unless projects['Items'].blank?
           projects['Items'] = projects['Items'].select do |project|
@@ -478,7 +470,7 @@
        end
           {
           events: projects['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -504,9 +496,9 @@
       },
       
      poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate']|| Time.now).to_time.utc.iso8601
        
-       projects = get("https://#{connection['company']}.tpondemand.com/api/v1/Projects?format=json&where=(ModifyDate gt '#{created_since}')&take=100&skip=0&orderByDesc=ModifyDate")
+       projects = get("https://#{connection['company']}.tpondemand.com/api/v1/Projects?format=json&where=(ModifyDate gt '#{created_since}')&take=100&orderByDesc=ModifyDate")
       
        last_created_since =  projects['Items'].last['CreateDate'].to_time.utc.iso8601 unless projects['Items'].blank?
          	 projects['Items'] = projects['Items'].select do |project|
@@ -515,7 +507,7 @@
 
         {
           events: projects['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -545,9 +537,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       tasks = get("https://#{connection['company']}.tpondemand.com/api/v1/Tasks?format=json&where=(CreateDate gt '#{created_since}')&take=100&skip=0&orderByDesc=CreateDate")
+       tasks = get("https://#{connection['company']}.tpondemand.com/api/v1/Tasks?format=json&where=(CreateDate gt '#{created_since}')&take=100&orderByDesc=CreateDate")
       
        last_created_since =  tasks['Items'].last['CreateDate'].to_time.utc.iso8601 unless tasks['Items'].blank?
           tasks['Items'] = tasks['Items'].select do |task|
@@ -555,7 +547,7 @@
        end
           {
           events: tasks['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -581,9 +573,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       tasks = get("https://#{connection['company']}.tpondemand.com/api/v1/Tasks?format=json&where=(ModifyDate gt '#{created_since}')&take=100&skip=0&orderByDesc=ModifyDate")
+       tasks = get("https://#{connection['company']}.tpondemand.com/api/v1/Tasks?format=json&where=(ModifyDate gt '#{created_since}')&take=100&orderByDesc=ModifyDate")
       
        last_created_since =  tasks['Items'].last['CreateDate'].to_time.utc.iso8601 unless tasks['Items'].blank?
          	 tasks['Items'] = tasks['Items'].select do |task|
@@ -622,9 +614,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       bugs = get("https://#{connection['company']}.tpondemand.com/api/v1/Bugs?format=json&where=(CreateDate gt '#{created_since}')&take=100&skip=0&orderByDesc=CreateDate")
+       bugs = get("https://#{connection['company']}.tpondemand.com/api/v1/Bugs?format=json&where=(CreateDate gt '#{created_since}')&take=100&orderByDesc=CreateDate")
       
        last_created_since =  bugs['Items'].last['CreateDate'].to_time.utc.iso8601 unless bugs['Items'].blank?
           bugs['Items'] = bugs['Items'].select do |bug|
@@ -632,7 +624,7 @@
        end
           {
           events: bugs['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -658,9 +650,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       bugs = get("https://#{connection['company']}.tpondemand.com/api/v1/Bugs?format=json&where=(ModifyDate gt '#{created_since}')&take=100&skip=0&orderByDesc=ModifyDate")
+       bugs = get("https://#{connection['company']}.tpondemand.com/api/v1/Bugs?format=json&where=(ModifyDate gt '#{created_since}')&take=100&orderByDesc=ModifyDate")
       
        last_created_since =  bugs['Items'].last['CreateDate'].to_time.utc.iso8601 unless bugs['Items'].blank?
          	 bugs['Items'] = bugs['Items'].select do |bug|
@@ -669,7 +661,7 @@
 
         {
           events: bugs['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -699,9 +691,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       userstorys = get("https://#{connection['company']}.tpondemand.com/api/v1/UserStories?format=json&where=(CreateDate gt '#{created_since}')&take=100&skip=0&orderByDesc=CreateDate")
+       userstorys = get("https://#{connection['company']}.tpondemand.com/api/v1/UserStories?format=json&where=(CreateDate gt '#{created_since}')&take=100&orderByDesc=CreateDate")
       
        last_created_since =  userstorys['Items'].last['CreateDate'].to_time.utc.iso8601 unless userstorys['Items'].blank?
            userstorys['Items'] = userstorys['Items'].select do |userstory|
@@ -709,7 +701,7 @@
        end
           {
           events: userstorys['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -735,9 +727,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       userstorys = get("https://#{connection['company']}.tpondemand.com/api/v1/Userstories?format=json&where=(ModifyDate gt '#{created_since}')&take=100&skip=0&orderByDesc=ModifyDate")
+       userstorys = get("https://#{connection['company']}.tpondemand.com/api/v1/Userstories?format=json&where=(ModifyDate gt '#{created_since}')&take=100&orderByDesc=ModifyDate")
       
        last_created_since =  userstorys['Items'].last['CreateDate'].to_time.utc.iso8601 unless userstorys['Items'].blank?
          	 userstorys['Items'] = userstorys['Items'].select do |userstory|
@@ -746,7 +738,7 @@
 
         {
           events: userstorys['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -776,9 +768,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       features = get("https://#{connection['company']}.tpondemand.com/api/v1/Features?format=json&where=(CreateDate gt '#{created_since}')&take=100&skip=0&orderByDesc=CreateDate")
+       features = get("https://#{connection['company']}.tpondemand.com/api/v1/Features?format=json&where=(CreateDate gt '#{created_since}')&take=100&orderByDesc=CreateDate")
       
        last_created_since =  features['Items'].last['CreateDate'].to_time.utc.iso8601 unless features['Items'].blank?
           features['Items'] = features['Items'].select do |feature|
@@ -786,7 +778,7 @@
        end
           {
           events: features['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -812,9 +804,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       features = get("https://#{connection['company']}.tpondemand.com/api/v1/Features?format=json&where=(ModifyDate gt '#{created_since}')&take=100&skip=0&orderByDesc=ModifyDate")
+       features = get("https://#{connection['company']}.tpondemand.com/api/v1/Features?format=json&where=(ModifyDate gt '#{created_since}')&take=100&orderByDesc=ModifyDate")
       
        last_created_since =  features['Items'].last['CreateDate'].to_time.utc.iso8601 unless features['Items'].blank?
          	 features['Items'] = features['Items'].select do |feature|
@@ -823,7 +815,7 @@
 
         {
           events: features['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -853,9 +845,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       requests = get("https://#{connection['company']}.tpondemand.com/api/v1/Requests?format=json&where=(CreateDate gt '#{created_since}')&take=100&skip=0&orderByDesc=CreateDate")
+       requests = get("https://#{connection['company']}.tpondemand.com/api/v1/Requests?format=json&where=(CreateDate gt '#{created_since}')&take=100&orderByDesc=CreateDate")
       
        last_created_since =  requests['Items'].last['CreateDate'].to_time.utc.iso8601 unless requests['Items'].blank?
           requests['Items'] = requests['Items'].select do |request|
@@ -863,7 +855,7 @@
        end
           {
           events: requests['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
@@ -889,9 +881,9 @@
       },
       
       poll: ->(connection,input,last_created_since) {
-       created_since = (last_created_since || input['CreateDate'].to_time.utc.iso8601|| Time.now.to_time.utc.iso8601)
+       created_since = (last_created_since || input['CreateDate'] || Time.now).to_time.utc.iso8601
        
-       requests = get("https://#{connection['company']}.tpondemand.com/api/v1/Requests?format=json&where=(ModifyDate gt '#{created_since}')&take=100&skip=0&orderByDesc=ModifyDate")
+       requests = get("https://#{connection['company']}.tpondemand.com/api/v1/Requests?format=json&where=(ModifyDate gt '#{created_since}')&take=100&orderByDesc=ModifyDate")
       
        last_created_since =  requests['Items'].last['CreateDate'].to_time.utc.iso8601 unless requests['Items'].blank?
          	 requests['Items'] = requests['Items'].select do |request|
@@ -900,7 +892,7 @@
 
         {
           events: requests['Items'],
-          next_page: last_created_since
+          next_page: (last_created_since.presence || Time.now)
         }
       },
       
