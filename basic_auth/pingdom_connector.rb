@@ -30,24 +30,7 @@
       }
     }
   },
-
-  object_definitions: {
-
-    alert: {
-      fields: ->() {
-        [
-          {name: 'from',type: :integer},
-          {name: 'to',type: :integer},
-          {name: 'limit',type: :integer},
-          {name: 'offset',type: :integer},
-          {name: 'checkids'},
-          {name: 'contactids'},
-          {name: 'status'},
-          {name: 'via'}
-        ]
-      },
-      }
-    },
+  
    test: ->(connection) {
     get("https://api.pingdom.com/api/2.0/actions")
   },
@@ -67,7 +50,7 @@
         get("https://api.pingdom.com/api/2.0/checks/#{input['checkid']}")
       },
 
-    output_fields: ->(object_definitions) {
+    output_fields: ->() {
         [ 
           {name: 'check',type: :object,properties:[
            {name: 'id',type: :integer},
@@ -121,7 +104,7 @@
          response['time']
       },
 
-        output_fields: ->(object_definitions) {
+        output_fields: ->() {
          [ 
            {name: 'contactname'},
            {name: 'contactid',type: :integer},
