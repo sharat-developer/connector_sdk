@@ -57,7 +57,7 @@
       },
      
       
-    output_fields: ->(object_definitions){[
+    output_fields: ->(){[
       
      {name: 'project',type: :object,properties:[
       {name: 'id',type: :integer},
