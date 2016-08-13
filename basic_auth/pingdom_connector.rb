@@ -77,15 +77,10 @@
            {name: 'resolution',type: :integer},
            {name: 'sendtoemail',type: :boolean},
            {name: 'sendtosms',type: :boolean},
-           {name: 'sendtosms',type: :boolean},
-           {name: 'sendtotwitter',type: :boolean},
-           {name: 'sendtoiphone',type: :boolean},
-           {name: 'sendtoandroid',type: :boolean},
            {name: 'sendnotificationwhendown',type: :integer},
            {name: 'notifyagainevery',type: :integer},
            {name: 'notifywhenbackup',type: :boolean},
-           {name: 'lasterrortime',type: :integer},
-           {name: 'lasttesttime',type: :integer}]}
+           {name: 'contactids',type: :integer}]}
           ]
       }
     }
@@ -109,25 +104,36 @@
         ]
       },
 
-        poll: ->(connection, input, last_created_since) {
-          
-        created_since = (last_created_since || input['since'] || Time.now)
-
-        response = get("https://api.pingdom.com/api/2.0/actions?from=#{input['since'].to_i}")                
-
-        next_created_since = response['actions']['alerts'].last['time'] unless response['actions']['alerts'].blank?
-        
+        poll: ->(connection, input, page) {
+          limit = 100
+          page ||= 0
+        	created_since = (input['since'] || Time.now).to_i
+					offset = (limit * page)
+        	response = get("https://api.pingdom.com/api/2.0/actions?from=#{created_since}&limit=100&offset=#{offset}")                
+        	next_created_since = response['actions']['alerts'].last['time'] if response['actions']['alerts'].present?
+          page = page + 1
         {
           events: response['actions']['alerts'],
-          next_page: (next_created_since.presence || Time.now)
+          next_page: page
         }
+      },
+       sort_by: ->(response) {
+         response['time']
       },
 
         output_fields: ->(object_definitions) {
-        object_definitions['alert']
+         [ 
+           {name: 'contactname'},
+           {name: 'contactid',type: :integer},
+           {name: 'time',type: :integer},
+           {name: 'via'},
+           {name: 'status'},
+           {name: 'messageshort'},
+           {name: 'messagefull'},
+           {name: 'sentto'}
+         ]
+        }
       }
-    }
   },
 }
-
 
