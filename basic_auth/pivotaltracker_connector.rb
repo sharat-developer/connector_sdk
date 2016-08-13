@@ -259,13 +259,13 @@
       type: :paging_desc,
       input_fields: ->() {
         [
-          { name: 'project_id', type: :integer },
-          { name: 'updated_after', type: :timestamp }
+          { name: 'project_id', type: :integer, optional: false, hint: 'ID of the project' },
+          { name: 'updated_after', type: :timestamp, label: 'since', optional: false }
         ]
       },
       poll: ->(connection, input, last_updated_since) {
         updated_since = (last_updated_since || input['updated_after'] || Time.now).to_time.utc.strftime("%Y-%m-%dT%H:%M:%S")
-        response = get("https://www.pivotaltracker.com/services/v5/projects/#{input['project_id']}/stories?updated_after=#{updated_since}")
+        response = get("https://www.pivotaltracker.com/services/v5/projects/#{input['project_id']}/stories?created_after=#{updated_since}&updated_after=#{updated_since}")
         next_updated_since = response.last['updated_at'] unless response.blank? 
       {
         events: response,
@@ -279,6 +279,9 @@
       sort_by: ->(story) {
         story['updated_at']
       },
+      output_fields: ->(object_definitions) {       
+        object_definitions['comment']
+      }
   	},
     
     new_comment: {
@@ -286,8 +289,8 @@
       type: :paging_desc,
       input_fields: ->() {
         [
-          { name: 'project_id', type: :integer },
-          { name: 'story_id', type: :integer }
+          { name: 'project_id', type: :integer, optional: false, hint: 'ID of the project' },
+          { name: 'story_id', type: :integer, optional: false, hint: 'Id of the story' }
         ]
       },
       poll: ->(connection, input, page) {
