@@ -1,10 +1,9 @@
 {
   title: 'bitbucket',
-  
-	connection: {
+  connection: {
     fields: [   
-          { name: "username", optional: false, hint: "Your username", label: "Username" },
-         	{ name: "repo_slug", optional: false, hint: "Your repository name", label: "Repository" }
+         { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
+         { name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" }
     ],
     authorization: {
       type: 'oauth2',
@@ -14,10 +13,10 @@
         token_url: ->() {
          'https://bitbucket.org/site/oauth2/access_token?type=refresh'
        },
-      client_id: 'L9QZ4zTGM2HGRvk4Mt',
-      client_secret: 'DEqy8WhBn2v7mrNuUk33BufyJnUbSmH4',
+      client_id: 'HV8cTJ8aLyKC8jucUh',
+      client_secret: 'BGHemmMqvXTkPAdCryzTw5GWcw82M8Vx',
       credentials: ->(connection, access_token) {
-        headers('Authorization': "Bearer #{access_token}")
+      headers('Authorization': "Bearer #{access_token}")
       }
     }
   },
@@ -34,7 +33,7 @@
           { name: "description" },
           { name: "priority", optional: false, control_type: :select, pick_list: "priority", hint: 'Select priority' },
           { name: "kind", optional: false, control_type: :select, pick_list: "kind", hint: 'Type of issue' },
-					{ name: "repository", type: :object, properties:[
+	  { name: "repository", type: :object, properties:[
             { name: "links", type: :object, properties: [
               { name: "self", type: :object, properties: [
               	{ name: "href", type: :url }]},
@@ -47,67 +46,67 @@
             { name: "name" },
             { name: "full_name" },
             { name: "uuid" }]},
-					{ name: "links", type: :object, properties: [
-            { name: "self", type: :object, properties: [
-              { name: "href", type: :url }]}]},
-					{ name: "reporter", type: :object, properties:[
-            { name: "username" },
-            { name: "display_name" },
+	    { name: "links", type: :object, properties: [
+            	{ name: "self", type: :object, properties: [
+            		{ name: "href", type: :url }]}]},
+		{ name: "reporter", type: :object, properties:[
+            	{ name: "username" },
+            	{ name: "display_name" },
            	{ name: "type" },
-            { name: "uuid" },
-            { name: "links", type: :object, properties: [
-              { name: "self", type: :object, properties: [
-              	{ name: "href", type: :url }]},
-            	{ name: "html", type: :object, properties: [
-              	{ name: "href", type: :url }]},	
-            	{ name: "avatar", type: :object, properties: [
-              	{ name: "href", type: :url }]},
-              ]},
-            ]},
+            	{ name: "uuid" },
+            	{ name: "links", type: :object, properties: [
+              		{ name: "self", type: :object, properties: [
+              			{ name: "href", type: :url }]},
+            		{ name: "html", type: :object, properties: [
+              			{ name: "href", type: :url }]},	
+            		{ name: "avatar", type: :object, properties: [
+              			{ name: "href", type: :url }]},
+              		]},
+            	]},
           { name: "component" },
           { name: "votes", type: :integer },
           { name: "watches", type: :integer },
-					{ name: "content", type: :object, properties: [
-            { name: "raw" },
-            { name: "markup", control_type: :select, pick_list: "markup" },
-            { name: "html" }]},
-					{ name: "assignee", type: :object, properties:[
-            { name: "username" },
-            { name: "display_name" },
+	  { name: "content", type: :object, properties: [
+          	{ name: "raw" },
+            	{ name: "markup", control_type: :select, pick_list: "markup" },
+            	{ name: "html" }]},
+	  { name: "assignee", type: :object, properties:[
+            	{ name: "username" },
+            	{ name: "display_name" },
            	{ name: "type" },
-            { name: "uuid" },
-            { name: "links", type: :object, properties: [
-              { name: "self", type: :object, properties: [
-              	{ name: "href", type: :url }]},
-            	{ name: "html", type: :object, properties: [
-              	{ name: "href", type: :url }]},	
-            	{ name: "avatar", type: :object, properties: [
-              	{ name: "href", type: :url }]},
-              ]},
-            ]},
+            	{ name: "uuid" },
+            	{ name: "links", type: :object, properties: [
+              		{ name: "self", type: :object, properties: [
+              			{ name: "href", type: :url }]},
+            		{ name: "html", type: :object, properties: [
+              			{ name: "href", type: :url }]},	
+            		{ name: "avatar", type: :object, properties: [
+              			{ name: "href", type: :url }]},
+              		]},
+            	]},
           { name: "status", control_type: :select, pick_list: "state" },
-					{ name: "version" },
-					{ name: "edited_on", type: :datetime },
+	  { name: "version" },
+	  { name: "edited_on", type: :datetime },
           { name: "created_on", type: :datetime },
-					{ name: "milestone" },
-					{ name: "update_on", type: :datetime },
-					{ name: "type" },
-					{ name: "id", type: :integer },
+	  { name: "milestone" },
+	  { name: "update_on", type: :datetime },
+	  { name: "type" },
+	  { name: "id", type: :integer },
           { name: "links", type: :object, properties: [
-            { name: "self", type: :object, properties: [
-              { name: "href", type: :url }]},
-            { name: "repositories", type: :object, properties: [
-             	{ name: "href", type: :url }]},
-            { name: "html", type: :object, properties: [
-             	{ name: "href", type: :url }]},
-            { name: "followers", type: :object, properties: [
-              { name: "href", type: :url }]},
-            { name: "avatar", type: :object, properties: [
-              { name: "href", type: :url }]},
-            { name: "following", type: :object, properties: [
-              { name: "href", type: :url }]}]},
-        ]
-      }
+            	{ name: "self", type: :object, properties: [
+              		{ name: "href", type: :url }]},
+            	{ name: "repositories", type: :object, properties: [
+             		{ name: "href", type: :url }]},
+            	{ name: "html", type: :object, properties: [
+             		{ name: "href", type: :url }]},
+            	{ name: "followers", type: :object, properties: [
+              		{ name: "href", type: :url }]},
+            	{ name: "avatar", type: :object, properties: [
+             		{ name: "href", type: :url }]},
+           	{ name: "following", type: :object, properties: [
+              		{ name: "href", type: :url }]}]},
+        	]
+      	}
     },
   },
   
@@ -118,7 +117,7 @@
         object_definitions['issues'].only('title','priority','kind')
       },
       execute: ->(connection,input) {
-        post("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug']}/issues",input)
+        post("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug'].gsub(/[ ]/,'-')}/issues",input)
       },
       output_fields: ->(object_definitions) {
         object_definitions['issues']
@@ -130,9 +129,9 @@
       input_fields: ->(object_definitions) {
         [
           { name: "id", type: :integer, hint: 'Search using issue ID' },
-					{ name: "title", hint: 'Search using title' },
+	  { name: "title", hint: 'Search using title' },
           { name: "kind", hint: 'Search using kind' },
-					{ name: "priority", hint: 'Search using priority' },
+	  { name: "priority", hint: 'Search using priority' },
           { name: "status", hint: 'Search using status' }
         ]
       },
@@ -140,7 +139,7 @@
         c=input.map do |k,v|
           "#{k}=#{v}"
         end.join("&")
-        get("https://api.bitbucket.org/1.0/repositories/#{connection['username']}/#{connection['repo_slug']}/issues?#{c}")
+        get("https://api.bitbucket.org/1.0/repositories/#{connection['username']}/#{connection['repo_slug'].gsub(/[ ]/,'-')}}/issues?#{c}")
       },
       output_fields: ->(object_definitions) {
         object_definitions['issues']
@@ -155,7 +154,7 @@
         ]
       },
       execute: ->(connection,input) {
-        get("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug']}/issues/#{input['issue_id']}/comments")
+        get("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug'].gsub(/[ ]/,'-')}}/issues/#{input['issue_id']}/comments")
       },
       output_fields: ->(object_definitions) {
         object_definitions['issues']
@@ -175,15 +174,15 @@
       },
       poll: ->(connection, input, next_page) {
         if next_page.present?
-  				page = next_page[0]
-  				updated_date = next_page[1]
+  		page = next_page[0]
+  		updated_date = next_page[1]
         end
-				if page.present?
-  				response = get(page)
-				else
-  				updated_since = (updated_date || input['since'] || Time.now).to_time.utc.strftime("%Y-%m-%dT%H:%M:%S")
-  				response = get("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug']}/issues?q=updated_on>#{updated_since}&sort=-updated_on")
-  			end
+	if page.present?
+  		response = get(page)
+	else
+  		updated_since = (updated_date || input['since'] || Time.now).to_time.utc.strftime("%Y-%m-%dT%H:%M:%S")
+  		response = get("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug'].gsub(/[ ]/,'-')}}/issues?q=updated_on>#{updated_since}&sort=-updated_on")
+  	end
         next_updated_since = response['values'].last['updated_on'] unless response['values'].blank?   
         {
           events: response['values'],
@@ -207,7 +206,7 @@
       [
       ["markdown","markdown"],
       ["creole","creole"],
-       ]
+      ]
     },
     kind: ->(connection) {
       [
@@ -215,20 +214,20 @@
         ["enhancement","enhancement"],
         ["proposal","proposal"],
         ["task","task"],
-        ]
+      ]
       },
     scm: ->(connection) {
       [
         ["hg","hg"],
         ["git","git"],
-        ]
+      ]
       },
     fork_policy: ->(connection) {
       [
         ["allow_forks","allow_forks"],
         ["no_public_forks","no_public_forks"],
         ["no_forks","no_forks"],
-        ]
+      ]
       },
     priority: ->(connection) {
       [
