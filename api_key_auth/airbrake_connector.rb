@@ -26,7 +26,7 @@
     project: {
         fields: ->() {
         [ 
-          {name: 'id'},
+          {name: 'id',label: 'Project id'},
           {name: 'name'},
           {name: 'deployId',type: :integer},
           {name: 'deployAt',type: :timestamp},
@@ -47,27 +47,19 @@
       
     description: 'Get<span class="provider">project</span> in <span class="provider">airbrake</span>',
      
-    input_fields: ->(){
-      
-      [{name: 'id',hint: 'Enter your project ID',optional: false}]
+    input_fields: ->(object_definitions){
+      object_definitions['project'].only('id')
       },
      
-      execute: ->(connection, input) {
+    execute: ->(connection, input) {
         get("https://airbrake.io/api/v3/projects/#{input['id']}",input)
       },
      
+    output_fields: ->(object_definitions){[
       
-    output_fields: ->(){[
-      
-     {name: 'project',type: :object,properties:[
-      {name: 'id',type: :integer},
-      {name: 'name'},
-      {name: 'throttles',type: :boolean},
-      {name: 'rateLimited',type: :boolean}]}
-
+      {name: 'project',type: :object,properties:object_definitions['project']}
       ]
       }
      }
     }
    }
-
