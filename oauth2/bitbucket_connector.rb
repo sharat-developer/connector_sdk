@@ -237,7 +237,7 @@
         ["major","major"],
         ["critical","critical"],
         ["blocker","blocker"],  
-       ]
+      ]
       },
     state: ->(connection) {
       [
@@ -249,7 +249,7 @@
         ["duplicate","duplicate"],
         ["wontfix","wontfix"],
         ["closed","closed"],
-       ]
+      ]
       },
 }
 }
