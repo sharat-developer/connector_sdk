@@ -14,8 +14,8 @@
         token_url: ->() {
          'https://bitbucket.org/site/oauth2/access_token?type=refresh'
        },
-      client_id: 'L9QZ4zTGM2HGRvk4Mt',
-      client_secret: 'DEqy8WhBn2v7mrNuUk33BufyJnUbSmH4',
+      client_id: 'HV8cTJ8aLyKC8jucUh',
+      client_secret: 'BGHemmMqvXTkPAdCryzTw5GWcw82M8Vx',
       credentials: ->(connection, access_token) {
         headers('Authorization': "Bearer #{access_token}")
       }
