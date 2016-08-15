@@ -1,13 +1,12 @@
 {
   title: 'Librato',
 
-  # HTTP basic auth example.
   connection: {
     fields: [
       {
         name: 'username',
         optional: false,
-        hint: 'Your username; leave empty if using API key below'
+        hint: 'Your username'
       },
       {
         name: 'password',
@@ -38,17 +37,10 @@
 
     #v1 format
     alert: {
-
-      # Provide a preview user to display in the recipe data tree.
       preview: ->(connection) {
         get("https://metrics-api.librato.com/v1/alerts")
       },
 
-      # Field definition.  The arguments available to use here are:
-      # - The connection data (same as in the authorization hooks above), and
-      # - The fields derived from preview/example object, if "preview" is defined above.
-
-      # One example: Purely static field definition - no need to bind these arguments
       fields: ->() {
         [
           { name: 'id',
@@ -64,31 +56,20 @@
           { name: 'description' }
         ]
       },
-
-      # Another - sometimes the easiest one to get started with: Just use the field definitions
-      # as we interpreted them from the preview object.
-      # fields: ->(connection, preview_fields) {
-      #   preview_fields
-      # }
-
-      # This example uses an API's metadata endpoing to produce the field definitions.  In this
-      # example we don't use the preview-derived fields, so we don't even have to bind them.
-      #
-      # (implementation note: if preview fields are not bound we can skip the conversion)
-      # fields: ->(connection) {
-      #   get("https://#{connection['subdomain']}.freshdesk.com/api/user_fields.json").
-      #     map { |field| field.slice('name', 'type') }
-      # }
     },
     
     #v2 format
     new_alert: {
-       fields: ->(connection) {
+      preview: ->(connection) {
+        get("https://metrics-api.librato.com/v1/alerts")
+      },
+      
+      fields: ->(connection) {
        	[
           { name: 'id' },
         	{ name: 'name'},
           { name: 'description'},
-          { name: 'conditions', type: :object, properties: [
+          { name: 'conditions', type: :array, of: :object, properties: [
             { name: 'id'},
             { name: 'type'},
             { name: 'metric_name'},
@@ -97,10 +78,10 @@
             { name: 'duration'},
             { name: 'summary_function'}
            ]},
-          { name: 'services', type: :object, properties: [
+          { name: 'services', type: :array, of: :object, properties: [
             { name: 'id'},
             { name: 'type'},
-            { name: 'settings', type: :object, properties: [
+            { name: 'settings', type: :array, of: :object, properties: [
               { name: 'url'}
               ]},
             { name: 'title'},
@@ -112,7 +93,9 @@
           { name: 'active'},
           { name: 'created_at', type: :integer},
           { name: 'updated_at', type: :integer},
-          { name: 'version'}
+          { name: 'version'},
+          { name: 'rearm_seconds' },
+          { name: 'rearm_per_signal' }
         ]
        }  
     },
@@ -122,11 +105,6 @@
         get("https://metrics-api.librato.com/v1/metrics")
       },
 
-      # Field definition.  The arguments available to use here are:
-      # - The connection data (same as in the authorization hooks above), and
-      # - The fields derived from preview/example object, if "preview" is defined above.
-
-      # One example: Purely static field definition - no need to bind these arguments
       fields: ->() {
         [
         	{name: 'name',
@@ -150,32 +128,6 @@
 
       execute: ->(connection, input) {
         {
-          #'alert': get("https://metrics-api.librato.com/v1/alerts?version=#{['version']}&name=#{['name']}}", input)
-          'alert': get("https://metrics-api.librato.com/v1/alerts", input)
-        }
-      },
-
-      output_fields: ->(object_definitions) {
-        [
-          {
-            name: 'alert',
-            type: :array,
-            of: :object,
-            properties: object_definitions['alert']
-          }
-        ]
-      }
-    },
-    update_alerts: {
-      
-        input_fields: ->(object_definitions) {
-        object_definitions['alert']
-        
-      },
-
-      execute: ->(connection, input) {
-        {
-          #'alert': get("https://metrics-api.librato.com/v1/alerts?version=#{['version']}&name=#{['name']}}", input)
           'alert': get("https://metrics-api.librato.com/v1/alerts", input)
         }
       },
@@ -192,11 +144,50 @@
       }
     },
     
+    update_alert: {
+      
+        input_fields: ->(object_definitions) {
+        object_definitions['alert'].reject { |field| field[:name] == 'id' }
+        
+      },
+
+      execute: ->(connection, input) {
+        {
+          'alert': put("https://metrics-api.librato.com/v1/alerts", input)
+        }
+      },
+
+      output_fields: ->(object_definitions) {
+        [
+          {
+            name: 'alert',
+            type: :array,
+            of: :object,
+            properties: object_definitions['alert']
+          }
+        ]
+      }
+    },
+    
+    get_alert_by_id: {
+      input_fields: ->(object_definitions){
+        [{ name: 'id', optional: false}]
+        },
+      
+      execute: ->(connection, input){
+        get("https://metrics-api.librato.com/v1/alerts/#{input['id']}", input)
+        },
+      
+      output_fields: ->(object_definitions){
+          object_definitions['new_alert']
+        }
+    },
+    
     search_metrics: {
     	input_fields: ->(object_definitions){
         object_definitions['metric'].only('name')
       },
-      #https://metrics-api.librato.com/v1/metrics  
+
       execute: ->(connection, input) {
         {
           'metrics': get("https://metrics-api.librato.com/v1/metrics?name=#{['name']}", input)['metrics'] 
@@ -214,96 +205,6 @@
   },
 
   triggers: {
-
-    new_alert: {
-
-      input_fields: ->() {
-        [
-          {
-            name: 'since',
-            type: :timestamp,
-            hint: 'Defaults to Alerts created after the recipe is first started'
-          }
-        ]
-      },
-
-      poll: ->(connection, input, last_updated_since) {
-        
-        input['since'].present? ? (input['since'] = input['since'].to_time.to_f) : input['since']
-
-        updated_since = last_updated_since || input['since'].to_f || (Time.now).to_f
-
-        alerts = get("https://metrics-api.librato.com/v1/alerts?version=2").
-                  params( length: '3', # Small page size to help with testing.
-                          orderby: 'updated_at', # Because we can only query by updated_since in this API.
-                          sort: 'asc')['alerts']
-
-          next_updated_since = alerts.last['updated_at'] unless alerts.blank? 
-
-        puts ((next_updated_since > updated_since) or (alerts.length >= 2) or (alerts.blank? ? false : true))
-
-        {
-          events: alerts,
-          next_poll: next_updated_since,
-
-          can_poll_more: ((next_updated_since > updated_since) or (alerts.length >= 2) or (alerts.blank? ? false : true))
-        }
-      },
-
-      dedup: ->(alert) {
-        alert['id'].to_s + "@" + alert['updated_at'].to_s
-      },
-
-      output_fields: ->(object_definitions) {
-        object_definitions['new_alert']
-      }
-    },
-    
-    track_alert_status: {
-      
-      input_fields: ->() {
-        [ {
-          	name: 'AlertID',
-          	type: :integer,
-          	hint: 'insert the Alert\'s ID that you would like to track'
-          } ]
-      },
-
-      poll: ->(connection, input, last_updated_since) {
-        updated_since = last_updated_since || input['since'] || Time.now
-
-				status = get("https://metrics-api.librato.com/v1/alerts/#{input['AlertID']}/status")['status']
-				#alert = get("https://metrics-api.librato.com/v1/alerts/#{input['AlertID']}")['alert']
-        puts(status)
-#                           updated_since: updated_since.to_time.utc.iso8601)['alerts']
-
-        #next_updated_since = unless alerts.blank? then alerts.last else Time.now
-          next_updated_since = # status.last['created_at'] unless status.blank? 
-        #next_updated_since = updated_since: updated_since.to_time.utc.iso8601)
-
-        # Return three items:
-        # - The polled objects/events (default: empty/nil if nothing found)
-        # - Any data needed for the next poll (default: nil, uses one from previous poll if available)
-        # - Flag on whether more objects/events may be immediately available (default: false)
-        {
-          events: status,
-          next_poll: next_updated_since,
-          # common heuristic when no explicit next_page available in response: full page means maybe more.
-          can_poll_more: false#status.length >= 3
-          #can_poll_more: if next_updated_since < updated_since then false else alerts.length <= 2 unless alerts.blank?
-        }
-      },
-
-#       dedup: ->(status) {
-#         status['id']
-#       },
-
-      output_fields: ->(object_definitions) {
-				[
-          {name: 'status'}
-         ]
-      }
-    },
     
     triggered_alerts: {
       type: :paging_desc,
@@ -311,21 +212,24 @@
       input_fields: ->(connection) {},
       poll: ->(connection, input, page) {
         
-        statuses = get("https://metrics-api.librato.com/v1/alerts/status").
-          params( length: '3', orderby: 'triggered_at')['firing']
+        statuses = get("https://metrics-api.librato.com/v1/alerts/status")['firing']
         
-        next_created_since = statuses.last['triggered_at'] unless statuses.blank?
+        next_created_since = [statuses['id'].last.to_s, statuses['triggered_at'].last.to_s].join("_") unless statuses.blank?
         {
           events: statuses,
           next_page: next_created_since
          }
       },
       
+      sort_by: ->(status) {
+        status['triggered_at']
+      },
+      
       dedup: ->(status) {
-        status['id'].to_s + "-" + status['triggered_at']  
+        [status['id'].to_s, status['triggered_at'].to_s].join("_")
       },
       output_fields: ->(object_definitions){
-         [{ name: 'statuses', type: :array, of: :object, properties: [{ name: 'id'}, { name: 'triggered_at'}]}]
+         [{name: 'id'}, {name: 'triggered_at'}]
         }
       
     }
