@@ -5,7 +5,7 @@
     fields: [
       { name: 'api_key', label: 'API Key', optional: false },
       { name: 'api_secret', label: 'API Secret', optional: false, control_type: 'password' },
-      { name: 'list', label: 'List', optional: false, control_type: 'text' }
+      { name: 'list', label: 'List ID', optional: false, control_type: 'text', hint: 'One list per connection' }
     ],
 
     authorization: {
@@ -128,6 +128,7 @@
                       }
                     end
                 )
+#          ]
       }
     },
     
@@ -152,7 +153,7 @@
     
     create_account: {
 			input_fields: ->(object_definitions) {
-        obj = object_definitions['account'].reject { |field| field['id'] }
+        object_definitions['account'].reject {|field| field[:name]=="id" or field[:name]=="modifiedDate"}
       },
       
       execute: ->(connection,input) {
@@ -174,7 +175,13 @@
     create_list_item: {
 			input_fields: ->(object_definitions) {
 
-        (object_definitions['list_item1'].reject { |field| field['Id']})
+        object_definitions['list_item1']
+          .reject { |field| field[:name] == "Id" or 
+            								field[:name] == "modifiedDate" or 
+            								field[:name] == "createdDate" or 
+          									field[:name] == "iq_process_close_date" or
+          									field[:name] == "iq_process_created_date" or
+            								field[:name] == "listId"}
       },
       
       execute: ->(connection, input) {
@@ -188,7 +195,6 @@
         end
         
         result = post("https://api.salesforceiq.com/v2/lists/#{connection['list']}/listitems").
-          #payload({name: input[:name], fieldValues: fields})
            payload({name: input[:name], fieldValues: fields, listId: input[:listId], accountId: input[:accountId], contactIds: (input['contactIds'] or "").split(",")})
         
       },
@@ -236,7 +242,7 @@
        },
       
        execute: ->(connection, input){
-           listitems = get("https://api.salesforceiq.com/v2/lists/#{connection['list']}/listitems/#{input['list_item_id']}")#result returns in ascending order/latest record at the bottom
+           listitems = get("https://api.salesforceiq.com/v2/lists/#{connection['list']}/listitems/#{input['list_item_id']}")
 
            if (listitems['contactIds'].present?)
              contact = get("https://api.salesforceiq.com/v2/contacts/#{listitems['contactIds'].first}")
@@ -259,10 +265,14 @@
     update_list_item: {
 			input_fields: ->(object_definitions) {
         [{ name: 'List_item', hint: 'please select your listItem from the list in your connection to update', 
-            control_type: 'select', pick_list: 'list_items', optional: false}]
-            .concat(
-              object_definitions['list_item1'].reject { |field| field['id'] or field['modifiedDate'] or field['createdDate']}
-            )
+          control_type: 'select', pick_list: 'list_items', optional: false}].concat(
+          object_definitions['list_item1'].reject { |field| field['id'] or field['modifiedDate'] or field['createdDate']}
+        ).reject { |field| field[:name] == "Id" or 
+            								field[:name] == "modifiedDate" or 
+            								field[:name] == "createdDate" or 
+          									field[:name] == "iq_process_close_date" or
+          									field[:name] == "iq_process_created_date" or
+            								field[:name] == "listId"}
       },
       
       execute: ->(connection, input) {
