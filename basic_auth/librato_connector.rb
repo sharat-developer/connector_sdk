@@ -207,14 +207,13 @@
   triggers: {
     
     triggered_alerts: {
-      type: :paging_desc,
       
       input_fields: ->(connection) {},
       poll: ->(connection, input, page) {
         
         statuses = get("https://metrics-api.librato.com/v1/alerts/status")['firing']
         
-        next_created_since = [statuses.last['id'].to_s, statuses.last['triggered_at'].to_s].join("_") unless statuses.blank?
+        next_created_since = statuses.first['triggered_at'] unless statuses.blank?
         {
           events: statuses,
           next_page: next_created_since
