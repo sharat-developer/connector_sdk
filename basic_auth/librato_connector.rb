@@ -11,6 +11,7 @@
       {
         name: 'password',
         control_type: 'password',
+        optional: false,
         label: 'Password or personal API key'
       }
     ],
@@ -19,12 +20,8 @@
       type: 'basic_auth',
 
       credentials: ->(connection) {
-        if connection['username'].blank?
-          user(connection['password'])
-        else
           user(connection['username'])
           password(connection['password'])
-        end
       }
     }
   },
@@ -209,14 +206,17 @@
     triggered_alerts: {
       
       input_fields: ->(connection) {},
+      
       poll: ->(connection, input, page) {
-        
+
         statuses = get("https://metrics-api.librato.com/v1/alerts/status")['firing']
         
-        next_created_since = statuses.first['triggered_at'] unless statuses.blank?
+          next_created_since = statuses.first['triggered_at'] unless statuses.blank?
+        
         {
           events: statuses,
-          next_page: next_created_since
+          next_poll: next_created_since,
+          can_poll_more: (statuses.length >= 1 and statuses.length<= 100)
          }
       },
       
@@ -227,6 +227,7 @@
       dedup: ->(status) {
         [status['id'].to_s, status['triggered_at'].to_s].join("_")
       },
+      
       output_fields: ->(object_definitions){
          [{name: 'id'}, {name: 'triggered_at'}]
         }
