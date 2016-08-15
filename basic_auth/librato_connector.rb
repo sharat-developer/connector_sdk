@@ -214,7 +214,7 @@
         
         statuses = get("https://metrics-api.librato.com/v1/alerts/status")['firing']
         
-        next_created_since = [statuses['id'].last.to_s, statuses['triggered_at'].last.to_s].join("_") unless statuses.blank?
+        next_created_since = [statuses.last['id'].to_s, statuses.last['triggered_at'].to_s].join("_") unless statuses.blank?
         {
           events: statuses,
           next_page: next_created_since
