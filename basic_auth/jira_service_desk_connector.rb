@@ -135,7 +135,7 @@
         [
           { name: 'issueId', hint: 'Issue Id or Issue Key', optional: false },
           { name: 'body' , optional: false },
-          { name: 'public', hint: 'true ot false', type: :boolean , optional: false }
+          { name: 'public', hint: 'true or false', type: :boolean , optional: false }
         ]
       },
 
@@ -162,7 +162,7 @@
       },
 
       execute: ->(connection, input) {
-        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['commentId']}")
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['issueId']}/comment/#{input['commentId']}")
       },
 
       output_fields: ->(object_definitions) {
