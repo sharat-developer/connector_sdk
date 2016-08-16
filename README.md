@@ -702,11 +702,11 @@ input_fields: ->(object_definitions) {
 ## API Key Authentication Samples
 - [Gender API connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/gender_api_connector.rb)
 
+- [Codeship connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/codeship_connector.rb)
+
 ## Custom Authentication Samples
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
 - [SafetyCulture app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/safetyculture_connector.rb)
 
 - [Knack HQ connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/knack_hq_connector.rb)
-
-- [Hipchat connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/hipchat_connector.rb)
