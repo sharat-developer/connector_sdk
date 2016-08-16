@@ -120,7 +120,7 @@
       
       input_fields: ->() {
         [
-          {name:'room',hint:"select room",control_type: 'select', pick_list: 'method',optional:false,label:"Room"}
+          {name:'room',hint:"select room",control_type: 'select', pick_list: 'room',optional:false,label:"Room"}
         ]
       },
       
@@ -153,9 +153,9 @@
    },
   
   pick_lists: {
-    method: ->(connection) {
+    room: ->(connection) {
       get("https://railsdata.hipchat.com/v2/room")['items'].
-        map { |method| [method['name'], method['id']] }
+        map { |room| [room['name'], room['id']] }
     }
   },
  }
