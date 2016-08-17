@@ -18,7 +18,6 @@
 
       credentials: ->(connection, access_token) {
       headers('Authorization': "Bearer #{access_token}")
-   
       }
     }
   },
@@ -165,7 +164,7 @@
       },
 
       execute: ->(connection,input) {
-        get("https://api.bitbucket.org/1.0/repositories/#{input['username']}/#{input['repo_slug'].gsub(/[ ]/,'-')}/issues/#{input['id']}" )
+        get("https://api.bitbucket.org/1.0/repositories/#{input['username']}/#{input['repo_slug'].gsub(/[ ]/,'-')}/issues/#{input['id']}")
       },
 
       output_fields: ->(object_definitions) {
