@@ -24,7 +24,7 @@
             fields: ->() {
               [
                   {name: 'from'},
-                  {name: 'to'},
+                  {name: 'to', optional: false, control_type: 'phone'},
                   {name: 'text'}
               ]
             }
@@ -55,7 +55,7 @@
                   {name: 'cleanText'},
                   {name: 'keyword'},
                   {name: 'smsCount', type: :integer},
-                  {name: 'receivedAt', type: :datetime}
+                  {name: 'receivedAt'}
               ]
             }
         }
@@ -63,7 +63,7 @@
     actions: {
         send_sms: {
             input_fields: ->(object_definitions) {
-              object_definitions['send_sms_request'].required('to')
+              object_definitions['send_sms_request']
             },
             execute: ->(connection, input) {
               post('https://api.infobip.com/sms/1/text/single', input)['send_sms_request']
@@ -76,23 +76,26 @@
     triggers: {
         sms_received: {
             poll: ->(connection, input, last_received_at) {
-              received_since = (last_received_at || Time.now - 30 * 60).utc.strftime('%Y-%m-%dT%H%%3A%M%%3A%S%%2E%L%%2B00%%3A00')
+              date_time_format = '%Y-%m-%dT%H:%M:%S.%L+00:00'
+              received_since = last_received_at || (Time.now - 5 * 60).utc.strftime(date_time_format)
+              query_param = received_since.gsub(':', '%3A').gsub('+', '%2B')
 
-              received_messages = get("https://api.infobip.com/sms/1/inbox/logs?receivedSince=#{received_since}")
+              received_messages = get("https://api.infobip.com/sms/1/inbox/logs?receivedSince=#{query_param}")
 
               received_sms_info = received_messages['results']
               last_received_at = received_sms_info.length == 0 ? received_since : received_sms_info[0]['receivedAt']
               {
                   events: received_sms_info.reverse,
-                  next_poll: last_received_at
+                  can_pull_more: false,
+                  next_poll: last_received_at[0, last_received_at.length-2] + ':' + last_received_at[last_received_at.length-2, 2]
               }
             },
             dedup: ->(received_sms_info) {
               received_sms_info['messageId']
             },
-            output_fields: ->(object_definitions) {[
-                { name: 'results', type: :array, of: :object, properties: object_definitions['received_sms_info'] }
-            ]}
+            output_fields: ->(object_definitions) {
+                object_definitions['received_sms_info']
+            }
         }
     }
 }
