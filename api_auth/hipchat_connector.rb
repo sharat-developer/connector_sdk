@@ -8,7 +8,7 @@
         control_type: 'subdomain',
         url:'.hipchat.com',
         optional:false,
-        hint: 'enter your deployment ex.company_name'
+        hint: 'Enter your deployment ex.company_name'
        },
       {
         name: 'auth_token',
@@ -32,7 +32,7 @@
       fields: ->() {
         [
           {name:'id',hint:"ID of the message"},
-          {name:'timestamp',type: :datetime}
+          {name:'timestamp'}
         ]
       }
      },
@@ -40,7 +40,7 @@
     response: {
       fields: ->() {
         [
-          {name:'date',type: :datetime},
+          {name:'date'},
           {name:'from',type: :object,properties:[
             {name:'id'},
             {name:'links',type: :object,properties:[
@@ -73,12 +73,12 @@
   actions: {  
     Post_message: {
      
-      description: 'Post <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
+      description: 'Post <span class="provider">message</span> in <span class="provider">Hipchat</span>',
       
       input_fields: ->() {
         [
           {name:'message',hint:"Valid length range: 1 - 1000",optional:false,label:"Message"},
-          {name:'room',hint:"Give either Room Id or Room Name",optional:false,label:"Room"}
+          {name:'room',hint:"Give either Room ID or Room name",optional:false,label:"Room"}
         ]        
       },
       
@@ -91,15 +91,15 @@
       }
      },
     
-    Reply_message: {
+    Reply_to_message: {
       
-      description: 'Reply <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
+      description: 'Reply to<span class="provider">message</span> in <span class="provider">Hipchat</span>',
       
       input_fields: ->() {
         [
-          {name:'parentMessageId',hint:"The Id of the message you are replying to",label:"Message Id",optional:false},
+          {name:'parentMessageId',hint:"The Id of the message you are replying to",label:"Message ID",optional:false},
           {name:'message',hint:"Valid length range: 1 - 1000",optional:false,label:"Message"},
-          {name:'room',hint:"Give either Room Id or Room Name",optional:false,label:"Room"}
+          {name:'room',hint:"Give either Room ID or Room name",optional:false,label:"Room"}
         ]                
       },
       
@@ -116,11 +116,11 @@
     
     New_message: {
       
-      description: "New <span class='provider'>Message</span> in <span class='provider'>Hipchat</span>",
+      description: "New <span class='provider'>message</span> in <span class='provider'>Hipchat</span>",
       
       input_fields: ->() {
         [
-          {name:'room',hint:"select room",control_type: 'select', pick_list: 'room',optional:false,label:"Room"}
+          {name:'room',hint:"Select room",control_type: 'select', pick_list: 'room',optional:false,label:"Room"}
         ]
       },
       
