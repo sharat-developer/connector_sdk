@@ -18,6 +18,7 @@
 
       credentials: ->(connection, access_token) {
       headers('Authorization': "Bearer #{access_token}")
+   
       }
     }
   },
@@ -152,14 +153,33 @@
       }
     },
     
-    search_issue: {
+    search_issue_by_id: {
+      description: 'Search <span class="provider">Issue by ID</span> in <span class="provider">Bitbucket</span>',
+
+      input_fields: ->(object_definitions) {
+        [
+          { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
+      		{ name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
+          { name: "id",type: :integer, optional: false, hint: "ID of the issue", label: "Issue ID" }
+        ]
+      },
+
+      execute: ->(connection,input) {
+        get("https://api.bitbucket.org/1.0/repositories/#{input['username']}/#{input['repo_slug'].gsub(/[ ]/,'-')}/issues/#{input['id']}" )
+      },
+
+      output_fields: ->(object_definitions) {
+        object_definitions['issue']
+      }
+    },
+    
+    search_issue_by_title_kind_priority_status: {
       description: 'Search <span class="provider">Issue</span> in <span class="provider">Bitbucket</span>',
 
       input_fields: ->(object_definitions) {
         [
           { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
       		{ name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
-          { name: "id", type: :integer, hint: 'Search using issue ID' },
           { name: "title", hint: 'Search using title' },
           { name: "kind", hint: 'Search using kind' },
           { name: "priority", hint: 'Search using priority' },
@@ -168,10 +188,7 @@
       },
 
       execute: ->(connection,input) {
-        c = input.map do |k,v|
-              "#{k}=#{v}"
-            end.join("&")
-        get("https://api.bitbucket.org/1.0/repositories/#{connection['username']}/#{connection['repo_slug'].gsub(/[ ]/,'-')}}/issues?#{c}")
+        get("https://api.bitbucket.org/1.0/repositories/#{input.delete('username')}/#{input.delete('repo_slug').gsub(/[ ]/,'-')}/issues", input )
       },
 
       output_fields: ->(object_definitions) {
@@ -191,7 +208,7 @@
       },
 
       execute: ->(connection,input) {
-        get("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug'].gsub(/[ ]/,'-')}}/issues/#{input['issue_id']}/comments")
+        get("https://api.bitbucket.org/2.0/repositories/#{connection['username']}/#{connection['repo_slug'].gsub(/[ ]/,'-')}/issues/#{input['issue_id']}/comments")
       },
 
       output_fields: ->(object_definitions) {
