@@ -86,7 +86,7 @@
               last_received_at = received_sms_info.length == 0 ? received_since : received_sms_info[0]['receivedAt']
               {
                   events: received_sms_info.reverse,
-                  can_pull_more: false,
+                  can_poll_more: false,
                   next_poll: last_received_at[0, last_received_at.length-2] + ':' + last_received_at[last_received_at.length-2, 2]
               }
             },
