@@ -1,5 +1,5 @@
 {
-  title: 'Jira Servicedesk',
+  title: 'Jira Service Desk',
 
   connection: {
     fields: [
@@ -102,8 +102,15 @@
 
       input_fields: ->() {
         [
-          { name: 'serviceDeskId', hint: 'ServiceDesk ID', type: :integer, optional: false },
-          { name: 'requestTypeId', hint: 'RequestType ID', type: :integer, optional: false },
+          {
+            name: 'serviceDeskId', label: 'Service desk', type: :integer, optional: false,
+            control_type: :select, pick_list: :service_desks
+          },
+          {
+            name: 'requestTypeId', label: 'Request type', type: :integer, optional: false,
+            control_type: :select, pick_list: :request_types,
+            pick_list_params: { serviceDeskId: 'serviceDeskId' }
+          },
           { name: 'requestFieldValues_summary', label: 'Summary', optional: false },
           { name: 'requestFieldValues_description', label: 'Description', optional: false }
         ]
@@ -168,6 +175,18 @@
       output_fields: ->(object_definitions) {
         object_definitions['comment']
       }
+    }
+  }
+
+  pick_lists: {
+    service_desks: ->(connection) {
+      sds = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk")['values']
+      (sds || []).map { |sd| [sd['projectName'], sd['id']] }
+    },
+    
+    request_types: ->(connection, serviceDeskId:) {
+      rts = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{serviceDeskId}/requesttype")['values']
+      (rts || []).map { |rt| [rt['name'], rt['id']] }
     }
   }
 }
