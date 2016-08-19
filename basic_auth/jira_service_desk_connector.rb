@@ -7,17 +7,19 @@
         name: 'subdomain',
         control_type: 'subdomain',
         url: '.atlassian.net',
-        hint: 'Your jira servicedesk name as found in your jira servicedesk URL'
+				optional: false
+        hint: 'Your jira service desk name as found in your jira service desk URL'
       },
       {
         name: 'username',
-        optional: true,
-        hint: 'Your username; leave empty if using API key below'
+        optional: false,
+        hint: 'Your username or Email'
       },
       {
         name: 'password',
         control_type: 'password',
-        label: 'Password or personal API key'
+        label: 'Password'
+				optional: false
       }
     ],
 
@@ -63,10 +65,24 @@
     },
        
     comment: {
-      fields: ->() {
-        [
-          { name: 'id' },
-          { name: 'body', control_type: 'text-area' }
+  		fields: ->() {
+  			[
+  				{ name: 'id' },
+  				{ name: 'body', control_type: 'text-area' },
+          {name: "author",type: :array, properties: [ 
+             {name: "name"},
+             {name: "key"},
+             {name: "emailAddress"},
+             {name: "displayName"},
+             {name: 'active',type: :boolean},
+             {name: "timeZone"},
+           ]},
+          {name: "created",type: :array, properties: [
+            {name: "iso8601"},
+            {name: "jira"},
+            {name: "friendly"},
+            {name: "epochMillis"}
+           ]},
         ]
       }
     }
@@ -76,7 +92,7 @@
 
     search_customer_request: {
 
-      description: 'Get <span class="provider">My customer request</span> in <span class="provider">JIRA Service Desk</span>',
+      description: 'Get <span class="provider">customer request</span> in <span class="provider">JIRA Service Desk</span>',
      
       input_fields: ->(object_definitions) {
         object_definitions['request'].only('serviceDeskId', 'requestTypeId').
@@ -136,20 +152,20 @@
     
     create_comment: {
 
-      description: 'Create <span class="provider">Comment</span> in <span class="provider">JIRA Service Desk</span>',
+      description: 'Create <span class="provider">comment</span> in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
-          { name: 'issueId', hint: 'Issue Id or Issue Key', optional: false },
+          { name: 'Id', hint: 'Issue ID or Issue Key', optional: false },
           { name: 'body' , optional: false },
           { name: 'public', hint: 'true or false', type: :boolean , optional: false }
         ]
       },
 
       execute: ->(connection, input) {
-        t = input.reject { |k,v| k == 'issueId' }
+        t = input.reject { |k,v| k == 'Id' }
 
-        post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['issueId']}/comment", t)
+        post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['Id']}/comment", t)
       },
 
       output_fields: ->(object_definitions) {
@@ -159,17 +175,17 @@
   
     get_comment_by_id: {
       
-      description: 'Get <span class="provider">Comment</span> by ID in <span class="provider">JIRA Service Desk</span>',
+      description: 'Get <span class="provider">comment</span> by ID in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
-          { name: 'issueId', hint: 'Issue Id or Issue Key', optional: false },
-          { name: 'commentId', optional: false },
+          { name: 'Id', hint: 'Issue ID or Issue Key', optional: false },
+          { name: 'commentId', optional: false ,hint: 'Comment ID'},
         ]
       },
 
       execute: ->(connection, input) {
-        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['issueId']}/comment/#{input['commentId']}")
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['Id']}/comment/#{input['commentId']}")
       },
 
       output_fields: ->(object_definitions) {
