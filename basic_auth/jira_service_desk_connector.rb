@@ -176,7 +176,7 @@
         object_definitions['comment']
       }
     }
-  }
+  },
 
   pick_lists: {
     service_desks: ->(connection) {
