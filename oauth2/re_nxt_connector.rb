@@ -148,6 +148,36 @@
         ]
       }
     }
+
+    delete_email: {
+      input_fields: ->() {
+        [ { name: 'email_address_id', optional: false } ]
+      },
+      execute: ->(connection, input) {
+        delete("https://api.sky.blackbaud.com/constituent/v1/emailaddresses/#{input['email_address_id']}")
+      },
+      output_fields: ->() {}
+    },
+    
+    delete_phone: {
+      input_fields: ->() {
+        [ { name: 'phone_id', optional: false } ]
+      },
+      execute: ->(connection, input) {
+        delete("https://api.sky.blackbaud.com/constituent/v1/phones/#{input['phone_id']}")
+      },
+      output_fields: ->() {}
+    },
+    
+    delete_address: {
+      input_fields: ->() {
+        [ { name: 'address_id', optional: false, hint: "Note: Preferred addresses cannot be deleted." } ]
+      },
+      execute: ->(connection, input) {
+        delete("https://api.sky.blackbaud.com/constituent/v1/addresses/#{input['address_id']}")
+      },
+      output_fields: ->() {}
+    } 
   },
 
   triggers: {
