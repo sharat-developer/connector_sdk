@@ -7,7 +7,7 @@
         name: 'subdomain',
         control_type: 'subdomain',
         url: '.atlassian.net',
-				optional: false
+	optional: false
         hint: 'Your jira service desk name as found in your jira service desk URL'
       },
       {
@@ -19,7 +19,7 @@
         name: 'password',
         control_type: 'password',
         label: 'Password'
-				optional: false
+	optional: false
       }
     ],
 
@@ -67,8 +67,8 @@
     comment: {
   		fields: ->() {
   			[
-  				{ name: 'id' },
-  				{ name: 'body', control_type: 'text-area' },
+      	  { name: 'id' },
+        	{ name: 'body', control_type: 'text-area' },
           {name: "author",type: :array, properties: [ 
              {name: "name"},
              {name: "key"},
