@@ -7,7 +7,11 @@
         name: 'subdomain',
         control_type: 'subdomain',
         url: '.atlassian.net',
+<<<<<<< HEAD
 	optional: false,
+=======
+       	optional: false,
+>>>>>>> 03ddafbf4107e65059c9b4153b80139345afb3ba
         hint: 'Your jira service desk name as found in your jira service desk URL'
       },
       {
@@ -19,7 +23,11 @@
         name: 'password',
         control_type: 'password',
         label: 'Password',
+<<<<<<< HEAD
 	optional: false
+=======
+      	optional: false
+>>>>>>> 03ddafbf4107e65059c9b4153b80139345afb3ba
       }
     ],
 
@@ -65,9 +73,15 @@
     },
        
     comment: {
+<<<<<<< HEAD
   	fields: ->() {
          [
   	  { name: 'id' },
+=======
+ 	fields: ->() {
+  	[
+      	  { name: 'id' },
+>>>>>>> 03ddafbf4107e65059c9b4153b80139345afb3ba
           { name: 'body', control_type: 'text-area' },
           {name: "author",type: :array, properties: [ 
              {name: "name"},
