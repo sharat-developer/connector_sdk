@@ -19,7 +19,7 @@
         name: 'password',
         control_type: 'password',
         label: 'Password',
-				optional: false
+	optional: false
       }
     ],
 
