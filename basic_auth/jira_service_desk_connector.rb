@@ -7,6 +7,7 @@ title: 'JIRA Service Desk',
         name: 'subdomain',
         control_type: 'subdomain',
         url: '.atlassian.net',
+        optional: false,
         hint: 'Your jira Service Desk name as found in your JIRA Service Desk URL'
       },
       {
@@ -45,7 +46,7 @@ title: 'JIRA Service Desk',
           { name: 'serviceDeskId', label: 'ServiceDesk',
             control_type: 'select', pick_list: 'service_desk' },
           { name: 'requestTypeId', Label: 'Request Type',
-            control_type: 'select', pick_list: 'request_type', pick_list_params: { service_desk: 'serviceDeskId' } },
+            control_type: 'select', pick_list: 'request_type', pick_list_params: { serviceDeskId: 'serviceDeskId' } },
           { name:'reporter', type: :object, properties: [
             { name: 'name' },
             { name: 'key' },
