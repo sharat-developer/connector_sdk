@@ -72,10 +72,10 @@ title: 'JIRA Service Desk',
     },
        
     comment: {
-  		fields: ->() {
-  			[
-  				{ name: 'id' },
-  				{ name: 'body', control_type: 'text-area' },
+      fields: ->() {
+        [
+          { name: 'id' },
+          { name: 'body', control_type: 'text-area' },
           { name: 'public', type: :boolean },
           { name: "author",type: :object, properties: [ 
              { name: "name" },
@@ -179,23 +179,23 @@ title: 'JIRA Service Desk',
     },
     
     create_comment: {
-    	description: 'Create <span class="provider">comment</span> in <span class="provider">JIRA Service Desk</span>',
+      description: 'Create <span class="provider">comment</span> in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
-        	{ name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
-         	{ name: 'body',optional: false },
+          { name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
+          { name: 'body',optional: false },
           { name: 'public', type: :boolean ,optional: false}
         ]
       },
 
-	    execute: ->(connection, input) {
+      execute: ->(connection, input) {
         post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input.delete('Issue')}/comment", input)
       },
 
-     	output_fields: ->(object_definitions) {
-	     	object_definitions['comment']
-	    },
+      output_fields: ->(object_definitions) {
+        object_definitions['comment']
+      },
       
       sample_output: ->(connection) {
         issueId = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
@@ -205,12 +205,12 @@ title: 'JIRA Service Desk',
     },
 
     get_comment_by_ID: {
-    	
+      
       description: 'Get <span class="provider">comment</span> by ID in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
-        	{ name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
+          { name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
           { name: 'commentId',optional: false},
          ]
       },
@@ -263,3 +263,4 @@ title: 'JIRA Service Desk',
     },
   }
  }
+
