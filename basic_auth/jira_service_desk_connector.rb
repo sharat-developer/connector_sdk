@@ -1,5 +1,5 @@
 {
-  title: 'Jira Service Desk',
+title: 'JIRA Service Desk',
 
   connection: {
     fields: [
@@ -7,33 +7,24 @@
         name: 'subdomain',
         control_type: 'subdomain',
         url: '.atlassian.net',
-<<<<<<< HEAD
-	optional: false,
-=======
-       	optional: false,
->>>>>>> 03ddafbf4107e65059c9b4153b80139345afb3ba
-        hint: 'Your jira service desk name as found in your jira service desk URL'
+        hint: 'Your jira Service Desk name as found in your JIRA Service Desk URL'
       },
       {
         name: 'username',
         optional: false,
-        hint: 'Your username or Email'
+        hint: 'JIRA Username or Email'
       },
       {
         name: 'password',
         control_type: 'password',
-        label: 'Password',
-<<<<<<< HEAD
-	optional: false
-=======
-      	optional: false
->>>>>>> 03ddafbf4107e65059c9b4153b80139345afb3ba
+        optional: false
       }
     ],
 
     authorization: {
       type: 'basic_auth',
-       credentials: ->(connection) {
+
+      credentials: ->(connection) {
         user(connection['username'])
         password(connection['password'])
       }
@@ -51,8 +42,10 @@
         [
           { name:'issueId', type: :integer },
           { name:'issueKey' },
-          { name:'requestTypeId', type: :integer },
-          { name:'serviceDeskId', type: :integer },
+          { name: 'serviceDeskId', label: 'ServiceDesk',
+            control_type: 'select', pick_list: 'service_desk' },
+          { name: 'requestTypeId', Label: 'Request Type',
+            control_type: 'select', pick_list: 'request_type', pick_list_params: { service_desk: 'serviceDeskId' } },
           { name:'reporter', type: :object, properties: [
             { name: 'name' },
             { name: 'key' },
@@ -67,36 +60,49 @@
           ]},
           { name:'currentStatus', type: :object, properties:[
             { name: 'status' }
+          ]},
+          { name: '_links' , type: :object, properties:[
+            { name: 'jiraRest' },
+            { name: 'web' },
+            { name: 'self'}
           ]}
         ]
       }
     },
        
     comment: {
-<<<<<<< HEAD
-  	fields: ->() {
-         [
-  	  { name: 'id' },
-=======
- 	fields: ->() {
-  	[
-      	  { name: 'id' },
->>>>>>> 03ddafbf4107e65059c9b4153b80139345afb3ba
-          { name: 'body', control_type: 'text-area' },
-          {name: "author",type: :array, properties: [ 
+  		fields: ->() {
+  			[
+  				{ name: 'id' },
+  				{ name: 'body', control_type: 'text-area' },
+          { name: 'public', type: :boolean },
+          {name: "author",type: :object, properties: [ 
              {name: "name"},
              {name: "key"},
              {name: "emailAddress"},
              {name: "displayName"},
              {name: 'active',type: :boolean},
              {name: "timeZone"},
-           ]},
+            { name: "_links", type: :object, properties: [ 
+              {name: "jiraRest", type: :url},
+              {name: "avatarUrls", type: :object, properties:[
+                {name: "48x48"},
+                {name: "24x24"},
+                {name: "16x16"},
+                {name: "32x32"}
+              ]},
+              {name: "self"},
+            ]},
+          ]},
           {name: "created",type: :array, properties: [
             {name: "iso8601"},
             {name: "jira"},
             {name: "friendly"},
             {name: "epochMillis"}
-           ]},
+          ]},
+          { name: "_links", type: :object, properties: [ 
+            {name: "self"},
+          ]},
         ]
       }
     }
@@ -111,7 +117,11 @@
       input_fields: ->(object_definitions) {
         object_definitions['request'].only('serviceDeskId', 'requestTypeId').
         concat([
-          { name: 'searchTerm', hint: 'Enter the keyword for the request', optional: false }
+          { name: 'searchTerm', hint: 'Enter the keyword for the request', optional: false },
+          { name: 'requestStatus' ,control_type: 'select', pick_list: 'request_status' },
+          { name: 'requestOwnership' ,control_type: 'select', pick_list: 'request_ownership'},
+          { name: 'start' , hint: 'The starting index of the returned objects' ,type: :integer},
+          { name: 'limit',hint: 'The maximum number of items to return per page',type: :integer}
         ])
       },
 
@@ -123,6 +133,10 @@
         [
           { name: 'values', type: :array, of: :object, properties: object_definitions['request'] }
         ]
+      },
+
+      sample_output: ->(connection) {
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")|| []
       }
     },
 
@@ -132,15 +146,10 @@
 
       input_fields: ->() {
         [
-          {
-            name: 'serviceDeskId', label: 'Service desk', type: :integer, optional: false,
-            control_type: :select, pick_list: :service_desks
-          },
-          {
-            name: 'requestTypeId', label: 'Request type', type: :integer, optional: false,
-            control_type: :select, pick_list: :request_types,
-            pick_list_params: { serviceDeskId: 'serviceDeskId' }
-          },
+          { name: 'serviceDeskId', label: 'ServiceDesk', optional: false,
+            control_type: 'select', pick_list: 'service_desk' },
+          { name: 'requestTypeId', Label: 'Request Type', optional: false,
+            control_type: 'select', pick_list: 'request_type', pick_list_params: { service_desk: 'serviceDeskId' } },
           { name: 'requestFieldValues_summary', label: 'Summary', optional: false },
           { name: 'requestFieldValues_description', label: 'Description', optional: false }
         ]
@@ -157,66 +166,99 @@
         }
 
         post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request", hash)
-       },
+      },
     
       output_fields: ->(object_definitions) {
         object_definitions['request']
+      },
+      
+      sample_output: ->(connection) {
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first || {}
       }
     },
     
     create_comment: {
-
-      description: 'Create <span class="provider">comment</span> in <span class="provider">JIRA Service Desk</span>',
+    	description: 'Create <span class="provider">comment</span> in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
-          { name: 'Id', hint: 'Issue ID or Issue Key', optional: false },
-          { name: 'body' , optional: false },
-          { name: 'public', hint: 'true or false', type: :boolean , optional: false }
+        	{ name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
+         	{ name: 'body',optional: false },
+          { name: 'public', type: :boolean ,optional: false}
         ]
       },
 
-      execute: ->(connection, input) {
-        t = input.reject { |k,v| k == 'Id' }
-
-        post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['Id']}/comment", t)
+	    execute: ->(connection, input) {
+        post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input.delete('Issue')}/comment", input)
       },
 
-      output_fields: ->(object_definitions) {
-        object_definitions['comment']
-      }
-    },
-  
-    get_comment_by_id: {
+     	output_fields: ->(object_definitions) {
+	     	object_definitions['comment']
+	    },
       
+      sample_output: ->(connection) {
+        i =  get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
+        j = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment")['values'].first['id']
+        k = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment/#{j}")
+      },
+    },
+
+    get_comment_by_ID: {
+    	
       description: 'Get <span class="provider">comment</span> by ID in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
-          { name: 'Id', hint: 'Issue ID or Issue Key', optional: false },
-          { name: 'commentId', optional: false ,hint: 'Comment ID'},
-        ]
+        	{ name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
+          { name: 'commentId',optional: false},
+         ]
       },
 
       execute: ->(connection, input) {
-        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['Id']}/comment/#{input['commentId']}")
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{input['Issue']}/comment/#{input['commentId']}")
       },
 
       output_fields: ->(object_definitions) {
         object_definitions['comment']
-      }
+      },
+      
+      sample_output: ->(connection) {
+        i =  get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
+        j = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment")['values'].first['id']
+        k = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment/#{j}")
+      },
     }
   },
-
+  
   pick_lists: {
-    service_desks: ->(connection) {
-      sds = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk")['values']
-      (sds || []).map { |sd| [sd['projectName'], sd['id']] }
+    
+    service_desk: ->(connection) {
+      get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk")['values'].map do |desk|
+        [desk['projectName'], desk['id']]
+      end
     },
     
-    request_types: ->(connection, serviceDeskId:) {
-      rts = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{serviceDeskId}/requesttype")['values']
-      (rts || []).map { |rt| [rt['name'], rt['id']] }
-    }
+    request_type: ->(connection, service_desk:) {
+      url = "https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{service_desk}/requesttype"
+      get(url)['values'].map do |type|
+        [type['name'], type['id']]
+      end
+    },
+     
+    request_status: ->(connection) {
+      [
+        ["Closed requests","CLOSED_REQUESTS"],
+        ["Open requests","OPEN_REQUESTS"],
+        ["All requests","ALL_REQUESTS"]
+      ]
+    },
+    
+    request_ownership: ->(connection) {
+      [
+        ["Owned requests","OWNED_REQUESTS"],
+        ["Participated requests","PARTICIPATED_REQUESTS"],
+        ["All requests","ALL_REQUESTS"]
+      ]
+    },
   }
-}
+ }
