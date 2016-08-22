@@ -77,32 +77,32 @@ title: 'JIRA Service Desk',
   				{ name: 'id' },
   				{ name: 'body', control_type: 'text-area' },
           { name: 'public', type: :boolean },
-          {name: "author",type: :object, properties: [ 
-             {name: "name"},
-             {name: "key"},
-             {name: "emailAddress"},
-             {name: "displayName"},
-             {name: 'active',type: :boolean},
-             {name: "timeZone"},
+          { name: "author",type: :object, properties: [ 
+             { name: "name" },
+             { name: "key" },
+             { name: "emailAddress" },
+             { name: "displayName" },
+             { name: 'active',type: :boolean },
+             { name: "timeZone" },
             { name: "_links", type: :object, properties: [ 
-              {name: "jiraRest", type: :url},
-              {name: "avatarUrls", type: :object, properties:[
-                {name: "48x48"},
-                {name: "24x24"},
-                {name: "16x16"},
-                {name: "32x32"}
+              { name: "jiraRest", type: :url },
+              { name: "avatarUrls", type: :object, properties:[
+                { name: "48x48" },
+                {  name: "24x24" },
+                { name: "16x16" },
+                { name: "32x32" }
               ]},
-              {name: "self"},
+              { name: "self" },
             ]},
           ]},
-          {name: "created",type: :array, properties: [
-            {name: "iso8601"},
-            {name: "jira"},
-            {name: "friendly"},
-            {name: "epochMillis"}
+          { name: "created",type: :array, properties: [
+            { name: "iso8601" },
+            { name: "jira" },
+            { name: "friendly" },
+            { name: "epochMillis" }
           ]},
           { name: "_links", type: :object, properties: [ 
-            {name: "self"},
+            { name: "self" },
           ]},
         ]
       }
@@ -137,7 +137,7 @@ title: 'JIRA Service Desk',
       },
 
       sample_output: ->(connection) {
-        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")|| []
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request") || []
       }
     },
 
@@ -198,9 +198,9 @@ title: 'JIRA Service Desk',
 	    },
       
       sample_output: ->(connection) {
-        i =  get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
-        j = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment")['values'].first['id']
-        k = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment/#{j}")
+        issueId = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
+        commentId = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{issueId}/comment")['values'].first['id']
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{issueId}/comment/#{commentId}")
       },
     },
 
@@ -224,10 +224,10 @@ title: 'JIRA Service Desk',
       },
       
       sample_output: ->(connection) {
-        i =  get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
-        j = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment")['values'].first['id']
-        k = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{i}/comment/#{j}")
-      },
+        issueId = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
+        commentId = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{issueId}/comment")['values'].first['id']
+        get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{issueId}/comment/#{commentId}")
+        },
     }
   },
   
@@ -235,30 +235,30 @@ title: 'JIRA Service Desk',
     
     service_desk: ->(connection) {
       get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk")['values'].map do |desk|
-        [desk['projectName'], desk['id']]
+        [desk['projectName'] , desk['id']]
       end
     },
     
     request_type: ->(connection, service_desk:) {
       url = "https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{service_desk}/requesttype"
       get(url)['values'].map do |type|
-        [type['name'], type['id']]
+        [type['name'] , type['id']]
       end
     },
      
     request_status: ->(connection) {
       [
-        ["Closed requests","CLOSED_REQUESTS"],
-        ["Open requests","OPEN_REQUESTS"],
-        ["All requests","ALL_REQUESTS"]
+        ["Closed requests" , "CLOSED_REQUESTS"],
+        ["Open requests" , "OPEN_REQUESTS"],
+        ["All requests" , "ALL_REQUESTS"]
       ]
     },
     
     request_ownership: ->(connection) {
       [
-        ["Owned requests","OWNED_REQUESTS"],
-        ["Participated requests","PARTICIPATED_REQUESTS"],
-        ["All requests","ALL_REQUESTS"]
+        ["Owned requests" , "OWNED_REQUESTS"],
+        ["Participated requests" , "PARTICIPATED_REQUESTS"],
+        ["All requests" , "ALL_REQUESTS"]
       ]
     },
   }
