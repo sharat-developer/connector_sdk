@@ -13,8 +13,12 @@
         'https://oauth2.sky.blackbaud.com/token'
       },
 
-      credentials: ->(_connection, access_token) {
-        headers('bb-api-subscription-key': AppSettings.oauth2.raisers_edge.api_subscription_key,
+      client_id: 'YOUR_CLIENT_ID',
+
+      client_secret: 'YOUR_CLIENT_SECRET',
+
+      credentials: ->(connection, access_token) {
+        headers('bb-api-subscription-key': "b0038b5e982d4d449e3436a427b81e0f",
                 'Authorization': "Bearer #{access_token}")
       }
     }
@@ -91,7 +95,7 @@
 
   actions: {
     update_constituent: {
-      description: "Update <span class='provider'>constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
+      description: "Update <span class='provider'>Constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
 
       input_fields: ->(object_definitions) {
         object_definitions['constituent'].only("id", "name", "last", "first", "middle", "preferred_name",
@@ -118,7 +122,7 @@
     },
 
     search_constituent: {
-      description: "Search <span class='provider'>constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
+      description: "Search <span class='provider'>Constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
 
       input_fields: ->(_object_definitions) {
         [
@@ -146,46 +150,66 @@
             ]
           }
         ]
+      },
+
+      sample_output: ->(_connection) {
+        get("https://api.sky.blackbaud.com/constituent/v1/constituents")['value'] || []
       }
-    }
+    },
 
     delete_email: {
-      input_fields: ->() {
-        [ { name: 'email_address_id', optional: false } ]
+      description: "Delete <span class='provider'>Email</span> in <span class='provider'>Raiser's Edge NXT</span>",
+
+      input_fields: ->(_object_definitions) {
+        [
+          { name: 'email_address_id', optional: false }
+        ]
       },
-      execute: ->(connection, input) {
+
+      execute: ->(_connection, input) {
         delete("https://api.sky.blackbaud.com/constituent/v1/emailaddresses/#{input['email_address_id']}")
       },
-      output_fields: ->() {}
+
+      output_fields: ->(_object_definitions) {}
     },
     
     delete_phone: {
-      input_fields: ->() {
-        [ { name: 'phone_id', optional: false } ]
+      description: "Delete <span class='provider'>Phone</span> in <span class='provider'>Raiser's Edge NXT</span>",
+
+      input_fields: ->(_object_definitions) {
+        [
+          { name: 'phone_id', optional: false }
+        ]
       },
-      execute: ->(connection, input) {
+
+      execute: ->(_connection, input) {
         delete("https://api.sky.blackbaud.com/constituent/v1/phones/#{input['phone_id']}")
       },
-      output_fields: ->() {}
+
+      output_fields: ->(_object_definitions) {}
     },
     
     delete_address: {
-      input_fields: ->() {
-        [ { name: 'address_id', optional: false, hint: "Note: Preferred addresses cannot be deleted." } ]
+      description: "Delete <span class='provider'>Address</span> in <span class='provider'>Raiser's Edge NXT</span>",
+
+      input_fields: ->(_object_definitions) {
+        [
+          { name: 'address_id', optional: false, hint: "Note: Preferred addresses cannot be deleted." }
+        ]
       },
-      execute: ->(connection, input) {
+
+      execute: ->(_connection, input) {
         delete("https://api.sky.blackbaud.com/constituent/v1/addresses/#{input['address_id']}")
       },
-      output_fields: ->() {}
+
+      output_fields: ->(_object_definitions) {}
     } 
   },
 
   triggers: {
 
     new_constituent: {
-      description: "New <span class='provider'>constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
-
-      type: :paging_asc,
+      description: "New <span class='provider'>Constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
 
       input_fields: ->(_object_definitions) {
         [
@@ -197,12 +221,14 @@
       },
 
       poll: ->(_connection, input, link) {
+        limit = 100
+
         if link.present?
           response = get(link)
         else
           response = get("https://api.sky.blackbaud.com/constituent/v1/constituents").
                      params(date_added: (input['since'] || Time.now).to_time.utc.iso8601,
-                            limit: PAGE_SIZE)
+                            limit: limit)
         end
 
         constituents = response['value'].each do |constituent|
@@ -216,7 +242,7 @@
         {
           events: constituents,
           next_poll: response['next_link'],
-          can_poll_more: constituents.length >= PAGE_SIZE
+          can_poll_more: constituents.length >= limit
         }
       },
 
@@ -226,11 +252,21 @@
 
       output_fields: ->(object_definitions) {
         object_definitions['constituent']
+      },
+
+      sample_output: ->(_connection) {
+        constituent = get("https://api.sky.blackbaud.com/constituent/v1/constituents")['value'].last || {}
+
+        if constituent['birthdate'].present?
+          constituent['birthdate'] = Date.new(birthdate['y'], birthdate['m'], birthdate['d'])
+        end
+
+        constituent
       }
     },
 
     new_or_updated_constituent: {
-      description: "New or Updated <span class='provider'>constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
+      description: "New or Updated <span class='provider'>Constituent</span> in <span class='provider'>Raiser's Edge NXT</span>",
 
       input_fields: ->(_object_definitions) {
         [
@@ -242,12 +278,14 @@
       },
 
       poll: ->(_connection, input, link) {
+        limit = 100
+
         if link.present?
           response = get(link)
         else
           response = get("https://api.sky.blackbaud.com/constituent/v1/constituents").
                      params(last_modified: (input['since'] || Time.now).to_time.utc.iso8601,
-                            limit: PAGE_SIZE)
+                            limit: limit)
         end
 
         constituents = response['value'].each do |constituent|
@@ -261,7 +299,7 @@
         {
           events: constituents,
           next_poll: response['next_link'],
-          can_poll_more: constituents.length >= PAGE_SIZE
+          can_poll_more: constituents.length >= limit
         }
       },
 
@@ -271,6 +309,16 @@
 
       output_fields: ->(object_definitions) {
         object_definitions['constituent']
+      },
+
+      sample_output: ->(_connection) {
+        constituent = get("https://api.sky.blackbaud.com/constituent/v1/constituents")['value'].last || {}
+
+        if constituent['birthdate'].present?
+          constituent['birthdate'] = Date.new(birthdate['y'], birthdate['m'], birthdate['d'])
+        end
+
+        constituent
       }
     }
   },
