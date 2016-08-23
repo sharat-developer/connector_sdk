@@ -113,7 +113,7 @@ title: 'JIRA Service Desk',
 
     search_customer_request: {
 
-      description: 'Get <span class="provider">customer request</span> in <span class="provider">JIRA Service Desk</span>',
+      description: 'Search <span class="provider">Customer Request</span> in <span class="provider">JIRA Service Desk</span>',
      
       input_fields: ->(object_definitions) {
         object_definitions['request'].only('serviceDeskId', 'requestTypeId').
@@ -143,14 +143,14 @@ title: 'JIRA Service Desk',
 
     create_customer_request: {
      
-      description: 'Create <span class="provider">customer request</span> in <span class="provider">JIRA Service Desk</span>',
+      description: 'Create <span class="provider">Customer Request</span> in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
           { name: 'serviceDeskId', label: 'ServiceDesk', optional: false,
             control_type: 'select', pick_list: 'service_desk' },
           { name: 'requestTypeId', Label: 'Request Type', optional: false,
-            control_type: 'select', pick_list: 'request_type', pick_list_params: { service_desk: 'serviceDeskId' } },
+            control_type: 'select', pick_list: 'request_type', pick_list_params: { serviceDeskId: 'serviceDeskId' } },
           { name: 'requestFieldValues_summary', label: 'Summary', optional: false },
           { name: 'requestFieldValues_description', label: 'Description', optional: false }
         ]
@@ -179,7 +179,7 @@ title: 'JIRA Service Desk',
     },
     
     create_comment: {
-      description: 'Create <span class="provider">comment</span> in <span class="provider">JIRA Service Desk</span>',
+      description: 'Create <span class="provider">Comment</span> in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
@@ -206,7 +206,7 @@ title: 'JIRA Service Desk',
 
     get_comment_by_ID: {
       
-      description: 'Get <span class="provider">comment</span> by ID in <span class="provider">JIRA Service Desk</span>',
+      description: 'Get <span class="provider">Comment</span> by ID in <span class="provider">JIRA Service Desk</span>',
 
       input_fields: ->() {
         [
@@ -263,4 +263,3 @@ title: 'JIRA Service Desk',
     },
   }
  }
-
