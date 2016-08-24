@@ -702,6 +702,8 @@ input_fields: ->(object_definitions) {
 ## API Key Authentication Samples
 - [Gender API connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/gender_api_connector.rb)
 
+- [Hipchat connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/hipchat_connector.rb)
+
 ## Custom Authentication Samples
 - [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
@@ -710,5 +712,3 @@ input_fields: ->(object_definitions) {
 - [Knack HQ connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/knack_hq_connector.rb)
 
 - [Neto connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/neto_connector.rb)
-
-- [Hipchat connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/hipchat_connector.rb)
