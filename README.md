@@ -709,4 +709,6 @@ input_fields: ->(object_definitions) {
 
 - [Knack HQ connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/knack_hq_connector.rb)
 
+- [Neto connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/neto_connector.rb)
+
 - [Hipchat connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/hipchat_connector.rb)
