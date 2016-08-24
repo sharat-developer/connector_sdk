@@ -46,7 +46,7 @@
   actions: {
     post_message: {
 
-      description: 'Post <span class="provider">message</span> in <span class="provider">Hipchat</span>',
+      description: 'Post <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
 
       input_fields: ->() {
         [
@@ -71,7 +71,7 @@
 
     reply_to_message: {
 
-      description: 'Reply to <span class="provider">message</span> in <span class="provider">Hipchat</span>',
+      description: 'Reply to <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
 
       input_fields: ->() {
         [
@@ -90,5 +90,3 @@
     }
   }
 }
-
-
