@@ -69,22 +69,26 @@ title: 'JIRA Service Desk',
           ]},
           {
             name: 'requestFieldValues', optional: false, type: :object, properties:
-              get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{config['serviceDeskId']}/requesttype/#{config['requestTypeId']}/field")['requestTypeFields'].map do |field|
-                if field['validValues'].present?
-                valid_values = field['validValues'].pluck('value', 'label').
-                                                    map { |value| value[0].to_s + " (" + value[1].to_s + ")" }.
-                                                    join(",<br>")
+              if config.present?
+                get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{config['serviceDeskId']}/requesttype/#{config['requestTypeId']}/field")['requestTypeFields'].map do |field|
+                  if field['validValues'].present?
+                  valid_values = field['validValues'].pluck('value', 'label').
+                                                      map { |value| value[0].to_s + " (" + value[1].to_s + ")" }.
+                                                      join(",<br>")
 
-                hint = "Valid values are:<br>" + valid_values
+                  hint = "Valid values are:<br>" + valid_values
+                end
+
+                  {
+                    name: field['fieldId'],
+                    label: field['name'],
+                    optional: field['required'] == false,
+                    hint: hint
+                  }
+                end
+              else
+                []
               end
-
-                {
-                  name: field['fieldId'],
-                  label: field['name'],
-                  optional: field['required'] == false,
-                  hint: hint
-                }
-              end || []
           }
         ]
       }
