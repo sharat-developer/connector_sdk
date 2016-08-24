@@ -171,7 +171,7 @@ title: 'JIRA Service Desk',
         {
           name: 'requestTypeId', label: 'Request Type', optional: false,
           control_type: 'select', pick_list: 'request_type',
-          pick_list_params: { serviceDesk: 'serviceDeskId' }
+          pick_list_params: { serviceDeskId: 'serviceDeskId' }
         }
       ],
 
