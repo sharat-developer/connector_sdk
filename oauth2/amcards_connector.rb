@@ -37,7 +37,7 @@
           {
             name: 'message',
             label: 'Message for inside of card',
-            # control_type: 'textarea',
+            control_type: 'text-area',
             hint: "Maximum of 700 characters please! Message will be added to the inside right (vertical) or inside bottom (horizontal) panel of the card. It will be added to the card and not replace an existing message!",
           },
           {
@@ -144,7 +144,7 @@
   actions: {
     create_card: {
       input_fields: ->(object_definitions) {
-        object_definitions['card'].required('template_id', 'initiator', 'first_name', 'last_name', 'address_line_1', 'city', 'state', 'postal_code', 'return_first_name', 'return_last_name', 'return_address_line_1', 'return_city', 'return_state', 'return_postal_code')
+        object_definitions['card']
       },
 
       execute: ->(connection, input) {
