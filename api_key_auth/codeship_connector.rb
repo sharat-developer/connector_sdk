@@ -46,7 +46,7 @@
     actions: {
       list_builds: {
 
-        description: 'List <span class="provider">builds</span> in <span class="provider">Codeship</span>',
+        description: 'List <span class="provider">Builds</span> in <span class="provider">Codeship</span>',
 
         input_fields: ->() {
           [
@@ -75,7 +75,7 @@
 
       restart_build: {
 
-        description: 'Restart <span class="provider">build</span> in <span class="provider">Codeship</span>',
+        description: 'Restart <span class="provider">Build</span> in <span class="provider">Codeship</span>',
 
         input_fields: ->() {
           [
