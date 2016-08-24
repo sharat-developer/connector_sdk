@@ -39,14 +39,19 @@ title: 'JIRA Service Desk',
   object_definitions: {
 
     request: {
-      fields: ->() {
+      fields: ->(connection, config) {
         [
           { name:'issueId', type: :integer },
           { name:'issueKey' },
-          { name: 'serviceDeskId', label: 'ServiceDesk',
-            control_type: 'select', pick_list: 'service_desk' },
-          { name: 'requestTypeId', Label: 'Request Type',
-            control_type: 'select', pick_list: 'request_type', pick_list_params: { serviceDeskId: 'serviceDeskId' } },
+          {
+            name: 'serviceDeskId', label: 'ServiceDesk',
+            control_type: 'select', pick_list: 'service_desk'
+          },
+          {
+            name: 'requestTypeId', Label: 'Request Type',
+            control_type: 'select', pick_list: 'request_type',
+            pick_list_params: { serviceDeskId: 'serviceDeskId' }
+          },
           { name:'reporter', type: :object, properties: [
             { name: 'name' },
             { name: 'key' },
@@ -54,19 +59,33 @@ title: 'JIRA Service Desk',
             { name: 'displayName' },
             { name: 'timeZone' }
           ]},
-          { name:'requestFieldValues', type: :array, of: :object, properties: [
-            { name: 'fieldId' },
-            { name: 'label' },
-            { name: 'value' }
-          ]},
-          { name:'currentStatus', type: :object, properties:[
+          { name:'currentStatus', type: :object, properties: [
             { name: 'status' }
           ]},
-          { name: '_links' , type: :object, properties:[
+          { name: '_links' , type: :object, properties: [
             { name: 'jiraRest' },
             { name: 'web' },
             { name: 'self'}
-          ]}
+          ]},
+          {
+            name: 'requestFieldValues', optional: false, type: :object, properties:
+              get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{config['serviceDeskId']}/requesttype/#{config['requestTypeId']}/field")['requestTypeFields'].map do |field|
+                if field['validValues'].present?
+                valid_values = field['validValues'].pluck('value', 'label').
+                                                    map { |value| value[0].to_s + " (" + value[1].to_s + ")" }.
+                                                    join(",<br>")
+
+                hint = "Valid values are:<br>" + valid_values
+              end
+
+                {
+                  name: field['fieldId'],
+                  label: field['name'],
+                  optional: field['required'] == false,
+                  hint: hint
+                }
+              end || []
+          }
         ]
       }
     },
@@ -110,19 +129,18 @@ title: 'JIRA Service Desk',
   },
 
   actions: {
-
     search_customer_request: {
 
       description: 'Search <span class="provider">Customer Request</span> in <span class="provider">JIRA Service Desk</span>',
-     
+
       input_fields: ->(object_definitions) {
         object_definitions['request'].only('serviceDeskId', 'requestTypeId').
         concat([
           { name: 'searchTerm', hint: 'Enter the keyword for the request', optional: false },
-          { name: 'requestStatus' ,control_type: 'select', pick_list: 'request_status' },
-          { name: 'requestOwnership' ,control_type: 'select', pick_list: 'request_ownership'},
-          { name: 'start' , hint: 'The starting index of the returned objects' ,type: :integer},
-          { name: 'limit',hint: 'The maximum number of items to return per page',type: :integer}
+          { name: 'requestStatus', control_type: 'select', pick_list: 'request_status' },
+          { name: 'requestOwnership', control_type: 'select', pick_list: 'request_ownership'},
+          { name: 'start' , hint: 'The starting index of the returned objects', type: :integer},
+          { name: 'limit', hint: 'The maximum number of items to return per page', type: :integer}
         ])
       },
 
@@ -142,31 +160,33 @@ title: 'JIRA Service Desk',
     },
 
     create_customer_request: {
-     
+
       description: 'Create <span class="provider">Customer Request</span> in <span class="provider">JIRA Service Desk</span>',
 
-      input_fields: ->() {
-        [
-          { name: 'serviceDeskId', label: 'ServiceDesk', optional: false,
-            control_type: 'select', pick_list: 'service_desk' },
-          { name: 'requestTypeId', Label: 'Request Type', optional: false,
-            control_type: 'select', pick_list: 'request_type', pick_list_params: { serviceDeskId: 'serviceDeskId' } },
-          { name: 'requestFieldValues_summary', label: 'Summary', optional: false },
-          { name: 'requestFieldValues_description', label: 'Description', optional: false }
-        ]
+      config_fields: [
+        {
+          name: 'serviceDeskId', label: 'Service Desk', optional: false,
+          control_type: 'select', pick_list: 'service_desk'
+        },
+        {
+          name: 'requestTypeId', label: 'Request Type', optional: false,
+          control_type: 'select', pick_list: 'request_type',
+          pick_list_params: { serviceDesk: 'serviceDeskId' }
+        }
+      ],
+
+      input_fields: ->(schema) {
+        schema['request'].only('requestFieldValues')
       },
     
       execute: ->(connection, input) {
-        hash = {
-          "requestFieldValues"=> {
-            'summary' => input['requestFieldValues_summary'],
-            'description'=>input['requestFieldValues_description']
-          },
-          "serviceDeskId" => input['serviceDeskId'],
-          "requestTypeId" => input['requestTypeId']
-        }
+        response = post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request", input)
 
-        post("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request", hash)
+        response['requestFieldValues'] = response['requestFieldValues'].map do |field|
+                                           { field['fieldId'] => field['value'] }
+                                         end.inject(:merge)
+
+        response
       },
     
       output_fields: ->(object_definitions) {
@@ -184,8 +204,8 @@ title: 'JIRA Service Desk',
       input_fields: ->() {
         [
           { name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
-          { name: 'body',optional: false },
-          { name: 'public', type: :boolean ,optional: false}
+          { name: 'body', optional: false },
+          { name: 'public', type: :boolean, optional: false}
         ]
       },
 
@@ -211,8 +231,8 @@ title: 'JIRA Service Desk',
       input_fields: ->() {
         [
           { name: 'Issue', hint: 'Issue Id or Issue Key', optional: false },
-          { name: 'commentId',optional: false},
-         ]
+          { name: 'commentId', optional: false},
+        ]
       },
 
       execute: ->(connection, input) {
@@ -227,7 +247,7 @@ title: 'JIRA Service Desk',
         issueId = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request")['values'].first['issueId']
         commentId = get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{issueId}/comment")['values'].first['id']
         get("https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/request/#{issueId}/comment/#{commentId}")
-        },
+      },
     }
   },
   
@@ -239,8 +259,8 @@ title: 'JIRA Service Desk',
       end
     },
     
-    request_type: ->(connection, service_desk:) {
-      url = "https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{service_desk}/requesttype"
+    request_type: ->(connection, serviceDeskId:) {
+      url = "https://#{connection['subdomain']}.atlassian.net/rest/servicedeskapi/servicedesk/#{serviceDeskId}/requesttype"
       get(url)['values'].map do |type|
         [type['name'] , type['id']]
       end
@@ -248,9 +268,9 @@ title: 'JIRA Service Desk',
      
     request_status: ->(connection) {
       [
-        ["Closed requests" , "CLOSED_REQUESTS"],
-        ["Open requests" , "OPEN_REQUESTS"],
-        ["All requests" , "ALL_REQUESTS"]
+        ["Closed requests", "CLOSED_REQUESTS"],
+        ["Open requests", "OPEN_REQUESTS"],
+        ["All requests", "ALL_REQUESTS"]
       ]
     },
     
@@ -262,4 +282,4 @@ title: 'JIRA Service Desk',
       ]
     },
   }
- }
+}
