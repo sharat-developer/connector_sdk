@@ -47,7 +47,7 @@
     post_message: {
 
       description: 'Post <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
-
+     
       input_fields: ->() {
         [
           { name: 'message', hint: "Valid length range: 1 - 1000", optional: false, label: "Message" },
@@ -70,9 +70,9 @@
     },
 
     reply_to_message: {
-
+      
       description: 'Reply to <span class="provider">Message</span> in <span class="provider">Hipchat</span>',
-
+      
       input_fields: ->() {
         [
           { name: 'parentMessageId', hint: "The ID of the message you are replying to", label: "Message ID", optional: false },
