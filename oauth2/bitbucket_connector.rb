@@ -137,9 +137,9 @@
 
       input_fields: ->(object_definitions) {
         [
-        	{ name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
-      		{ name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
-        	{ name: "issue", type: :object, properties:  object_definitions['issue'].only('title','priority','kind')}
+          { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
+          { name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
+          { name: "issue", type: :object, properties:  object_definitions['issue'].only('title','priority','kind')}
         ]
       },
 
@@ -158,7 +158,7 @@
       input_fields: ->(object_definitions) {
         [
           { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
-      		{ name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
+          { name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
           { name: "id",type: :integer, optional: false, hint: "ID of the issue", label: "Issue ID" }
         ]
       },
@@ -178,7 +178,7 @@
       input_fields: ->(object_definitions) {
         [
           { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
-      		{ name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
+          { name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
           { name: "title", hint: 'Search using title' },
           { name: "kind", hint: 'Search using kind' },
           { name: "priority", hint: 'Search using priority' },
@@ -201,7 +201,7 @@
       input_fields: ->(object_definitions) {
         [
           { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
-      		{ name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
+          { name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
           { name: "issue_id", type: :integer, optional: false }
         ]
       },
@@ -225,7 +225,7 @@
       input_fields: ->() {
         [
           { name: "username", optional: false, hint: "Username of owner of the repository", label: "Username" },
-      		{ name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
+          { name: "repo_slug", optional: false, hint: "Repository name", label: "Repository" },
           { name: 'since', type: :timestamp }
         ]
       },
