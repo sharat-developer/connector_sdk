@@ -1,5 +1,5 @@
 {
-  title: 'Jenkins'
+  title: 'Jenkins',
 
   connection: {
     fields: [
