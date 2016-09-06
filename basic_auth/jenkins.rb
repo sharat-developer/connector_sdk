@@ -1,8 +1,13 @@
 {
   title: 'Jenkins',
-  
+
   connection: {
     fields: [
+      {
+        name: 'subdomain',
+        control_type: 'subdomain',
+        hint: 'Your port address'
+      },
       {
         name: 'username',
         optional: true,
@@ -26,12 +31,12 @@
   },
 
   test: ->(connection) {
-    get("http://localhost:8080/asynchPeople/api/json")
+    get("http://#{connection['subdomain']}/asynchPeople/api/json")
   },
 
   actions: {
     create_build: {
-      
+
       description: 'Create <span class="provider"> build </span> in <span class="provider">Jenkins</span>',
 
       input_fields: ->() {[
@@ -39,23 +44,23 @@
       },
 
       execute: ->(connection, input) {
-        post("http://localhost:8080/job/#{input['job']}/build", input)
+        post("http://#{connection['subdomain']}/job/#{input['job']}/build", input)
       },
       },
   },
 
-triggers: {
+  triggers: {
     new_job: {
-      
+
       description: 'New <span class="provider"> job </span> in <span class="provider">Jenkins</span>',
-      
+
       input_fields: ->() {
         []
       },
       poll: ->(connection, input, last_updated_since) {
         updated_since = last_updated_since
 
-        jobs = get("http://localhost:8080/view/All/api/json?pretty=true")['jobs']
+        jobs = get("http://#{connection['subdomain']}/view/All/api/json?pretty=true")['jobs']
 
         next_updated_since = jobs.last['name'] unless jobs.blank?
 
@@ -76,10 +81,9 @@ triggers: {
         { name: 'color' }
       ]
       },
-        sample_output: ->(connection) {
-        get("http://localhost:8080/view/All/api/json?pretty=true")['jobs'].first || []
-       }
+      sample_output: ->(connection) {
+       get("http://#{connection['subdomain']}/view/All/api/json?pretty=true")['jobs'].first || []
+      }
     },
   }
 }
-
