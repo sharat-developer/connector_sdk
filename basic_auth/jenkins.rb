@@ -6,16 +6,18 @@
       {
         name: 'subdomain',
         control_type: 'subdomain',
-        hint: 'Your port address'
+        optional: false,
+        hint: 'Please uncheck "Prevent Cross Site Request Forgery exploits" option.Go to ->Manage Jenkins ->Configure Global Security ->Uncheck "Prevent Cross Site Request Forgery exploits".'
       },
       {
         name: 'username',
-        optional: true,
+        optional: false,
         hint: 'Your username'
       },
       {
         name: 'password',
         control_type: 'password',
+        optional: false,
         label: 'Password or API key',
         hint: 'Your password or Api key'
       }
@@ -40,15 +42,14 @@
       description: 'Create <span class="provider"> build </span> in <span class="provider">Jenkins</span>',
 
       input_fields: ->() {[
-        { name: 'job', label: 'JOB NAME', optional: false}]
+        { name: 'job', label: 'Job name', optional: false}]
       },
 
       execute: ->(connection, input) {
         post("http://#{connection['subdomain']}/job/#{input['job']}/build", input)
       },
       },
-  },
-
+    },
   triggers: {
     new_job: {
 
@@ -82,7 +83,7 @@
       ]
       },
       sample_output: ->(connection) {
-       get("http://#{connection['subdomain']}/view/All/api/json?pretty=true")['jobs'].first || []
+        get("http://#{connection['subdomain']}/view/All/api/json?pretty=true")['jobs'].first || []
       }
     },
   }
