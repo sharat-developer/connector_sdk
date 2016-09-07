@@ -58,7 +58,7 @@
       input_fields: ->() {
         []
       },
-      poll: ->(connection, input, last_updated_since) {
+      poll: ->(connection, input, updated_since) {
         updated_since = last_updated_since
 
         jobs = get("http://#{connection['subdomain']}/view/All/api/json?pretty=true")['jobs']
