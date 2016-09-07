@@ -7,7 +7,7 @@
         name: 'subdomain',
         control_type: 'subdomain',
         optional: false,
-        hint: 'Please uncheck "Prevent Cross Site Request Forgery exploits" option.Go to ->Manage Jenkins ->Configure Global Security ->Uncheck "Prevent Cross Site Request Forgery exploits".'
+        hint: 'Go to Manage Jenkins-> Configure Global Security. Uncheck "Prevent Cross Site Request Forgery exploits"'
       },
       {
         name: 'username',
