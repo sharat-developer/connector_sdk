@@ -147,11 +147,10 @@
 
   actions: {
    # form: form/data
-    form_data: {
+    get_form_data: {
 
       input_fields: ->() {
          [
-           { name: 'account_id', optional: false },
            { name: 'form_id', optional: false },
            { name: 'page', optional: true },
            { name: 'limit', optional: true },
@@ -167,21 +166,37 @@
              input['limit'] = 10
         end
 
-        get("https://pubapi.bigtincan.com/#{input['account_id']}/alpha/form/data/#{input['form_id']}").params(page: input['page'], limit: input['limit'])
+        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/data/#{input['form_id']}").params(page: input['page'], limit: input['limit'])
       },
 
-      output_fields: ->(object_definitions) {
+       output_fields: ->(object_definitions) {
         [
          {
              name: 'data',
              type: :array,
-         },
+             of: :object,
+             properties: [
+                 {
+                   name: 'data', type: :object,
+                   properties: [
+                    { name: 'columns', type: :array, of: :object },
+                   ]
+                 },
+                 { name: 'total_submissions', type: 'integer' },
+                 { name: 'submission_current_count', type: 'integer' },
+                 { name: 'submission_limit', type: 'integer'},
+                 { name: 'submission_page', type: 'integer' },
+                 { name: 'submission_next_page', type: 'integer' },
+                 { name: 'submission_prev_page', type: 'integer' },
+                 { name: 'submissions', type: :array, of: :object, properties: object_definitions['form_submission_data'] }
+               ]
+            }
         ]
       }
     },
 
     # form: form/all
-    form_all: {
+    list_forms: {
       input_fields: ->() {
          [
            { name: 'category_id', optional: true },
@@ -200,11 +215,9 @@
              input['limit'] = 10
         end
 
-        if input['category_id'].blank?
-           get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/all").params( page: input['page'], limit: input['limit'])
-        else
-           get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/all").params(category_id: input['category_id'], page: input['page'], limit: input['limit'])
-        end
+
+        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/all").params(input)
+
       },
 
       output_fields: ->(object_definitions) {
@@ -224,8 +237,8 @@
       }
     },
 
-      #form: form_category/all
-      form_category_all: {
+    #form: form_category/all
+    list_form_categories: {
 
       input_fields: ->() {
                  [
@@ -244,7 +257,7 @@
                        input['limit'] = 10
          end
 
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form_category/all").params(limit:input['limit'], page:input['page'])
+         get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form_category/all").params(input)
       },
 
       output_fields: ->(object_definitions) {
@@ -265,7 +278,7 @@
     },
 
    #form: form/get
-   form_get: {
+   get_form: {
       input_fields: ->() {
          [
            { name: 'form_id', optional: false },
@@ -279,7 +292,7 @@
              input['include_data_sources'] = 'true'
         end
 
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{input['form_id']}").params(form_id: input['form_id'], include_data_sources: input['include_data_sources'] )
+        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{input['form_id']}").params(include_data_sources: input['include_data_sources'])
 
       },
 
@@ -300,7 +313,7 @@
 
 
     #story: story/all
-    story_all: {
+    list_stories: {
 
       input_fields: ->() {
          [
@@ -320,7 +333,7 @@
             input['limit'] = 10
          end
 
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(channel_id: input['channel_id'], limit:input['limit'], page:input['page'])
+        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(input)
       },
       output_fields: ->(object_definitions) {
         [
@@ -340,7 +353,7 @@
     },
 
     #story: story/get
-    story_get: {
+    get_story: {
       input_fields: ->() {
          [
            { name: 'story_perm_id', optional: false },
@@ -364,7 +377,7 @@
     },
 
     #story: story/add
-    story_add: {
+    create_story: {
       input_fields: ->() {
          [
            { name: 'title', optional: false },
@@ -398,7 +411,7 @@
     },
 
     #story: story/edit
-    story_edit: {
+    update_story: {
       input_fields: ->() {
          [
            { name: 'title', optional: true },
@@ -433,7 +446,7 @@
     },
 
     #story: story/delete
-    story_delete: {
+    delete_story: {
 
     input_fields: ->() {
          [
@@ -455,7 +468,7 @@
    },
 
     #channal: channel/all
-    channel_all: {
+    list_channels: {
 
         input_fields: ->() {
            [
@@ -531,14 +544,13 @@
 
     },
 
-    each_story: {
+    new_story: {
 
       type: :paging_desc,
 
       input_fields: ->() {
         [
-           { name: 'channel_id', optional: false, type: :string },
-           { name: 'limit', optional: true}
+           { name: 'channel_id', optional: false, type: :string }
         ]
       },
 
@@ -546,13 +558,8 @@
 
         page ||= 1
 
-        if input['limit'].blank?
-            limit = 10
-        else
-            limit = input['limit']
-        end
-
-         stories = get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(limit: limit, page: page, channel_id:input['channel_id'])
+         #desc by default
+         stories = get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(limit: 30, page: page, channel_id:input['channel_id'])
 
 
         {
@@ -570,4 +577,13 @@
       }
     }
   }
+  #It is not applicable because select options are user specific not constant
+  #   pick_lists: {
+  #     folder: ->(connection) {
+  #       [
+  #          ['form_id', '683VTbcVBz'],
+  #          ['channel_id', 'jbt3h6CysWt7'],
+  #       ]
+  #     }
+  #   }
 }
