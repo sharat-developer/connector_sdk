@@ -7,7 +7,7 @@
       {
         name: 'account_id',
         optional: false,
-        hint: 'Your Pub API account ID'
+        hint: 'Your Public API account ID'
       }
     ],
 
@@ -46,6 +46,10 @@
             name: 'name',
             type: 'string'
           },
+          {
+            name: 'channel_type',
+            type: 'string'
+          }
         ]
       }
     },
@@ -179,7 +183,6 @@
     form_all: {
       input_fields: ->() {
          [
-           { name: 'account_id', optional: false },
            { name: 'category_id', optional: true },
            { name: 'page', optional: true },
            { name: 'limit', optional: true },
@@ -197,9 +200,9 @@
         end
 
         if input['category_id'].blank?
-           get("https://pubapi.bigtincan.com/#{input['account_id']}/alpha/form/all").params( page: input['page'], limit: input['limit'])
+           get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/all").params( page: input['page'], limit: input['limit'])
         else
-           get("https://pubapi.bigtincan.com/#{input['account_id']}/alpha/form/all").params(category_id: input['category_id'], page: input['page'], limit: input['limit'])
+           get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/all").params(category_id: input['category_id'], page: input['page'], limit: input['limit'])
         end
       },
 
@@ -221,11 +224,26 @@
     },
 
       #form: form_category/all
-
       form_category_all: {
 
+      input_fields: ->() {
+                 [
+                   { name: 'page', optional: true },
+                   { name: 'limit', optional: true },
+                 ]
+      },
+
       execute: ->(connection, input) {
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form_category/all")
+
+         if input['page'].blank?
+                       input['page'] = 1
+                  end
+
+                  if input['limit'].blank?
+                       input['limit'] = 10
+         end
+
+        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form_category/all").params(limit:input['limit'], page:input['page'])
       },
 
       output_fields: ->(object_definitions) {
@@ -282,13 +300,25 @@
 
     #story: story/all
     story_all: {
+
       input_fields: ->() {
          [
-           { name: 'channel_id', optional: true }
+           { name: 'channel_id', optional: true },
+           { name: 'page', optional: true },
+           { name: 'limit', optional: true },
          ]
       },
+
       execute: ->(connection, input) {
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(channel_id: input['channel_id'])
+         if input['page'].blank?
+                       input['page'] = 1
+                  end
+
+                  if input['limit'].blank?
+                       input['limit'] = 10
+        end
+
+        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(channel_id: input['channel_id'], limit:input['limit'], page:input['page'])
       },
       output_fields: ->(object_definitions) {
         [
@@ -311,9 +341,7 @@
     story_get: {
       input_fields: ->() {
          [
-
            { name: 'story_perm_id', optional: false },
-
          ]
       },
       execute: ->(connection, input) {
@@ -323,9 +351,10 @@
         [
          { name: 'trace_id',  type: 'string'},
 
-         { name: 'data',
-             type: :object,
-             properties: object_definitions['single_story']},
+         {
+           name: 'data',
+           type: :object,
+           properties: object_definitions['single_story']},
         ]
       }
     },
@@ -404,9 +433,7 @@
 
     input_fields: ->() {
          [
-
            { name: 'revision_id', optional: false },
-
          ]
       },
    execute: ->(connection, input) {
@@ -423,28 +450,45 @@
       }
    },
 
-  #channal: channel/all
-  channel_all: {
+    #channal: channel/all
+    channel_all: {
 
-      execute: ->(connection, input) {
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/channel/all")
+        input_fields: ->() {
+           [
+             { name: 'page', optional: true },
+             { name: 'limit', optional: true },
+           ]
+        },
+
+        execute: ->(connection, input) {
+           if input['page'].blank?
+               input['page'] = 1
+          end
+
+          if input['limit'].blank?
+               input['limit'] = 10
+          end
+
+          get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/channel/all").params(limit:input['limit'], page:input['page'])
+        },
+        output_fields: ->(object_definitions) {
+          [
+           { name: 'page',  type: 'integer'},
+           { name: 'page_total',  type: 'integer'},
+           { name: 'limit',  type: 'integer'},
+           { name: 'total_count',  type: 'integer'},
+           { name: 'next_page',  type: 'integer'},
+           { name: 'prev_page',  type: 'integer'},
+           { name: 'current_count',  type: 'integer'},
+           {
+               name: 'data',
+               type: :array,
+               of: :object,
+               properties: object_definitions['channel']
+           },
+          ]
+        }
       },
-      output_fields: ->(object_definitions) {
-        [
-         { name: 'page',  type: 'integer'},
-         { name: 'page_total',  type: 'integer'},
-         { name: 'limit',  type: 'integer'},
-         { name: 'total_count',  type: 'integer'},
-         { name: 'next_page',  type: 'integer'},
-         { name: 'prev_page',  type: 'integer'},
-         { name: 'current_count',  type: 'integer'},
-         { name: 'data',
-             type: :array,
-             of: :object,
-             properties: object_definitions['channel']},
-        ]
-      }
-    },
   },
 
   triggers: {
@@ -455,7 +499,6 @@
 
       input_fields: ->() {
         [
-          { name: 'account_id', optional: false, type: :string },
           { name: 'form_id', optional: false, type: :string }
         ]
       },
