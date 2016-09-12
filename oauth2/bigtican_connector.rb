@@ -30,7 +30,7 @@
         headers('Authorization': "Bearer #{access_token}")
     }
   }
-},
+ },
 
   object_definitions: {
 
@@ -179,6 +179,7 @@
         ]
       }
     },
+
     # form: form/all
     form_all: {
       input_fields: ->() {
@@ -310,13 +311,14 @@
       },
 
       execute: ->(connection, input) {
-         if input['page'].blank?
-                       input['page'] = 1
-                  end
 
-                  if input['limit'].blank?
-                       input['limit'] = 10
-        end
+         if input['page'].blank?
+            input['page'] = 1
+         end
+
+         if input['limit'].blank?
+            input['limit'] = 10
+         end
 
         get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(channel_id: input['channel_id'], limit:input['limit'], page:input['page'])
       },
@@ -349,12 +351,14 @@
       },
       output_fields: ->(object_definitions) {
         [
+
          { name: 'trace_id',  type: 'string'},
 
          {
            name: 'data',
            type: :object,
-           properties: object_definitions['single_story']},
+           properties: object_definitions['single_story']
+         },
         ]
       }
     },
@@ -438,7 +442,7 @@
       },
    execute: ->(connection, input) {
         delete("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/archive/#{input['revision_id']}")
-      },
+   },
    output_fields: ->(object_definitions) {
         [
          { name: 'data',
