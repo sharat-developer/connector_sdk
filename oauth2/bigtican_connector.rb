@@ -166,33 +166,29 @@
              input['limit'] = 10
         end
 
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/data/#{input['form_id']}").params(page: input['page'], limit: input['limit'])
+        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/data/#{input['form_id']}").params(page: input['page'], limit: input['limit'])['data']
       },
 
        output_fields: ->(object_definitions) {
         [
          {
-             name: 'data',
+             name: 'columns',
              type: :array,
              of: :object,
              properties: [
-                 {
-                   name: 'data', type: :object,
-                   properties: [
-                    { name: 'columns', type: :array, of: :object },
-                   ]
-                 },
-                 { name: 'total_submissions', type: 'integer' },
-                 { name: 'submission_current_count', type: 'integer' },
-                 { name: 'submission_limit', type: 'integer'},
-                 { name: 'submission_page', type: 'integer' },
-                 { name: 'submission_next_page', type: 'integer' },
-                 { name: 'submission_prev_page', type: 'integer' },
-                 { name: 'submissions', type: :array, of: :object, properties: object_definitions['form_submission_data'] }
-               ]
-            }
-        ]
-      }
+                     { name: 'columns', type: :array, of: :object },
+             ]
+         },
+         { name: 'total_submissions', type: 'integer' },
+         { name: 'submission_current_count', type: 'integer' },
+         { name: 'submission_limit', type: 'integer'},
+         { name: 'submission_page', type: 'integer' },
+         { name: 'submission_next_page', type: 'integer' },
+         { name: 'submission_prev_page', type: 'integer' },
+         { name: 'submissions', type: :array, of: :object, properties: object_definitions['form_submission_data'] }
+         ]
+       }
+
     },
 
     # form: form/all
@@ -287,10 +283,6 @@
       },
 
       execute: ->(connection, input) {
-
-        if input['include_data_sources'].blank?
-             input['include_data_sources'] = 'true'
-        end
 
         get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{input['form_id']}").params(include_data_sources: input['include_data_sources'])
 
