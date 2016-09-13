@@ -577,13 +577,4 @@
       }
     }
   }
-  #It is not applicable because select options are user specific not constant
-  #   pick_lists: {
-  #     folder: ->(connection) {
-  #       [
-  #          ['form_id', '683VTbcVBz'],
-  #          ['channel_id', 'jbt3h6CysWt7'],
-  #       ]
-  #     }
-  #   }
 }
