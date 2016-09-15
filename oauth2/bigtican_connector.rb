@@ -273,35 +273,73 @@
       }
     },
 
-   #form: form/get
-   get_form: {
-      input_fields: ->() {
-         [
-           { name: 'form_id', optional: false },
-           { name: 'include_data_sources', optional: true },
-         ]
-      },
-
-      execute: ->(connection, input) {
-
-        get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{input['form_id']}").params(include_data_sources: input['include_data_sources'])
-
-      },
-
-      output_fields: ->(object_definitions) {
-        [
-         { name: 'data',
-             type: :array,
-             of: :object,
-             properties: [
-               {name: 'id', type: 'string'},
-               {name: 'name', type: 'string'},
-               {name: 'form_data', type: :array, of: :object}
-             ]
+    #form: form/get
+      get_form: {
+         input_fields: ->() {
+            [
+              { name: 'form_id', optional: false },
+              { name: 'include_data_sources', optional: true },
+            ]
          },
-        ]
-      }
+
+         execute: ->(connection, input) {
+
+           if input['include_data_sources'].blank?
+                input['include_data_sources'] = true
+           end
+
+           get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{input['form_id']}").params(include_data_sources: input['include_data_sources'])['data']
+
+         },
+
+           output_fields: ->(object_definitions) {
+           [
+            { name: 'id', type: 'string' },
+            { name: 'name', type: 'string' },
+            { name: 'form_data',
+              type: :object,
+              properties: [
+                { name: 'fields', type: :array, of: :object, properties: [
+                    { name: 'type', type: 'string'},
+                    { name: 'value', type: 'string'},
+                    { name: 'label', type: 'string'},
+                  ] }
+              ]
+            }
+           ]
+         },
     },
+
+    #form: form/get fields only
+          list_form_fields: {
+             input_fields: ->() {
+                [
+                  { name: 'form_id', optional: false },
+                ]
+             },
+
+             execute: ->(connection, input) {
+
+               if input['include_data_sources'].blank?
+                    input['include_data_sources'] = true
+               end
+
+               get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{input['form_id']}")['data']['form_data']
+
+             },
+
+             output_fields: ->(object_definitions) {
+
+                  [
+                    { name: 'fields', type: :array, of: :object, properties: [
+                        { name: 'type', type: 'string'},
+                        { name: 'value', type: 'string'},
+                        { name: 'label', type: 'string'},
+                      ] }
+                  ]
+
+             },
+        },
 
 
     #story: story/all
