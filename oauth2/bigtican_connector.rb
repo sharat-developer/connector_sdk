@@ -304,17 +304,11 @@
              payload_object = { title: input['title'], channels: [{id: input['channel_id']}]}
         end
 
-        put("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/edit/#{input['revision_id']}").payload(payload_object)
+        put("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/edit/#{input['revision_id']}").payload(payload_object)['data']
       },
 
       output_fields: ->(object_definitions) {
-        [
-           {
-             name: 'data',
-             type: :object,
-             properties: object_definitions['single_story']
-           },
-        ]
+        object_definitions['single_story']
       }
     },
 
@@ -327,17 +321,13 @@
          ]
       },
    execute: ->(connection, input) {
-        delete("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/archive/#{input['revision_id']}")
+        delete("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/archive/#{input['revision_id']}")['data']
    },
    output_fields: ->(object_definitions) {
         [
-         { name: 'data',
-           type: :object,
-           properties: [
-             {name:'deleted', type:'boolean'}
-          ]},
+         {name:'deleted', type:'boolean'}
         ]
-      }
+    }
    },
 
   },
