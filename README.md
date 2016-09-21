@@ -81,23 +81,23 @@ connection: {
 
   fields: [
     {
-      name: 'username',
+      name: "username",
       optional: true,
-      hint: 'Your email used for login'
+      hint: "Your email used for login"
     },
     {
-      name: 'password',
-      control_type: 'password',
+      name: "password",
+      control_type: "password",
     }
   ],
 
   authorization: {
-    type: 'basic_auth',
+    type: "basic_auth",
 
-    credentials: ->(connection) {
-      user(connection['username'])
-      password(connection['password'])
-    }
+    credentials: lambda do |connection|
+      user(connection["username"])
+      password(connection["password"])
+    end
   }
 }
 ```
@@ -113,21 +113,21 @@ connection: {
 
   fields: [
     {
-      name: 'api_key',
+      name: "api_key",
       optional: false,
-      hint: 'Profile (top right) > Settings > Your API Keys'
+      hint: "Profile (top right) > Settings > Your API Keys"
     }
   ],
 
   authorization: {
-    type: 'basic_auth',
+    type: "basic_auth",
 
     # close.io uses api key only for authentication. treats apikey as username and password left blank
     # curl -u "{your api_key}:" "https://app.close.io/api/v1/me/"
-    credentials: ->(connection) {
-      user(connection['api_key'])
+    credentials: lambda do |connection|
+      user(connection["api_key"])
       password("")
-    }
+    end
   }
 }
 ```
@@ -143,22 +143,22 @@ connection: {
 
   fields: [
     {
-      name: 'api_token',
-      control_type: 'password',
-      label: 'Toggl API token',
-      hint: 'Available in "My Profile" page'
+      name: "api_token",
+      control_type: "password",
+      label: "Toggl API token",
+      hint: "Available in 'My Profile' page"
     }
   ],
 
   authorization: {
-    type: 'basic_auth',
+    type: "basic_auth",
 
     # Toggl API expect the token to be sent as user name and the string 'api_token' as the password
     # curl -u "{your api_token}:api_token" "https://www.toggl.com/api/v8/me"
-    credentials: ->(connection) {
-      user(connection['api_token'])
-      password('api_token')
-    }
+    credentials: lambda do |connection|
+      user(connection["api_token"])
+      password("api_token")
+    end
   }
 }
 ```
@@ -185,24 +185,24 @@ connection: {
 
   fields: [
     {
-      name: 'helpdesk',
-      control_type: 'subdomain',
-      url: '.freshdesk.com',
-      hint: 'Your helpdesk name as found in your Freshdesk URL'
+      name: "helpdesk",
+      control_type: "subdomain",
+      url: ".freshdesk.com",
+      hint: "Your helpdesk name as found in your Freshdesk URL"
     },
     {
-      name: 'api_key',
-      control_type: 'password',
-      label: 'API key'
+      name: "api_key",
+      control_type: "password",
+      label: "API key"
     }
   ],
 
   authorization: {
-    type: 'api_key',
+    type: "api_key",
 
-    credentials: ->(connection) {
-      params(api_key: connection['api_key'])
-    }
+    credentials: lambda do |connection|
+      params(api_key: connection["api_key"])
+    end
   }
 }
 ```
@@ -215,23 +215,23 @@ For a more secure method of authentication, we recommend using OAuth 2.0. It is 
 connection: {
 
   authorization: {
-    type: 'oauth2',
+    type: "oauth2",
 
-    authorization_url: ->() {
-      'https://www.pushbullet.com/authorize?response_type=code'
-    },
+    authorization_url: lambda do
+      "https://www.pushbullet.com/authorize?response_type=code"
+    end,
 
-    token_url: ->() {
-      'https://api.pushbullet.com/oauth2/token'
-    },
+    token_url: lambda do
+      "https://api.pushbullet.com/oauth2/token"
+    end,
 
-    client_id: 'YOUR_PUSHBULLET_CLIENT_ID',
+    client_id: "YOUR_PUSHBULLET_CLIENT_ID",
 
-    client_secret: 'YOUR_PUSHBULLET_CLIENT_SECRET',
+    client_secret: "YOUR_PUSHBULLET_CLIENT_SECRET",
 
-    credentials: ->(connection, access_token) {
-      headers('Authorization': "Bearer #{access_token}")
-    }
+    credentials: lambda do |connection, access_token|
+      headers("Authorization": "Bearer #{access_token}")
+    end
   }
 }
 ```
@@ -259,23 +259,23 @@ So to adjust to suit this requirement, define the credentials portion like so:
 connection: {
 
   authorization: {
-    type: 'oauth2',
+    type: "oauth2",
 
-    authorization_url: ->() {
-      'https://podio.com/oauth/authorize'
-    },
+    authorization_url: lambda do
+      "https://podio.com/oauth/authorize"
+    end,
 
-    token_url: ->() {
-      'https://podio.com/oauth/token'
-    },
+    token_url: lambda do
+      "https://podio.com/oauth/token"
+    end,
 
-    client_id: 'YOUR_PODIO_CLIENT_ID',
+    client_id: "YOUR_PODIO_CLIENT_ID",
 
-    client_secret: 'YOUR_PODIO_CLIENT_SECRET',
+    client_secret: "YOUR_PODIO_CLIENT_SECRET",
 
-    credentials: ->(connection, access_token) {
-      headers('Authorization': "OAuth2 #{access_token}")
-    }
+    credentials: lambda do |connection, access_token|
+      headers("Authorization": "OAuth2 #{access_token}")
+    end
   }
 }
 ```
@@ -298,19 +298,19 @@ actions: {
 
   get_lead_by_id: {
 
-    input_fields: ->() {
+    input_fields: lambda do
       [
         { name: "lead_id", optional: false }
       ]
-    },
+    end,
 
-    execute: ->(connection, input) {
-      get("https://app.close.io/api/v1/lead/#{input['lead_id']}/")
-    },
+    execute: lambda do |connection, input|
+      get("https://app.close.io/api/v1/lead/#{input["lead_id"]}/")
+    end,
 
-    output_fields: ->(object_definitions) {
-      object_definitions['lead']
-    }
+    output_fields: lambda do |object_definitions|
+      object_definitions["lead"]
+    end
   }
 }
 ```
@@ -324,12 +324,12 @@ Other endpoints require parameters to access certain details, instead of accessi
 A GET request can have parameters added to the request like so:
 
 ```ruby
-execute: ->(connection, input) {
+execute: lambda do |connection, input|
   {
     'companies': get("https://#{connection['deployment']}.api.accelo.com/api/v0/companies.json").
-                 params(_search: input['company_name'])['response']
+                 params(_search: input["company_name"])["response"]
   }
-}
+end
 ```
 
 A POST or PUT or PATCH request can have payloads attached as well. There are 2 ways you can do this.
@@ -337,22 +337,24 @@ A POST or PUT or PATCH request can have payloads attached as well. There are 2 w
 Add payloads to the method
 
 ```ruby
-execute: ->(connection, input) {
+execute: lambda do |connection, input|
   {
-    'users': get("https://#{connection['helpdesk']}.freshdesk.com/api/users.json", input)['results']
+    "users": get("https://#{connection['helpdesk']}.freshdesk.com/api/users.json", input)["results"]
   }
-}
+end
 ```
 
 Add payloads using the payload method
 
 ```ruby
-execute: ->(connection,input) {
+execute: lambda do |connection, input|
   post("https://api.pushbullet.com/v2/pushes").
-    payload(email: input['email'],
-            title: input['title'],
-            body: input['body'])
-}
+    payload(
+      email: input["email"],
+      title: input["title"],
+      body: input["body"]
+    )
+end
 ```
 
 ### Methods
@@ -404,35 +406,35 @@ triggers: {
 
     type: :paging_desc,
 
-    input_fields: ->() {
+    input_fields: lambda do
       [
-        { name: 'created_after', type: :timestamp, optional: false }
+        { name: "created_after", type: :timestamp, optional: false }
       ]
-    },
+    end,
 
-    poll: ->(connection, input, last_created_since) {
-      created_since = (last_created_since || input['created_after'] || Time.now).to_i # Accelo expects Unix Time Stamp
+    poll: lambda do |connection, input, last_created_since|
+      created_since = (last_created_since || input["created_after"] || Time.now).to_i # Accelo expects Unix Time Stamp
 
       companies = get("https://#{connection['deployment']}.api.accelo.com/api/v0/companies.json").
                  params(_filters: "date_created_after(#{created_since})",
                         _limit: 2,
-                        _fields: 'date_created,website,status,phone,fax')['response']
+                        _fields: "date_created,website,status,phone,fax")["response"]
 
-      next_created_since = companies.last['date_created'] unless companies.blank?
+      next_created_since = companies.last["date_created"] unless companies.blank?
 
       {
         events: companies,
         next_page: next_created_since
       }
-    },
+    end,
 
-    dedup: ->(company) {
-      company['id']
-    },
+    dedup: lambda do |company|
+      company["id"]
+    end,
 
-    output_fields: ->(object_definitions) {
-      object_definitions['company']
-    }
+    output_fields: lambda do |object_definitions|
+      object_definitions["company"]
+    end
   }
 }
 ```
@@ -480,34 +482,34 @@ triggers: {
   new_message: {
     type: :paging_desc,
 
-    input_fields: ->(object_definitions) {
-      object_definitions['room'].only('id')
-    },
+    input_fields: lambda do |object_definitions|
+      object_definitions["room"].only("id")
+    end,
 
-    webhook_subscribe: ->(webhook_url, connection, input, flow_id) {
-      post('https://api.ciscospark.com/v1/webhooks',
-           name: "Workato recipe #{flow_id}",
+    webhook_subscribe: lambda do |webhook_url, connection, input, recipe_id|
+      post("https://api.ciscospark.com/v1/webhooks",
+           name: "Workato recipe #{recipe_id}",
            targetUrl: webhook_url,
-           resource: 'messages',
-           event: 'created',
-           filter: "roomId=#{input['id']}")
-    },
+           resource: "messages",
+           event: "created",
+           filter: "roomId=#{input["id"]}")
+    end,
 
-    webhook_notification: ->(input, payload) {
-      payload['data']
-    },
+    webhook_notification: lambda do |input, payload|
+      payload["data"]
+    end,
 
-    webhook_unsubscribe: ->(webhook) {
-      delete("https://api.ciscospark.com/v1/webhooks/#{webhook['id']}")
-    },
+    webhook_unsubscribe: lambda do |webhook|
+      delete("https://api.ciscospark.com/v1/webhooks/#{webhook["id"]}")
+    end,
 
-    dedup: ->(message) {
-      message['id']
-    },
+    dedup: lambda do |message) {
+      message["id"]
+    end,
 
-    output_fields: ->(object_definitions) {
-      object_definitions['message']
-    }
+    output_fields: lambda do |object_definitions|
+      object_definitions["message"]
+    end
   }
 }
 ```
@@ -535,31 +537,31 @@ The most basic way to build an object definition is to define the field name and
 ```ruby
 object_definitions: {
   push: {
-    fields: ->() {
+    fields: lambda do
       [
-        { name: 'active', type: :boolean },
-        { name: 'body' },
-        { name: 'created' },
-        { name: 'direction' },
-        { name: 'dismissed', type: :boolean },
-        { name: 'iden' },
-        { name: 'modified' },
-        { name: 'receiver_email' },
-        { name: 'receiver_email_normalized' },
-        { name: 'receiver_iden' },
-        { name: 'sender_email' },
-        { name: 'sender_email_normalized' },
-        { name: 'sender_iden' },
-        { name: 'sender_name' },
-        { name: 'title' },
-        { name: 'type' },
+        { name: "active", type: :boolean },
+        { name: "body" },
+        { name: "created" },
+        { name: "direction" },
+        { name: "dismissed", type: :boolean },
+        { name: "iden" },
+        { name: "modified" },
+        { name: "receiver_email" },
+        { name: "receiver_email_normalized" },
+        { name: "receiver_iden" },
+        { name: "sender_email" },
+        { name: "sender_email_normalized" },
+        { name: "sender_iden" },
+        { name: "sender_name" },
+        { name: "title" },
+        { name: "type" },
       ]
-    }
+    end
   }
 }
 ```
 
-In this example, the object “Push” is being defined in the fields lambda literal `->()`
+In this example, the object “Push” is being defined in the fields lambda literal `lambda do |)`
 
 Defined as an array of objects. Each field object corresponds to a field in the comment object.
 
@@ -569,10 +571,10 @@ Defined as an array of objects. Each field object corresponds to a field in the 
 object_definitions: {
 
   form: {
-    fields: ->(connection) {
-      get("https://api.unbounce.com/pages/#{connection['page_id']}/form_fields")['formFields'].
-        map { |field| { name: field['id'] } }
-    }
+    fields: lambda do |connection|
+      get("https://api.unbounce.com/pages/#{connection['page_id']}/form_fields")["formFields"].
+        map { |field| { name: field["id"] } }
+    end
   }
 }
 ```
@@ -613,15 +615,15 @@ Typically, this should be a request that will always be accessible to any user.
 Here are some examples:
 
 ```ruby
-test: ->(connection) {
+test: lambda do |connection|
   get("https://person.clearbit.com/v1/people/email/eeshansim@gmail.com")
-}
+end
 ```
 
 ```ruby
-test: ->(connection) {
+test: lambda do |connection|
   get("https://app.clicktime.com/api/1.3/session")
-}
+end
 ```
 
 ## Pick List
@@ -638,33 +640,34 @@ Pick list is defined as a array of selections. Each selection is an array made u
 The first element in the selection array is the value displayed and the second element is the value of that selection.
 ```ruby
 pick_lists: {
-  folder: ->(connection) {
+  folder: lambda do |connection|
     [
+      # Display name, value
       ["Root","111390"],
       ["Recycle Bin","235611"]
     ]
-  }
+  end
 }
 ```
 
 Dynamic example:
 ```ruby
 pick_lists: {
-  folder: ->(connection) {
-    get("https://www.wrike.com/api/v3/folders")['data'].
-      map { |folder| [folder['title'], folder['id']] }
-  }
+  folder: lambda do |connection|
+    get("https://www.wrike.com/api/v3/folders")["data"].
+      map { |folder| [folder["title"], folder["id"]] }
+  end
 }
 ```
 After making a GET requests for all folders available, the pick list is populated with folder `id`s and displays the corresponding folder `title`
 
 ### Usage
 ```ruby
-input_fields: ->(object_definitions) {
+input_fields: lambda do |object_definitions|
   [
-    { name: 'folder_id', control_type: 'select', pick_list: 'folder' }
+    { name: "folder_id", control_type: "select", pick_list: "folder" }
   ]
-}
+end
 ```
 
 # Example Adapters
