@@ -20,26 +20,26 @@
     authorization: {
       type: "custom_auth",
 
-      credentials: ->(connection) {
+      credentials: ->(connection) do
         headers("Authorization": "Bearer #{connection["api_token"]}")
-      }
+      end
     }
   },
 
-  test: ->(connection) {
+  test: ->() {
     true
   },
 
   actions: {
     query_timesheets: {
-      input_fields: ->() {
+      input_fields: ->() do
         [
           { name: "start_date", type: :timestamp },
           { name: "end_date", type: :timestamp },
         ]
-      },
+      end,
 
-      execute: ->(connection, input) {
+      execute: ->(connection, input) do
         {
           timesheets: get(
             "https://#{connection["subdomain"]}.tsheets.com/api/v1/timesheets",
@@ -49,34 +49,34 @@
             }
           )["results"]["timesheets"].values
         }
-      },
+      end,
 
-      output_fields: ->(object_definitions) {
+      output_fields: ->() do
         [
-          { name: "id", type: "integer"},
-          { name: "user_id", type: "integer"},
-          { name: "jobcode_id", type: "integer"},
-          { name: "start", type: "timestamp"},
-          { name: "end", type: "timestamp"},
-          { name: "duration", type: "integer"},
-          { name: "date", type: "timestamp"},
-          { name: "tz", type: "integer"},
-          { name: "tz_str", type: "string"},
-          { name: "type", type: "string"},
-          { name: "location", type: "string"},
-          { name: "on_the_clock", type: "boolean"},
-          { name: "locked", type: "integer"},
-          { name: "notes", type: "string"},
+          { name: "id", type: "integer" },
+          { name: "user_id", type: "integer" },
+          { name: "jobcode_id", type: "integer" },
+          { name: "start", type: "timestamp" },
+          { name: "end", type: "timestamp" },
+          { name: "duration", type: "integer" },
+          { name: "date", type: "timestamp" },
+          { name: "tz", type: "integer" },
+          { name: "tz_str", type: "string" },
+          { name: "type", type: "string" },
+          { name: "location", type: "string" },
+          { name: "on_the_clock", type: "boolean" },
+          { name: "locked", type: "integer" },
+          { name: "notes", type: "string" },
           {
             name: "customfields",
             type: "object",
             properties: [
               # Add your custom fields here
-              # { name: "71138", label: "location"},
+              # { name: "71138", label: "location" },
             ]
           }
         ]
-      }
+      end
     },
   },
 }
