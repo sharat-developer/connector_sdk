@@ -42,14 +42,14 @@
       execute: lambda do |connection, input|
         {
           timesheets: get(
-            "https://#{connection["subdomain"]}.tsheets.com/api/v1/timesheets",
+            "https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets",
             start_date: input["start_date"].to_date.to_s,
-            end_date: input["end_date"].to_date.to_s,
+            end_date: input["end_date"].to_date.to_s
           )["results"]["timesheets"].values
         }
       end,
 
-      output_fields: lambda do 
+      output_fields: lambda do
         [
           {
             name: "timesheets",
