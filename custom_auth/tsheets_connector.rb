@@ -1,6 +1,6 @@
 # Adds operations missing from the standard adapter.
 {
-  title: "TSheets custom",
+  title: "TSheets(custom)",
 
   connection: {
     fields: [
@@ -36,7 +36,7 @@
 
   actions: {
     query_timesheets: {
-      description: 'Query <span class="provider">timesheets</span> in <span class="provider">TSheet</span>',
+      description: 'Query <span class="provider">timesheets</span> in <span class="provider">TSheets(custom)</span>',
 
       input_fields: lambda do
         [
