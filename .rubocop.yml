@@ -867,7 +867,7 @@ Style/TrailingCommaInArguments:
 Style/TrailingCommaInLiteral:
   Description: 'Checks for trailing comma in array and hash literals.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
-  Enabled: true
+  Enabled: false
 
 Style/TrailingWhitespace:
   Description: 'Avoid trailing whitespace.'
