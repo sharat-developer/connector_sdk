@@ -15,6 +15,7 @@
       {
         name: "api_token",
         label: "API token",
+        control_type: "password",
         optional: false,
       },
     ],
