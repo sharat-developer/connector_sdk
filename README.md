@@ -82,11 +82,11 @@ connection: {
   fields: [
     {
       name: "username",
-      optional: true,
       hint: "Your email used for login"
     },
     {
       name: "password",
+      optional: false,
       control_type: "password",
     }
   ],
@@ -145,7 +145,8 @@ connection: {
     {
       name: "api_token",
       control_type: "password",
-      label: "Toggl API token",
+      label: "API token",
+      optional: false,
       hint: "Available in 'My Profile' page"
     }
   ],
@@ -188,11 +189,13 @@ connection: {
       name: "helpdesk",
       control_type: "subdomain",
       url: ".freshdesk.com",
+      optional: false,
       hint: "Your helpdesk name as found in your Freshdesk URL"
     },
     {
       name: "api_key",
       control_type: "password",
+      optional: false,
       label: "API key"
     }
   ],
@@ -492,7 +495,7 @@ triggers: {
            targetUrl: webhook_url,
            resource: "messages",
            event: "created",
-           filter: "roomId=#{input["id"]}")
+           filter: "roomId=#{input['id']}")
     end,
 
     webhook_notification: lambda do |input, payload|
@@ -500,7 +503,7 @@ triggers: {
     end,
 
     webhook_unsubscribe: lambda do |webhook|
-      delete("https://api.ciscospark.com/v1/webhooks/#{webhook["id"]}")
+      delete("https://api.ciscospark.com/v1/webhooks/#{webhook['id']}")
     end,
 
     dedup: lambda do |message) {
