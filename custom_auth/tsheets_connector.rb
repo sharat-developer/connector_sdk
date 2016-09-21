@@ -31,7 +31,7 @@
 
   test: lambda do |connection|
     get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
-    params(per_page: 1)["results"]["timesheets"].values
+      params(per_page: 1)["results"]["timesheets"].values
   end,
 
   actions: {
@@ -48,11 +48,11 @@
       execute: lambda do |connection, input|
         {
           timesheets: get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
-                      params(
-                        start_date: input["start_date"].to_date.to_s,
-                        end_date: input["end_date"].to_date.to_s,
-                        per_page: 100
-                      )["results"]["timesheets"].values
+                        params(
+                          start_date: input["start_date"].to_date.to_s,
+                          end_date: input["end_date"].to_date.to_s,
+                          per_page: 100
+                        )["results"]["timesheets"].values
         }
       end,
 
@@ -93,7 +93,7 @@
       sample_output: lambda do |connection|
         {
           timesheets: get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
-                      params(per_page: 1)["results"]["timesheets"].values
+                        params(per_page: 1)["results"]["timesheets"].values
         }
       end
     },
