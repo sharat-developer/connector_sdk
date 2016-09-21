@@ -41,15 +41,14 @@
 
       execute: ->(connection, input) {
         {
-          timesheets: get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets",
+          timesheets: get(
+            "https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets",
             {
               start_date: input['start_date'].to_date.to_s,
               end_date: input['end_date'].to_date.to_s,
             }
           )['results']['timesheets'].values
         }
-
-
       },
 
       output_fields: ->(object_definitions) {
@@ -68,7 +67,9 @@
           { name: 'on_the_clock', type: 'boolean'},
           { name: 'locked', type: 'integer'},
           { name: 'notes', type: 'string'},
-          { name: 'customfields', type: 'object', properties: [
+          { name: 'customfields',
+            type: 'object',
+            properties: [
               # Add your custom fields here
               # { name: "71138", label: 'location'},
             ]
