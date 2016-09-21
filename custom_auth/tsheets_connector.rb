@@ -21,7 +21,7 @@
       type: "custom_auth",
 
       credentials: lambda do
-        headers("Authorization": "Bearer #{connection["api_token"]}")
+        headers("Authorization": "Bearer #{connection['api_token']}")
       end
     }
   },
