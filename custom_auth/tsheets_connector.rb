@@ -22,18 +22,21 @@
     authorization: {
       type: "custom_auth",
 
-      credentials: lambda do
+      credentials: lambda do |connection|
         headers("Authorization": "Bearer #{connection['api_token']}")
       end
     }
   },
 
-  test: lambda do
-    true
+  test: lambda do |connection|
+    get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
+    params(per_page: 1)["results"]["timesheets"].values
   end,
 
   actions: {
     query_timesheets: {
+      description: 'Query <span class="provider">timesheets</span> in <span class="provider">TSheet</span>',
+
       input_fields: lambda do
         [
           { name: "start_date", type: :timestamp, optional: false },
@@ -43,11 +46,12 @@
 
       execute: lambda do |connection, input|
         {
-          timesheets: get(
-            "https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets",
-            start_date: input["start_date"].to_date.to_s,
-            end_date: input["end_date"].to_date.to_s
-          )["results"]["timesheets"].values
+          timesheets: get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
+                      params(
+                        start_date: input["start_date"].to_date.to_s,
+                        end_date: input["end_date"].to_date.to_s,
+                        per_page: 100
+                      )["results"]["timesheets"].values
         }
       end,
 
@@ -83,6 +87,13 @@
             ]
           }
         ]
+      end,
+
+      sample_output: lambda do |connection|
+        {
+          timesheets: get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
+                      params(per_page: 1)["results"]["timesheets"].values
+        }
       end
     },
   },
