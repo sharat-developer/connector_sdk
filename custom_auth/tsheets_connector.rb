@@ -9,11 +9,13 @@
         control_type: "subdomain",
         url: ".tsheets.com",
         label: "TSheets subdomain",
+        optional: false,
         hint: "Your TSheets sub domain name as found in your TSheets URL"
       },
       {
         name: "api_token",
         label: "API token",
+        optional: false,
       },
     ],
 
@@ -34,8 +36,8 @@
     query_timesheets: {
       input_fields: lambda do
         [
-          { name: "start_date", type: :timestamp },
-          { name: "end_date", type: :timestamp },
+          { name: "start_date", type: :timestamp, optional: false },
+          { name: "end_date", type: :timestamp, optional: false }
         ]
       end,
 
