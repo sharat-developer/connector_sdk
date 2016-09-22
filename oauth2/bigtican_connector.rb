@@ -260,14 +260,11 @@
       },
       execute: ->(connection, input) {
 
-        payload_object = { title: input['title'], description: input['description'], channels: [{id: input['channel_id']}] }
-
-        if input['title'].blank?
-             payload_object = { description: input['description'], channels: [{id: input['channel_id']}] }
-        end
-        if input['description'].blank?
-             payload_object = { title: input['title'], channels: [{id: input['channel_id']}] }
-        end
+        payload_object = {
+          title: input['title'].presence,
+          description: input['description'].presence,
+          channels: [ { id: input['channel_id'] } ]
+        }.compact
 
         post("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/add").payload(payload_object)
       },
@@ -295,14 +292,11 @@
       },
       execute: ->(connection, input) {
 
-        payload_object = { title: input['title'], description: input['description'], channels: [{id: input['channel_id']}]}
-
-        if input['title'].blank?
-             payload_object = { description: input['description'], channels: [{id: input['channel_id']}]}
-        end
-        if input['description'].blank?
-             payload_object = { title: input['title'], channels: [{id: input['channel_id']}]}
-        end
+        payload_object = {
+          title: input['title'].presence,
+          description: input['description'].presence,
+          channels: [ { id: input['channel_id'] } ]
+        }.compact
 
         put("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/edit/#{input['revision_id']}").payload(payload_object)['data']
       },
