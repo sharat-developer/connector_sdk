@@ -22,13 +22,13 @@
       type: "custom",
 
       credentials: lambda do |connection|
-        headers("Authorization": "Bearer #{connection["token"]}")
+        headers("Authorization": "Bearer #{connection['token']}")
       end
     }
   },
-  
+
   test: lambda do |connection|
-    get("#{connection["server"]}rest/default/V1/attributeMetadata/customer")
+    get("#{connection['server']}rest/default/V1/attributeMetadata/customer")
   end,
 
   object_definitions: {
@@ -43,7 +43,7 @@
         ]
       end
     },
-    
+
     order: {
       fields: lambda do
         [
@@ -96,8 +96,8 @@
           "pageSize" => page_size,
           "currentPage" => (page || 0)
         }
-        
-        response = get("#{connection["server"]}/rest/V1/customers/search", param)
+
+        response = get("#{connection['server']}/rest/V1/customers/search", param)
         
         next_page = if response["page_size"].blank? || response["page_size"] < page_size
                       0
@@ -110,7 +110,7 @@
           next_page: next_page
         }
       end,
-      
+
       output_fields: lambda do |object_definition|
         object_definition["customer"]
       end,
@@ -128,10 +128,10 @@
           "pageSize" => 1,
         }
 
-        get("#{connection["server"]}/rest/V1/customers/search", param)["items"].first || {}
+        get("#{connection['server']}/rest/V1/customers/search", param)["items"].first || {}
       end
     },
-    
+
     new_purchase_order: {
       description: "New <span class='provider'>purchase order</span> in <span class='provider'>Magento</span>",
 
@@ -142,7 +142,7 @@
           only("created_at").
           required("created_at")
       end,
-      
+
       poll: lambda do |connection, input, page|
         page_size = 100
 
@@ -153,7 +153,7 @@
                 "filters" => {
                   "0" => {
                     "field" => "created_at",
-                    "value" => "#{input["created_at"].to_time.utc.iso8601}",
+                    "value" => input["created_at"].to_time.utc.iso8601.to_s,
                     "conditionType" => "gt"
                   }
                 }
@@ -170,7 +170,7 @@
           "currentPage" => (page || 0)
         }
 
-        response = get("#{connection["server"]}/rest/V1/orders", param)
+        response = get("#{connection['server']}/rest/V1/orders", param)
 
         next_page = if response["page_size"].blank? || response["page_size"] < page_size
                       0
@@ -183,11 +183,11 @@
           next_page: next_page
         }
       end,
-  
+
       document_id: lambda do |order|
         order["entity_id"]
       end,
-      
+
       output_fields: lambda do |object_definition|
         object_definition["order"]
       end,
@@ -205,7 +205,7 @@
           "pageSize" => 1,
         }
 
-        get("#{connection["server"]}/rest/V1/orders", param)["items"].first || {}
+        get("#{connection['server']}/rest/V1/orders", param)["items"].first || {}
       end
     },
 
@@ -213,13 +213,13 @@
       description: "New/Updated <span class='provider'>purchase order</span> in <span class='provider'>Magento</span>",
 
       type: :paging_desc,
-      
+
       input_fields: lambda do |object_definition|
         object_definition["order"].
           only("updated_at").
           required("updated_at")
       end,
-      
+
       poll: lambda do |connection, input, page|
         page_size = 100
 
@@ -230,7 +230,7 @@
                 "filters" => {
                   "0" => {
                     "field" => "updated_at",
-                    "value" => "#{input["updated_at"].to_time.utc.iso8601}",
+                    "value" => input["updated_at"].to_time.utc.iso8601,
                     "conditionType" => "gt"
                   }
                 }
@@ -247,7 +247,7 @@
           "currentPage" => (page || 0)
         }
 
-        response = get("#{connection["server"]}/rest/V1/orders", param)
+        response = get("#{connection['server']}/rest/V1/orders", param)
 
         next_page = if response["page_size"].blank? || response["page_size"] < page_size
                       0
@@ -286,7 +286,7 @@
           "pageSize" => 1,
         }
 
-        get("#{connection["server"]}/rest/V1/orders", param)["items"].first || {}
+        get("#{connection['server']}/rest/V1/orders", param)["items"].first || {}
       end
     }
   }
