@@ -180,11 +180,11 @@
 
            output_fields: ->(object_definitions) {
            [
-            { name: 'id', type: 'string' },
-            { name: 'name', type: 'string' },
-            { name: 'form_data',
-              type: :object,
-              properties: [
+             { name: 'id', type: 'string' },
+             { name: 'name', type: 'string' },
+             { name: 'form_data',
+               type: :object,
+               properties: [
                 { name: 'fields', type: :array, of: :object, properties: [
                     { name: 'type', type: 'string'},
                     { name: 'value', type: 'string'},
@@ -196,7 +196,7 @@
          },
     },
 
-    #story: story/get
+    # story: story/get
     get_story: {
       input_fields: ->() {
          [
@@ -209,9 +209,8 @@
       output_fields: ->(object_definitions) {
         [
 
-         { name: 'trace_id',  type: 'string'},
-
-         {
+          { name: 'trace_id',  type: 'string'},
+          {
            name: 'data',
            type: :object,
            properties: object_definitions['single_story']
@@ -234,17 +233,18 @@
          },
          output_fields: ->(object_definitions) {
            [
-            { name: 'page',  type: 'integer'},
-            { name: 'page_total',  type: 'integer'},
-            { name: 'limit',  type: 'integer'},
-            { name: 'total_count',  type: 'integer'},
-            { name: 'next_page',  type: 'integer'},
-            { name: 'prev_page',  type: 'integer'},
-            { name: 'current_count',  type: 'integer'},
-            { name: 'data',
-                type: :array,
-                of: :object,
-                properties: object_definitions['single_story']},
+             { name: 'page',  type: 'integer'},
+             { name: 'page_total',  type: 'integer'},
+             { name: 'limit',  type: 'integer'},
+             { name: 'total_count',  type: 'integer'},
+             { name: 'next_page',  type: 'integer'},
+             { name: 'prev_page',  type: 'integer'},
+             { name: 'current_count',  type: 'integer'},
+             {
+               name: 'data',
+               type: :array,
+               of: :object,
+               properties: object_definitions['single_story']},
            ]
          }
     },
@@ -272,15 +272,15 @@
       output_fields: ->(object_definitions) {
         [
           {
-             name: 'data',
-             type: :object,
-             properties: object_definitions['single_story']
+            name: 'data',
+            type: :object,
+            properties: object_definitions['single_story']
           },
         ]
       }
     },
 
-    #story: story/edit
+    # story: story/edit
     update_story: {
       input_fields: ->() {
          [
@@ -306,7 +306,7 @@
       }
     },
 
-    #story: story/delete
+    # story: story/delete
     delete_story: {
 
     input_fields: ->() {
@@ -319,7 +319,7 @@
    },
    output_fields: ->(object_definitions) {
         [
-         {name:'deleted', type:'boolean'}
+          { name:'deleted', type:'boolean' }
         ]
     }
    },
@@ -334,9 +334,9 @@
 
        config_fields: [
           {
-             name: 'form_id',
-             label: 'Form ID',
-             optional: false,
+            name: 'form_id',
+            label: 'Form ID',
+            optional: false,
           }
        ],
 
@@ -370,7 +370,7 @@
 
       input_fields: ->() {
         [
-           { name: 'channel_id', optional: false, type: :string }
+          { name: 'channel_id', optional: false, type: "string" }
         ]
       },
 
@@ -378,9 +378,8 @@
 
         page ||= 1
 
-         #desc by default
-         stories = get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(limit: 30, page: page, channel_id:input['channel_id'])
-
+        # desc by default
+        stories = get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(limit: 30, page: page, channel_id: input['channel_id'])
 
         {
           next_page: stories['next_page'],
