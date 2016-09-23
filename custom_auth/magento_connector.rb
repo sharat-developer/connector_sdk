@@ -17,7 +17,7 @@
         hint: "Find out how to generate a token <a target='_blank' href='http://devdocs.magento.com/guides/v2.1//get-started/authentication/gs-authentication-token.html'>here</a>"
       }
     ],
-    
+
     authorization: {
       type: "custom",
 
