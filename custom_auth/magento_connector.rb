@@ -14,7 +14,7 @@
         name: "token",
         control_type: "password",
         optional: false,
-        hint: "Find out how to generate a token <a target="_blank" href="http://devdocs.magento.com/guides/v2.1//get-started/authentication/gs-authentication-token.html">here</a>"
+        hint: "Find out how to generate a token <a target='_blank' href='http://devdocs.magento.com/guides/v2.1//get-started/authentication/gs-authentication-token.html'>here</a>"
       }
     ],
     
@@ -60,7 +60,7 @@
 
   triggers: {
     new_customer: {
-      description: "New <span class="provider">customer</span> in <span class="provider">Magento</span>",
+      description: "New <span class='provider'>customer</span> in <span class='provider'>Magento</span>",
 
       type: :paging_desc,
       
@@ -133,7 +133,7 @@
     },
     
     new_purchase_order: {
-      description: "New <span class="provider">purchase order</span> in <span class="provider">Magento</span>",
+      description: "New <span class='provider'>purchase order</span> in <span class='provider'>Magento</span>",
 
       type: :paging_desc,
       
@@ -210,7 +210,7 @@
     },
 
     new_or_updated_purchase_order: {
-      description: "New/Updated <span class="provider">purchase order</span> in <span class="provider">Magento</span>",
+      description: "New/Updated <span class='provider'>purchase order</span> in <span class='provider'>Magento</span>",
 
       type: :paging_desc,
       
