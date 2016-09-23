@@ -98,7 +98,7 @@
         }
 
         response = get("#{connection['server']}/rest/V1/customers/search", param)
-        
+
         next_page = if response["page_size"].blank? || response["page_size"] < page_size
                       0
                     else
