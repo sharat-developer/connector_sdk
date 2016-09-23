@@ -724,3 +724,5 @@ end
 - [Neto connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/neto_connector.rb)
 
 - [TSheets connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/tsheets_connector.rb)
+
+- [Magento connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/magento_connector.rb)
