@@ -54,7 +54,7 @@
           { name: "updated_at", type: :timestamp }
           # additional fields here
         ]
-      end 
+      end
     }
   },
 
@@ -63,13 +63,13 @@
       description: "New <span class='provider'>customer</span> in <span class='provider'>Magento</span>",
 
       type: :paging_desc,
-      
+
       input_fields: lambda do |object_definition|
         object_definition["customer"].
           only("created_at").
           required("created_at")
       end,
-      
+
       poll: lambda do |connection, input, page|
         page_size = 100
 
@@ -80,7 +80,7 @@
                 "filters" => {
                   "0" => {
                     "field" => "created_at",
-                    "value" => "#{input["created_at"].to_time.utc.iso8601}",
+                    "value" => input["created_at"].to_time.utc.iso8601,
                     "conditionType" => "gt"
                   }
                 }
@@ -136,7 +136,7 @@
       description: "New <span class='provider'>purchase order</span> in <span class='provider'>Magento</span>",
 
       type: :paging_desc,
-      
+
       input_fields: lambda do |object_definition|
         object_definition["order"].
           only("created_at").
@@ -153,7 +153,7 @@
                 "filters" => {
                   "0" => {
                     "field" => "created_at",
-                    "value" => input["created_at"].to_time.utc.iso8601.to_s,
+                    "value" => input["created_at"].to_time.utc.iso8601,
                     "conditionType" => "gt"
                   }
                 }
