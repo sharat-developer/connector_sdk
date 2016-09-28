@@ -30,8 +30,12 @@
   },
 
   test: lambda do |connection|
+    # query for some record
     get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
-      params(per_page: 1)["results"]["timesheets"].values
+      params(
+        per_page: 1,
+        modified_before: Time.now.iso8601,
+      )["results"]["timesheets"]
   end,
 
   actions: {
@@ -46,13 +50,15 @@
       end,
 
       execute: lambda do |connection, input|
+        timesheets = get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
+        	params(
+            start_date: input["start_date"].to_date.to_s,
+            end_date: input["end_date"].to_date.to_s,
+            per_page: 100
+          )["results"]["timesheets"]
+        
         {
-          timesheets: get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
-                        params(
-                          start_date: input["start_date"].to_date.to_s,
-                          end_date: input["end_date"].to_date.to_s,
-                          per_page: 100
-                        )["results"]["timesheets"].values
+          timesheets: timesheets.present? ? timesheets.values : [] 
         }
       end,
 
@@ -81,8 +87,7 @@
                 name: "customfields",
                 type: "object",
                 properties: [
-                  # Add your custom fields here
-                  # { name: "71138", label: "location" },
+                  # your custom fields go here
                 ]
               }
             ]
@@ -91,9 +96,13 @@
       end,
 
       sample_output: lambda do |connection|
+        timesheets = get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
+        	params(
+            modified_before: Time.now.iso8601,
+            per_page: 1
+          )["results"]["timesheets"]
         {
-          timesheets: get("https://#{connection['subdomain']}.tsheets.com/api/v1/timesheets").
-                        params(per_page: 1)["results"]["timesheets"].values
+          timesheets: timesheets.present? ? timesheets.values[0..0] : [] 
         }
       end
     },
