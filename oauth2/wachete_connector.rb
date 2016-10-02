@@ -17,7 +17,7 @@
 
       client_secret: "WACHETE_CLIENT_SECRET",
 
-      credentials: lambda do |connection, access_token|
+      credentials: lambda do |_connection, access_token|
         headers("Authorization": "bearer #{access_token}")
       end
     }
@@ -69,17 +69,17 @@
     }
   },
 
-  test: lambda do |connection|
+  test: lambda do |_connection|
     get("https://api.wachete.com/v1/task/get")
   end,
 
   triggers: {
     new_notification: {
-      poll: lambda do |connection, input, last_updated_since|
+      poll: lambda do |_connection, _input, _last_updated_since|
         notifications = get("https://api.wachete.com/v1/alert/range").
-                          params(from: "2006-01-25T10: 37: 23.574Z",
-                                 to: "2030-01-23T10: 37: 23.574Z",
-                                 count: 1)
+                        params(from: "2006-01-25T10: 37: 23.574Z",
+                               to: "2030-01-23T10: 37: 23.574Z",
+                               count: 1)
         {
           events: notifications["data"]
         }
