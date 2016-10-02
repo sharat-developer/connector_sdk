@@ -707,6 +707,8 @@ end
 
 - [AMcards connector](https://github.com/workato/connector_sdk/blob/master/oauth2/amcards_connector.rb)
 
+- [Wachete connector](https://github.com/workato/connector_sdk/blob/master/oauth2/wachete_connector.rb)
+
 ## API Key Authentication Samples
 - [Gender API connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/gender_api_connector.rb)
 
