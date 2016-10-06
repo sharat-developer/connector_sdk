@@ -102,7 +102,7 @@ connection: {
 }
 ```
 
-To set up a basic authentication, simply define type: ‘basic_auth’ and include the appropriate values in `user()` and `password()` in the credentials section.
+To set up a basic authentication, simply define type: 'basic_auth' and include the appropriate values in `user()` and `password()` in the credentials section.
 
 #### Variations
 
@@ -132,11 +132,11 @@ connection: {
 }
 ```
 
-In this example Close.io API expects an API Key generated inthe individual User’s account. It should be used as a username with a blank password in the standard basic authentication format.
+In this example Close.io API expects an API Key generated inthe individual User's account. It should be used as a username with a blank password in the standard basic authentication format.
 
 So, to adjust the connections portion of the code to suit this behaviour, simply request for an API instead of username + password.
 
-In the credentials section, pass the api_key into `user()` and an empty string (“”) to `password()`
+In the credentials section, pass the api_key into `user()` and an empty string ("") to `password()`
 
 ```ruby
 connection: {
@@ -164,7 +164,7 @@ connection: {
 }
 ```
 
-Another variation is to have a generated api_token replace the user name and have the string “api_token” replacing password in the basic authentication format.
+Another variation is to have a generated api_token replace the user name and have the string "api_token" replacing password in the basic authentication format.
 
 ### API Key Authentication
 
@@ -173,13 +173,13 @@ For APIs that expect API Key authentication, it is a slight variation from the b
 Make sure to include the required inputs from the user (subdomain, api_key, scope etc)
 
 Define
-1. type: ‘api_key’
-2. the appropriate parameter name for the api_key. In this case, it is simple “api_key”
+1. type: "api_key"
+2. the appropriate parameter name for the api_key. In this case, it is simply "api_key"
 
 After defining this, calls will have the appropriate params appended.
 
 Example:
-`\<BASE_URL>/users?api_key=NB674921`
+`<BASE_URL>/users?api_key=NB674921`
 
 ```ruby
 connection: {
@@ -242,7 +242,7 @@ connection: {
 The Workato connector SDK currently supports the authorization code grant variant of the OAuth2 standard.
 
 Required components in OAuth 2.0 type connection
-1. Type (use ‘oauth2’)
+1. Type (use 'oauth2')
 2. Authorization_url
 3. Token_url
 4. Client_id and client_secret
@@ -254,7 +254,7 @@ https://www.workato.com/oauth/callback
 Adjust headers format as required in the credentials section
 
 For example, Pushbullet expects the header to include token in this format:
-`OAuth2: \<access token>`
+`OAuth2: <access token>`
 
 So to adjust to suit this requirement, define the credentials portion like so:
 
@@ -292,7 +292,7 @@ SDK makes a POST request to token endpoint. Will not currently work for APIs exp
 
 An action can make one or more requests to various endpoints. Because the framework handles the authentication side of a request, you will not have to worry about that here.
 
-The most important thing is to identify which endpoint will address the purpose of the action. Here we will take a look at Close.io’s Lead object and how to retrieve it via the API
+The most important thing is to identify which endpoint will address the purpose of the action. Here we will take a look at Close.io's Lead object and how to retrieve it via the API
 
 ![close.io get lead object image](images/closeio-doc.png)
 
@@ -318,7 +318,7 @@ actions: {
 }
 ```
 
-A very simple action looks like this. A get request to the Close.io leads endpoint. In this case, the particular lead’s details is appended in the endpoint.
+A very simple action looks like this. A get request to the Close.io leads endpoint. In this case, the particular lead's details is appended in the endpoint.
 
 ### Parameter / Payload
 
@@ -396,7 +396,7 @@ Ruby methods
 - sort_by
 - user
 - utc
-- puts (ruby’s console.log/stdout, not the same as put)
+- puts (ruby's console.log/stdout, not the same as put)
 - while
 
 (I may have missed some, feel free to contact [me](eeshan@workato.com) to update this list)
@@ -468,15 +468,15 @@ This value is passed to the next poll as the `Since` parameter.
 
 ### can_poll_more (optional)
 
-This is a boolean type component. It tells the Workato Trigger Poll Framework whether to trigger another poll. It is typically used to mark if there are more “pages” of records to be picked up.
+This is a boolean type property. It tells the Workato Trigger Poll Framework whether to trigger another poll. It is typically used to mark if there are more "pages" of records to be picked up.
 
 ### dedup
 
-Dedup component is basically to identify individual records. This component is given the parameter “event”, which corresponds to individual items in the array passed into “Events”.
+Dedup component is basically to identify individual records. This component is given the parameter "event", which corresponds to individual items in the array passed into "Events".
 
-A typical dedup input is event[‘id’] where event is replaced make the code more readable.
+A typical dedup input is event['id'] where event is replaced make the code more readable.
 
-In this case, the trigger handles leads. Individual leads can be identified by their unique ids lead[‘id’].
+In this case, the trigger handles leads. Individual leads can be identified by their unique ids lead['id'].
 
 ## Webhook Trigger
 
@@ -564,50 +564,109 @@ object_definitions: {
 }
 ```
 
-In this example, the object “Push” is being defined in the fields lambda literal `lambda do |)`
+In this example, the object "Push" is defined in the fields lambda literal `lambda do`
 
-Defined as an array of objects. Each field object corresponds to a field in the comment object.
+An object definition is an array of fields that belong to an object. The properties of each field definition is described below in [Object definition properties](#object-definition-properties).
 
 ### Dynamic Definition
 
+Sometimes, the fields of an object cannot be statically defined like the example above. This is usually because there are custom fields in the object. Hence, the fields of an object must be defined dynamically from an endpoint that provides a list of fields that belong to the object.
+
 ```ruby
 object_definitions: {
-
   form: {
     fields: lambda do |connection|
       get("https://api.unbounce.com/pages/#{connection['page_id']}/form_fields")["formFields"].
-        map { |field| { name: field["id"] } }
+        map do |field|
+          {
+            name: field["id"],
+            label: field["name"]
+          }
+        end
     end
   }
 }
 ```
 
-### Components
+In this example, we look at the `page` object in Unbounce. Since a page can have any number of fields with user-defined names, the fields in this object must be retrieved from the `/form_fields` endpoint. This example makes a GET request to that endpoint and constructs an array of field definitions using the **form field "id"** as the Workato field name and **form field "name"** as the Workato field label.
+
+### Object definition properties
 
 Key | Definition
 --- | ----------
 name | The name of this field. For example `id` or `created_at`
-type | The data type of this field. Default value is string
-control_type | The input field type to expose in a recipe.
-pick_list | If control type is 'select', this component is  required. See more in **Pick List**
-properties | When defining nested objects, use the properties key to define the fields in the object. Remember to define the type as `:array` or `:object`
+type | The data type of this field (Refer to [Type](#type) for more info)
+control_type | The input field type to expose in a recipe (Refer to [Control type](#control-type) for more info)
+properties | When constructing nested objects, use the properties key to define the fields in the object. Remember to define the type as `:array` or `:object`
+pick_list | If control type is 'select', this property is  required (Refer to [Pick List](#pick-list) for more info)
 
-#### type
-It should be given the symbol notation (prepend colon)
+### Type
+The supported types are:
+`string` (default), `integer`, `decimal`, `datetime`, `date`, `timestamp`, `boolean`, `object`, `array`
 
-Supported types:
-`:string`, `:integer`, `:datetime`, `:date`, `:boolean`, `:object`, `:array`
+Note:
+`object` and `array` must be accompanied with properties. Primitive `array`s are not supported, only `array`s of `object`s.
 
-`:object`, and `:array` must be accompanied with properties
+```ruby
+supported_array = [
+  {
+    "id": "PRDT5"
+    "quantity": 4,
+    "amount": 5.99
+  },
+  {
+    "id": "PRDT56"
+    "quantity": 1,
+    "amount": 19.00
+  }
+]
 
-#### control_type
+unsupported_array = [ "john.doe@gmail.com", "jane.doe@gmail.com" ]
 
-Some of the available values are
-url: the data field will show a link
-select: the data field will be a pick list (make sure to include the pick_list property
+```
 
-Other supported types:
-timestamp, checkbox, phone, email, text, number, text-area
+Sample supported array definition:
+
+```ruby
+definition = {
+  name: "line_items",
+  label: "Line Items",
+  type: "array",
+  of: "object",
+  properties: [
+    {
+      name: "id"
+    },
+    {
+      name: "quantity",
+      type: "integer"
+    },
+    {
+      name: "amount",
+      type: "decimal"
+    }
+  ]
+}
+```
+
+### Control type
+
+Control type is the property that defines how a user interacts with a field. For example, a `text` control type appears as a single-line text field. A `text-area` control type is presented as a multi-line text field. The default is `text`.
+
+Special control types:
+
+`checkbox`: boolean field with "yes/no" options
+
+`phone`: data field shows a phone icon
+
+`email`: data field shows an email icon
+
+`url`: the data field shows a link icon
+
+`select`: the data field will be a pick list (make sure to include the pick_list property)
+
+
+Other supported types: `date`, `date_time`, `text`, `text-area`, `number`
 
 ## Test
 
@@ -634,26 +693,30 @@ A pick list is list of choices predefined for a user to select instead of having
 It is useful when there is a list of accepted values for a field or when the field requires a value that is not visible. For example, a field that requires User ID will require a pick list that displays the User names and pass the corresponding User's ID to that field.
 
 ### Defining a pick list
-There are 2 ways to define a pick list: dynamically or statically.
+There are 2 types of pick lists: dynamic and static.
 
-Static example:
+Pick list is defined as a array of selections. Each selection is an array made up of 2 elements. The first element in the selection array is the value displayed and the second element is the value of that selection.
 
-Pick list is defined as a array of selections. Each selection is an array made up of 2 elements.
+#### Static pick list
 
-The first element in the selection array is the value displayed and the second element is the value of that selection.
+A static pick list is one with predefined values that does not change. All available values in this list can be added to the code.
+
 ```ruby
 pick_lists: {
   folder: lambda do |connection|
     [
-      # Display name, value
-      ["Root","111390"],
-      ["Recycle Bin","235611"]
+      ["Display name", "value"],
+      ["Recycle Bin", "235611"],
+      ["Root", "111390"]
     ]
   end
 }
 ```
 
-Dynamic example:
+#### Dynamic pick list
+A dynamic pick list is one with values that may change. The set of available values must be obtained by an endpoint based on the instance it is connection to.
+This example generates a pick list of folders available in the Wrike instance. After it makes a GET request to list all folders, the pick list is populated with folder `title` and the value displayed to users and matches it to the corresponding folder `id` to be used as inputs.
+
 ```ruby
 pick_lists: {
   folder: lambda do |connection|
@@ -662,7 +725,6 @@ pick_lists: {
   end
 }
 ```
-After making a GET requests for all folders available, the pick list is populated with folder `id`s and displays the corresponding folder `title`
 
 ### Usage
 ```ruby
@@ -676,51 +738,55 @@ end
 # Example Adapters
 
 ## Basic Authentication Samples
-- [Harvest app connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/harvest_connector.rb)
+- [Harvest app](https://github.com/workato/connector_sdk/blob/master/basic_auth/harvest_connector.rb)
 
-- [Freshdesk connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/freshdesk_connector.rb)
+- [Freshdesk](https://github.com/workato/connector_sdk/blob/master/basic_auth/freshdesk_connector.rb)
 
-- [Clearbit connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/clearbit_connector.rb)
+- [Clearbit](https://github.com/workato/connector_sdk/blob/master/basic_auth/clearbit_connector.rb)
 
-- [Close.io connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/close_io_connector.rb)
+- [Close.io](https://github.com/workato/connector_sdk/blob/master/basic_auth/close_io_connector.rb)
 
-- [Click Time connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/click_time_connector.rb)
+- [Click Time](https://github.com/workato/connector_sdk/blob/master/basic_auth/click_time_connector.rb)
 
-- [Toggl connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/toggl_connector.rb)
+- [Toggl](https://github.com/workato/connector_sdk/blob/master/basic_auth/toggl_connector.rb)
 
-- [Unbounce connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/unbounce_connector.rb)
+- [Unbounce](https://github.com/workato/connector_sdk/blob/master/basic_auth/unbounce_connector.rb)
 
-- [Watson Tone Analyzer connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/watson_tone_analyzer_connector.rb)
+- [Watson Tone Analyzer](https://github.com/workato/connector_sdk/blob/master/basic_auth/watson_tone_analyzer_connector.rb)
 
 ## OAuth2 Samples
-- [Podio connector](https://github.com/workato/connector_sdk/blob/master/oauth2/podio_connector.rb)
+- [Podio](https://github.com/workato/connector_sdk/blob/master/oauth2/podio_connector.rb)
 
-- [ProductHunt connector](https://github.com/workato/connector_sdk/blob/master/oauth2/producthunt_connector.rb)
+- [ProductHunt](https://github.com/workato/connector_sdk/blob/master/oauth2/producthunt_connector.rb)
 
-- [Accelo connector](https://github.com/workato/connector_sdk/blob/master/oauth2/accelo_connector.rb)
+- [Accelo](https://github.com/workato/connector_sdk/blob/master/oauth2/accelo_connector.rb)
 
-- [Pushbullet connector](https://github.com/workato/connector_sdk/blob/master/oauth2/pushbullet_connector.rb)
+- [Pushbullet](https://github.com/workato/connector_sdk/blob/master/oauth2/pushbullet_connector.rb)
 
-- [Wrike connector](https://github.com/workato/connector_sdk/blob/master/oauth2/wrike_connector.rb)
+- [Wrike](https://github.com/workato/connector_sdk/blob/master/oauth2/wrike_connector.rb)
 
-- [Cisco Spark connector](https://github.com/workato/connector_sdk/blob/master/oauth2/cisco_spark_connector.rb)
+- [Cisco Spark](https://github.com/workato/connector_sdk/blob/master/oauth2/cisco_spark_connector.rb)
 
-- [AMcards connector](https://github.com/workato/connector_sdk/blob/master/oauth2/amcards_connector.rb)
+- [AMcards.com](https://github.com/workato/connector_sdk/blob/master/oauth2/amcards_connector.rb)
+
+- [BigTinCan](https://github.com/workato/connector_sdk/blob/master/oauth2/bigtincan_connector.rb)
 
 ## API Key Authentication Samples
-- [Gender API connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/gender_api_connector.rb)
+- [Gender API](https://github.com/workato/connector_sdk/blob/master/api_key_auth/gender_api_connector.rb)
 
-- [Hipchat connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/hipchat_connector.rb)
+- [Hipchat](https://github.com/workato/connector_sdk/blob/master/custom_auth/hipchat_connector.rb)
 
-- [Codeship connector](https://github.com/workato/connector_sdk/blob/master/api_key_auth/codeship_connector.rb)
+- [Codeship](https://github.com/workato/connector_sdk/blob/master/api_key_auth/codeship_connector.rb)
 
 ## Custom Authentication Samples
-- [LoJack app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
+- [LoJack](https://github.com/workato/connector_sdk/blob/master/custom_auth/lo_jack_connector.rb)
 
-- [SafetyCulture app connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/safetyculture_connector.rb)
+- [SafetyCulture](https://github.com/workato/connector_sdk/blob/master/custom_auth/safetyculture_connector.rb)
 
-- [Knack HQ connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/knack_hq_connector.rb)
+- [Knack HQ](https://github.com/workato/connector_sdk/blob/master/custom_auth/knack_hq_connector.rb)
 
-- [Neto connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/neto_connector.rb)
+- [Neto](https://github.com/workato/connector_sdk/blob/master/custom_auth/neto_connector.rb)
 
-- [TSheets connector](https://github.com/workato/connector_sdk/blob/master/custom_auth/tsheets_connector.rb)
+- [TSheets](https://github.com/workato/connector_sdk/blob/master/custom_auth/tsheets_connector.rb)
+
+- [Infobip](https://github.com/workato/connector_sdk/blob/master/custom_auth/infobip_connector.rb)
