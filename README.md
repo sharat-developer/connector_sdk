@@ -506,7 +506,7 @@ triggers: {
       delete("https://api.ciscospark.com/v1/webhooks/#{webhook['id']}")
     end,
 
-    dedup: lambda do |message) {
+    dedup: lambda do |message| {
       message["id"]
     end,
 
@@ -597,6 +597,8 @@ Key | Definition
 name | The name of this field. For example `id` or `created_at`
 type | The data type of this field (Refer to [Type](#type) for more info)
 control_type | The input field type to expose in a recipe (Refer to [Control type](#control-type) for more info)
+optional | Determines if the field is optional or required (values: true/false)
+hint | Descriptions or helpful tips for using this field
 properties | When constructing nested objects, use the properties key to define the fields in the object. Remember to define the type as `:array` or `:object`
 pick_list | If control type is 'select', this property is  required (Refer to [Pick List](#pick-list) for more info)
 
