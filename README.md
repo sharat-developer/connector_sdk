@@ -630,7 +630,7 @@ unsupported_array = [ "john.doe@gmail.com", "jane.doe@gmail.com" ]
 Sample supported array definition:
 
 ```ruby
-definition = {
+{
   name: "line_items",
   label: "Line Items",
   type: "array",
