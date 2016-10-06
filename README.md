@@ -602,7 +602,7 @@ pick_list | If control type is 'select', this property is  required (Refer to [P
 
 ### Type
 The supported types are:
-`string` (default), `integer`, `decimal`, `datetime`, `date`, `timestamp`, `boolean`, `object`, `array`
+`string` (default), `integer`, `decimal`, `date_time`, `date`, `timestamp`, `boolean`, `object`, `array`
 
 Note:
 `object` and `array` must be accompanied with properties. Primitive `array`s are not supported, only `array`s of `object`s.
@@ -730,7 +730,11 @@ pick_lists: {
 ```ruby
 input_fields: lambda do |object_definitions|
   [
-    { name: "folder_id", control_type: "select", pick_list: "folder" }
+    {
+      name: "folder_id",
+      control_type: "select",
+      pick_list: "folder"
+    }
   ]
 end
 ```
