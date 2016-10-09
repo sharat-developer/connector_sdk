@@ -379,6 +379,10 @@ REST verb methods (inputs are expected to be in JSON format)
 - put(url, input)
 - patch(url, input)
 
+Note:
+
+- `input` is actually a Ruby Hash that will be converted to JSON by the Connector SDK. Also, since `input` is the last argument of the method, we can optionally omit the curly braces.
+
 Ruby methods
 - each
 - group_by
