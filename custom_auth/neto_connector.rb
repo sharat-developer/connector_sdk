@@ -145,11 +145,12 @@
         ]
       },
 
-      poll: ->(connection, input, page) {
-        page ||= 0
+      poll: ->(connection, input, next_poll) {
+        page = next_poll.present? ? next_poll[0] : 0
+        updated_time = next_poll[1] if next_poll.present?
         limit = 50
-        updated_since = input['since'] || Time.now
-        
+        updated_since = (updated_time || input['since'] || Time.now - 1.hours).to_time.utc
+
         payload = {
           "filter" => {
             "DateUpdatedFrom" => (updated_since).utc.strftime("%F %T"),
@@ -162,10 +163,12 @@
         customers = post("https://#{connection['domain']}.neto.com.au/do/WS/NetoAPI", payload).
                       headers('NETOAPI_ACTION': 'GetCustomer')['Customer']
 
+        can_poll_more = customers.length >= limit
+
         {
           events: customers,
-          next_poll: (page + 1),
-          can_poll_more: customers.length == limit
+          next_poll: (can_poll_more ? [page + 1, updated_since] : [nil, Time.now]),
+          can_poll_more: can_poll_more
         }
       },
 
@@ -191,10 +194,11 @@
         ]
       },
 
-      poll: ->(connection, input, page) {
-        page ||= 0
-        limit = 50
-        updated_since = input['since'] || Time.now
+      poll: ->(connection, input, next_poll) {
+        page = next_poll.present? ? next_poll[0].to_i : 0
+        updated_time = next_poll[1] if next_poll.present?
+        limit = 10
+        updated_since = (updated_time || input['since'] || Time.now - 1.hours).to_time.utc
 
         payload = {
           "filter" => {
@@ -227,13 +231,12 @@
           },
         }
 
-        orders = post("https://#{connection['domain']}.neto.com.au/do/WS/NetoAPI", payload).
-                      headers('NETOAPI_ACTION': 'GetOrder')['Order']
+        can_poll_more = orders.length >= limit
 
         {
           events: orders,
-          next_poll: (page + 1),
-          can_poll_more: orders.length == limit
+          next_poll: (can_poll_more ? [page + 1, updated_since] : [nil, Time.now]),
+          can_poll_more: can_poll_more
         }
       },
 
