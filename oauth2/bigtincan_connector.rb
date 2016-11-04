@@ -599,7 +599,7 @@
       },
 
       document_id: ->(story) {
-        story['revision_id']
+        story['perm_id']
       },
 
       output_fields: ->(object_definitions) {
