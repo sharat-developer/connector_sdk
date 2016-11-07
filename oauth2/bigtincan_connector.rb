@@ -357,7 +357,13 @@
     list_stories: {
       input_fields: ->() {
          [
-           { name: 'channel_id', optional: true },
+           {
+             name: 'channel_id',
+             optional: true,
+             type: :string ,
+             control_type: 'select',
+             pick_list: 'channel_id'
+           },
            { name: 'page', optional: true },
            { name: 'limit', optional: true },
          ]
@@ -545,12 +551,6 @@
       ],
 
 
-#       input_fields: ->() {
-#         [
-#           { name: 'form_id', optional: false, type: :string }
-#         ]
-#       },
-
       poll: ->(connection, input, page) {
         page ||= 1
 
@@ -580,9 +580,15 @@
       type: :paging_desc,
 
       input_fields: ->() {
-        [
-           { name: 'channel_id', optional: false, type: :string }
-        ]
+              [
+                 {
+                   name: 'channel_id',
+                   optional: false,
+                   type: :string ,
+                   control_type: 'select',
+                   pick_list: 'channel_id'
+                 }
+              ]
       },
 
       poll: ->(connection, input, page) {
@@ -606,14 +612,12 @@
         object_definitions['single_story']
       }
     }
-  }
-#It is not applicable because select options are user specific not constant  
-#   pick_lists: {
-#     folder: ->(connection) {
-#       [
-#          ['form_id', '683VTbcVBz'],
-#          ['channel_id', 'jbt3h6CysWt7'],
-#       ]  
-#     }
-#   }
+  },
+
+   pick_lists: {
+     channel_id: ->(connection){
+      get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/channel/all")['data'].
+      map { |channel_id| [channel_id['name'], channel_id['id']] }
+     }
+   }
 }
