@@ -4,11 +4,7 @@
  connection: {
 
     fields: [
-      {
-        name: 'account_id',
-        optional: false,
-        hint: 'Your Pub API account ID'
-      }
+      { name: 'account_id', optional: false, hint: 'Your Pub API account ID' }
     ],
 
     authorization: {
@@ -38,18 +34,9 @@
 
       fields: ->() {
         [
-          {
-            name: 'id',
-            type: 'string'
-          },
-          {
-            name: 'name',
-            type: 'string'
-          },
-          {
-            name: 'channel_type',
-            type: 'string'
-          }
+          { name: 'id', type: 'string' },
+          { name: 'name', type: 'string' },
+          { name: 'channel_type', type: 'string' }
         ]
       }
     },
@@ -58,21 +45,10 @@
     single_story: {
       fields: ->() {
         [
-          {
-            name: 'revision_id',
-            type: 'string'
-          },
-          {
-            name: 'perm_id',
-            type: 'string'
-          },
-          { name: 'title',
-            type: 'string'
-          },
-          {
-            name: 'channels',
-            type: :array,
-            of: :object,
+          { name: 'revision_id', type: 'string' },
+          { name: 'perm_id', type: 'string' },
+          { name: 'title', type: 'string'},
+          { name: 'channels', type: :array, of: :object,
             properties: [
               { name: 'id', type: 'string'}
             ]
@@ -84,14 +60,8 @@
     single_form: {
       fields: ->() {
         [
-          {
-            name: 'id',
-            type: 'string'
-          },
-          {
-            name: 'name',
-            type: 'string'
-          }
+          { name: 'id', type: 'string' },
+          { name: 'name', type: 'string' }
         ]
       }
 
@@ -101,18 +71,9 @@
 
       fields: ->() {
         [
-          {
-            name: 'id',
-            type: 'string'
-          },
-          {
-            name: 'name',
-            type: 'string'
-          },
-          {
-            name: 'note',
-            type: 'string'
-          }
+          { name: 'id', type: 'string' },
+          { name: 'name', type: 'string' },
+          { name: 'note', type: 'string' }
         ]
       }
     },
@@ -120,30 +81,12 @@
     form_submission_data: {
       fields: ->(connection, config_fields) {
         [
-          {
-             name: 'submission_key',
-             type: 'string'
-          },
-          {
-            name: 'user_id',
-            type: 'string'
-          },
-          {
-            name: 'user_name',
-            type: 'string'
-          },
-          {
-            name: 'cursor',
-            type: 'string'
-          },
-#           {
-#             name: 'data',
-#             type: :object
-#           }
-           {
-            name: 'data',
-            type: :object,
-            properties: 
+          { name: 'submission_key', type: 'string' },
+          { name: 'user_id', type: 'string' },
+          { name: 'user_name', type: 'string' },
+          { name: 'cursor', type: 'string' },
+          { name: 'data', type: :object,
+            properties:
               if config_fields['form_id'].present?
                 fields = get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{config_fields['form_id']}")['data']['form_data']['fields']
                 fields.select { |field| field['label'].present? }.
@@ -187,12 +130,9 @@
 
       output_fields: ->(object_definitions) {
         [
-         {
-             name: 'columns',
-             type: :array,
-             of: :object,
-             properties: [
-                     { name: 'columns', type: :array, of: :object },
+         { name: 'columns', type: :array, of: :object,
+           properties: [
+               { name: 'columns', type: :array, of: :object },
              ]
          },
          { name: 'total_submissions', type: 'integer' },
@@ -205,6 +145,7 @@
          ]
        }
     },
+
     # form: form/all
     list_forms: {
       input_fields: ->() {
@@ -231,17 +172,14 @@
 
       output_fields: ->(object_definitions) {
         [
-         { name: 'page',  type: 'integer'},
-         { name: 'page_total',  type: 'integer'},
-         { name: 'limit',  type: 'integer'},
-         { name: 'total_count',  type: 'integer'},
-         { name: 'next_page',  type: 'integer'},
-         { name: 'prev_page',  type: 'integer'},
-         { name: 'current_count',  type: 'integer'},
-         { name: 'data',
-             type: :array,
-             of: :object,
-             properties: object_definitions['single_form']},
+         { name: 'page',  type: 'integer' },
+         { name: 'page_total',  type: 'integer' },
+         { name: 'limit',  type: 'integer' },
+         { name: 'total_count',  type: 'integer' },
+         { name: 'next_page',  type: 'integer' },
+         { name: 'prev_page',  type: 'integer' },
+         { name: 'current_count',  type: 'integer' },
+         { name: 'data', type: :array, of: :object, properties: object_definitions['single_form'] },
         ]
       }
     },
@@ -270,23 +208,20 @@
 
       output_fields: ->(object_definitions) {
         [
-         { name: 'page',  type: 'integer'},
-         { name: 'page_total',  type: 'integer'},
-         { name: 'limit',  type: 'integer'},
-         { name: 'total_count',  type: 'integer'},
-         { name: 'next_page',  type: 'integer'},
-         { name: 'prev_page',  type: 'integer'},
-         { name: 'current_count',  type: 'integer'},
-         { name: 'data',
-             type: :array,
-             of: :object,
-             properties: object_definitions['single_form_category']},
+         { name: 'page',  type: 'integer' },
+         { name: 'page_total',  type: 'integer' },
+         { name: 'limit',  type: 'integer' },
+         { name: 'total_count',  type: 'integer' },
+         { name: 'next_page',  type: 'integer' },
+         { name: 'prev_page',  type: 'integer' },
+         { name: 'current_count',  type: 'integer' },
+         { name: 'data', type: :array, of: :object, properties: object_definitions['single_form_category'] },
         ]
       }
     },
 
-   #form: form/get
-   get_form: {
+    #form: form/get
+    get_form: {
       input_fields: ->() {
          [
            { name: 'form_id', optional: false },
@@ -311,7 +246,8 @@
          { name: 'form_data', 
            type: :object, 
            properties: [
-             { name: 'fields', type: :array, of: :object, properties: [
+             { name: 'fields', type: :array, of: :object,
+               properties: [
                  { name: 'type', type: 'string'},
                  { name: 'value', type: 'string'},
                  { name: 'label', type: 'string'},
@@ -322,8 +258,8 @@
       },
     },
     
-       #form: form/get fields only
-          list_form_fields: {
+    #form: form/get fields only
+    list_form_fields: {
              input_fields: ->() {
                 [
                   { name: 'form_id', optional: false },
@@ -333,7 +269,7 @@
              execute: ->(connection, input) {
        
                if input['include_data_sources'].blank?
-                    input['include_data_sources'] = true
+                   input['include_data_sources'] = true
                end
        
                get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/get/#{input['form_id']}")['data']['form_data']
@@ -343,7 +279,8 @@
              output_fields: ->(object_definitions) {
              
                   [
-                    { name: 'fields', type: :array, of: :object, properties: [
+                    { name: 'fields', type: :array, of: :object,
+                      properties: [
                         { name: 'type', type: 'string'},
                         { name: 'value', type: 'string'},
                         { name: 'label', type: 'string'},
@@ -351,19 +288,13 @@
                   ]
          
              },
-        },
+    },
 
     #story: story/all
     list_stories: {
       input_fields: ->() {
          [
-           {
-             name: 'channel_id',
-             optional: true,
-             type: :string ,
-             control_type: 'select',
-             pick_list: 'channel_id'
-           },
+           { name: 'channel_id', optional: true, type: :string , control_type: 'select', pick_list: 'channel_id' },
            { name: 'page', optional: true },
            { name: 'limit', optional: true },
          ]
@@ -382,17 +313,14 @@
       },
       output_fields: ->(object_definitions) {
         [
-         { name: 'page',  type: 'integer'},
-         { name: 'page_total',  type: 'integer'},
-         { name: 'limit',  type: 'integer'},
-         { name: 'total_count',  type: 'integer'},
-         { name: 'next_page',  type: 'integer'},
-         { name: 'prev_page',  type: 'integer'},
-         { name: 'current_count',  type: 'integer'},
-         { name: 'data',
-             type: :array,
-             of: :object,
-             properties: object_definitions['single_story']},
+         { name: 'page', type: 'integer' },
+         { name: 'page_total', type: 'integer' },
+         { name: 'limit',  type: 'integer' },
+         { name: 'total_count', type: 'integer' },
+         { name: 'next_page', type: 'integer' },
+         { name: 'prev_page', type: 'integer' },
+         { name: 'current_count',  type: 'integer' },
+         { name: 'data', type: :array, of: :object, properties: object_definitions['single_story'] },
         ]
       }
     },
@@ -409,11 +337,7 @@
       },
       output_fields: ->(object_definitions) {
         [
-          { 
-             name: 'data',
-             type: :object,
-             properties: object_definitions['single_story']
-          },
+          { name: 'data', type: :object, properties: object_definitions['single_story'] },
         ]
       }
     },
@@ -440,11 +364,7 @@
       
       output_fields: ->(object_definitions) {
         [
-          {
-             name: 'data',
-             type: :object,
-             properties: object_definitions['single_story']
-          },
+          { name: 'data', type: :object, properties: object_definitions['single_story'] },
         ]
       }
     },
@@ -480,9 +400,7 @@
 
     input_fields: ->() {
          [
-
            { name: 'revision_id', optional: false },
-
          ]
       },
    execute: ->(connection, input) {
@@ -490,13 +408,13 @@
       },
    output_fields: ->(object_definitions) {
         [
-         {name:'deleted', type:'boolean'}
+          { name:'deleted', type:'boolean' }
         ]
     }
    },
 
-  #channal: channel/all
-  list_channels: {
+   #channal: channel/all
+   list_channels: {
     
       input_fields: ->() {
          [
@@ -518,25 +436,20 @@
       },
       output_fields: ->(object_definitions) {
         [
-         { name: 'page',  type: 'integer'},
-         { name: 'page_total',  type: 'integer'},
-         { name: 'limit',  type: 'integer'},
-         { name: 'total_count',  type: 'integer'},
-         { name: 'next_page',  type: 'integer'},
-         { name: 'prev_page',  type: 'integer'},
-         { name: 'current_count',  type: 'integer'},
-         { 
-             name: 'data',
-             type: :array,
-             of: :object,
-             properties: object_definitions['channel']
-         },
+         { name: 'page',  type: 'integer' },
+         { name: 'page_total',  type: 'integer' },
+         { name: 'limit',  type: 'integer' },
+         { name: 'total_count',  type: 'integer' },
+         { name: 'next_page',  type: 'integer' },
+         { name: 'prev_page',  type: 'integer' },
+         { name: 'current_count',  type: 'integer' },
+         { name: 'data', type: :array, of: :object, properties: object_definitions['channel'] },
         ]
       }
     },
-  },
+   },
 
-  triggers: {
+   triggers: {
 
     new_form_submission: {
 
@@ -552,6 +465,7 @@
 
 
       poll: ->(connection, input, page) {
+
         page ||= 1
 
         response = get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/data/#{input['form_id']}").
@@ -581,13 +495,7 @@
 
       input_fields: ->() {
               [
-                 {
-                   name: 'channel_id',
-                   optional: false,
-                   type: :string ,
-                   control_type: 'select',
-                   pick_list: 'channel_id'
-                 }
+                { name: 'channel_id', optional: false, type: :string, control_type: 'select', pick_list: 'channel_id' }
               ]
       },
 
@@ -597,11 +505,7 @@
 
          stories = get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/story/all").params(limit: 30, page: page, channel_id:input['channel_id'])
 
-
-        {
-          next_page: stories['next_page'],
-          events: stories['data'],
-        }
+         { next_page: stories['next_page'], events: stories['data'] }
       },
 
       document_id: ->(story) {
@@ -612,7 +516,7 @@
         object_definitions['single_story']
       }
     }
-  },
+   },
 
    pick_lists: {
      channel_id: ->(connection){
