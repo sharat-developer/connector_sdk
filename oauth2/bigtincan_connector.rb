@@ -454,14 +454,12 @@
     new_form_submission: {
 
       type: :paging_desc,
-      
-      config_fields: [
-        {
-          name: 'form_id',
-          label: 'Form ID',
-          optional: false,
-        }
-      ],
+
+      input_fields: ->() {
+         [
+           { name: 'form_id', type: :string, optional: false, label: 'Form ID' }
+         ]
+       },
 
 
       poll: ->(connection, input, page) {
