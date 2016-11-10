@@ -455,12 +455,9 @@
 
       type: :paging_desc,
 
-      input_fields: ->() {
-         [
-           { name: 'form_id', type: :string, optional: false, label: 'Form ID' }
-         ]
-       },
-
+      config_fields: [
+        {  name: 'form_id', label: 'Form ID', optional: false, control_type: 'select', pick_list: 'form_id' }
+      ],
 
       poll: ->(connection, input, page) {
 
@@ -517,9 +514,16 @@
    },
 
    pick_lists: {
+
      channel_id: ->(connection){
       get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/channel/all")['data'].
       map { |channel_id| [channel_id['name'], channel_id['id']] }
+     },
+
+     form_id: ->(connection){
+           get("https://pubapi.bigtincan.com/#{connection['account_id']}/alpha/form/all?limit=100&form_only")['data'].
+           map { |form_id| [form_id['name'], form_id['id']] }
      }
+
    }
 }
