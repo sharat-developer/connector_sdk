@@ -92,7 +92,7 @@
                 fields.select { |field| field['label'].present? }.
                        map do |field|
                          {
-                           name: field['label'].gsub(/[ ]/, '_').downcase,
+                           name: field['label'].gsub(/[ ]/, '_'),
                            label: field['label'],
                            type: 'string'
                          }
