@@ -349,7 +349,7 @@
          [
            { name: 'title', optional: false },
            { name: 'description', optional: false },
-           { name: 'channel_id', optional: false },
+           { name: 'channel_id', optional: false, type: :string , control_type: 'select', pick_list: 'channel_id' },
          ]
       },
       execute: ->(connection, input) {
@@ -376,7 +376,7 @@
          [
            { name: 'title', optional: true },
            { name: 'description', optional: true },
-           { name: 'channel_id', optional: false },
+           { name: 'channel_id', optional: false, type: :string , control_type: 'select', pick_list: 'channel_id' },
            { name: 'revision_id', optional: false },
          ]
       },
