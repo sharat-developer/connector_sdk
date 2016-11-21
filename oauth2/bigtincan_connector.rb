@@ -48,6 +48,7 @@
           { name: 'revision_id', type: 'string' },
           { name: 'perm_id', type: 'string' },
           { name: 'title', type: 'string'},
+          { name: 'description', type: 'string'},
           { name: 'channels', type: :array, of: :object,
             properties: [
               { name: 'id', type: 'string'}
