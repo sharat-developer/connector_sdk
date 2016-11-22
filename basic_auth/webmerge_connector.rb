@@ -47,7 +47,7 @@
           []
         end
       end
-    },    
+    },
     
     route: {
 
@@ -66,8 +66,7 @@
           []
         end
       end
-    }
-    
+    }    
   },
 
   test: ->(connection) {
@@ -78,81 +77,72 @@
   
     merge_document: {
       config_fields: [
-        # this field shows up first in a recipe as a picklist of templates to use
+        # this field shows up first in recipe as picklist of documents to use
         {
-          name: 'document_id',
+          name: "document_id",
           label: "Document",
           control_type: :select,
-          pick_list: 'documents',
+          pick_list: "documents",
           optional: false
         }
       ],
 
       input_fields: ->(object_definition) {
         # this set of input fields will be empty initially.
-        # Once a recipe builder selects a template, the field list will be generated
+        # Once a builder selects a document, the field list will be generated
         object_definition["document"]
       },
 
       execute: ->(_connection, input) {
         # your HTTP request code here
         d = input["document_id"].split("|")
-        post("#{d.last}", input)
+        post('#{d.last}', input)
       },
 
       output_fields: ->(_object_definition) {
-        [
-          {
-            name: "success"
-          }
-        ]
+        [{name: "success"}]
       }
     },
     
     merge_route: {
       config_fields: [
-        # this field shows up first in a recipe as a picklist of templates to use
+        # this field shows up first in recipe as picklist of routes to use
         {
-          name: 'route_id',
+          name: "route_id",
           label: "Route",
           control_type: :select,
-          pick_list: 'routes',
+          pick_list: "routes",
           optional: false
         }
       ],
 
       input_fields: ->(object_definition) {
-        # Once a recipe builder selects a route, the field list will be generated
+        # Once a builder selects a route, the field list will be generated
         object_definition["route"]
       },
 
       execute: ->(_connection, input) {
         # your HTTP request code here
         r = input["route_id"].split("|")
-        post("#{r.last}", input)
+        post('#{r.last}', input)
       },
 
       output_fields: ->(_object_definition) {
-        [
-          {
-            name: "success"
-          }
-        ]
+        [{name: "success"}]
       }
-    }    
+    }
   },
   
   pick_lists: {
   
     documents: lambda do |_connection|
       get("https://www.webmerge.me/api/documents").map do |document|
-        [document["name"], "#{document["id"]}|#{document["url"]}"]
+        [document["name"], '#{document["id"]}|#{document["url"]}']
       end
-    end,
-    
+    end,    
     routes: lambda do |_connection|
       get("https://www.webmerge.me/api/routes").map do |route|
-        [route["name"], "#{route["id"]}|#{route["url"]}"]
+        [route["name"], '#{route["id"]}|#{route["url"]}']
       end
     end
   }
