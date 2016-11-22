@@ -66,18 +66,17 @@
           []
         end
       end
-    }    
+    }
   },
-
+  
   test: ->(connection) {
     get("https://www.webmerge.me/api/account")
   },
   
-  actions: {
-  
+  actions: {  
     merge_document: {
       config_fields: [
-        # this field shows up first in recipe as picklist of documents to use
+        # this field shows up first in recipe as a picklist of documents to use
         {
           name: "document_id",
           label: "Document",
@@ -88,25 +87,26 @@
       ],
 
       input_fields: ->(object_definition) {
-        # this set of input fields will be empty initially.
-        # Once a builder selects a document, the field list will be generated
         object_definition["document"]
       },
 
-      execute: ->(_connection, input) {
-        # your HTTP request code here
+      execute: lambda do |_connection, input|
         d = input["document_id"].split("|")
-        post('#{d.last}', input)
-      },
+        post(d.last.to_s, input)
+      end,
 
-      output_fields: ->(_object_definition) {
-        [{name: "success"}]
-      }
+      output_fields: lambda do |_object_definition|
+        [
+          {
+            name: "success"
+          }
+        ]
+      end
     },
     
     merge_route: {
       config_fields: [
-        # this field shows up first in recipe as picklist of routes to use
+        # this field shows up first in recipe as a picklist of routes to use
         {
           name: "route_id",
           label: "Route",
@@ -117,32 +117,33 @@
       ],
 
       input_fields: ->(object_definition) {
-        # Once a builder selects a route, the field list will be generated
         object_definition["route"]
       },
 
-      execute: ->(_connection, input) {
-        # your HTTP request code here
+      execute: lambda do |_connection, input|
         r = input["route_id"].split("|")
-        post('#{r.last}', input)
-      },
+        post(r.last.to_s, input)
+      end,
 
-      output_fields: ->(_object_definition) {
-        [{name: "success"}]
-      }
-    }
+      output_fields: lambda do |_object_definition|
+        [
+          {
+            name: "success"
+          }
+        ]
+      end
+    } 
   },
   
   pick_lists: {
-  
     documents: lambda do |_connection|
       get("https://www.webmerge.me/api/documents").map do |document|
-        [document["name"], '#{document["id"]}|#{document["url"]}']
+        [document["name"], document["id"] + "|" + document["url"]]
       end
     end,    
     routes: lambda do |_connection|
       get("https://www.webmerge.me/api/routes").map do |route|
-        [route["name"], '#{route["id"]}|#{route["url"]}']
+        [route["name"], route["id"] + "|" + route["url"]]
       end
     end
   }
