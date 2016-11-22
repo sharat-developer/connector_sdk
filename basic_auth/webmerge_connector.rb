@@ -32,10 +32,10 @@
   
     document: {
 
-      fields: lambda do |connection, config_fields|
-        # here, you can use the input from the input from the user (in this case, config_field)
+      fields: lambda do |_connection, config_fields|
+        # here, you can use the input from the input from the user
         if config_fields.present?
-          d = config_fields["document_id"].split('|');
+          d = config_fields["document_id"].split("|")
           fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields")
           fields.map do |field|
             {
@@ -48,13 +48,13 @@
         end
       end
     },
-    
+
     route: {
 
-      fields: lambda do |connection, config_fields|
-        # here, you can use the input from the input from the user (in this case, config_field)
+      fields: lambda do |_connection, config_fields|
+        # here, you can use the input from the input from the user
         if config_fields.present?
-          r = config_fields["route_id"].split('|');
+          r = config_fields["route_id"].split("|")
           fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields")
           fields.map do |field|
             {
@@ -69,10 +69,10 @@
     }
   },
   
-  test: ->(connection) {
+  test: lambda do |_connection|
     get("https://www.webmerge.me/api/account")
-  },
-  
+  end,
+
   actions: {  
     merge_document: {
       config_fields: [
@@ -86,9 +86,9 @@
         }
       ],
 
-      input_fields: ->(object_definition) {
+      input_fields: lambda do |object_definition|
         object_definition["document"]
-      },
+      end,
 
       execute: lambda do |_connection, input|
         d = input["document_id"].split("|")
@@ -103,7 +103,7 @@
         ]
       end
     },
-    
+
     merge_route: {
       config_fields: [
         # this field shows up first in recipe as a picklist of routes to use
@@ -116,9 +116,9 @@
         }
       ],
 
-      input_fields: ->(object_definition) {
+      input_fields: lambda do |object_definition|
         object_definition["route"]
-      },
+      end,
 
       execute: lambda do |_connection, input|
         r = input["route_id"].split("|")
@@ -134,13 +134,14 @@
       end
     } 
   },
-  
+
   pick_lists: {
     documents: lambda do |_connection|
       get("https://www.webmerge.me/api/documents").map do |document|
         [document["name"], document["id"] + "|" + document["url"]]
       end
-    end,    
+    end,
+
     routes: lambda do |_connection|
       get("https://www.webmerge.me/api/routes").map do |route|
         [route["name"], route["id"] + "|" + route["url"]]
