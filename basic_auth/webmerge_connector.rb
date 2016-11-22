@@ -35,7 +35,7 @@
       fields: lambda do |connection, config_fields|
         # here, you can use the input from the input from the user (in this case, config_field)
         if config_fields.present?
-	  d = config_fields["document_id"].split('|');
+          d = config_fields["document_id"].split('|');
           fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields")
           fields.map do |field|
             {
@@ -47,14 +47,14 @@
           []
         end
       end
-    },	
-	
+    },    
+    
     route: {
 
       fields: lambda do |connection, config_fields|
         # here, you can use the input from the input from the user (in this case, config_field)
         if config_fields.present?
-	  r = config_fields["route_id"].split('|');
+          r = config_fields["route_id"].split('|');
           fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields")
           fields.map do |field|
             {
@@ -67,7 +67,7 @@
         end
       end
     }
-	
+    
   },
 
   test: ->(connection) {
@@ -90,17 +90,17 @@
 
       input_fields: ->(object_definition) {
         # this set of input fields will be empty initially.
-        # Once a recipe builder selects a template from the config_field, the list of fields will be generated
-        object_definition['document']
+        # Once a recipe builder selects a template, the field list will be generated
+        object_definition["document"]
       },
 
       execute: ->(_connection, input) {
         # your HTTP request code here
-	d = input["document_id"].split('|');
-	post("#{d.last}", input)
+        d = input["document_id"].split("|")
+        post("#{d.last}", input)
       },
 
-      output_fields: ->(object_definition) {
+      output_fields: ->(_object_definition) {
         [
           {
             name: "success"
@@ -108,7 +108,7 @@
         ]
       }
     },
-	
+    
     merge_route: {
       config_fields: [
         # this field shows up first in a recipe as a picklist of templates to use
@@ -122,42 +122,38 @@
       ],
 
       input_fields: ->(object_definition) {
-        # this set of input fields will be empty initially.
-        # Once a recipe builder selects a template from the config_field, the list of fields will be generated
-        object_definition['route']
+        # Once a recipe builder selects a route, the field list will be generated
+        object_definition["route"]
       },
 
       execute: ->(_connection, input) {
         # your HTTP request code here
-        r = input["route_id"].split('|');
-	post("#{r.last}", input)
+        r = input["route_id"].split("|")
+        post("#{r.last}", input)
       },
 
-      output_fields: ->(object_definition) {
+      output_fields: ->(_object_definition) {
         [
           {
             name: "success"
           }
         ]
       }
-    },
-	
+    }    
   },
   
   pick_lists: {
   
-    documents: lambda do |connection|
+    documents: lambda do |_connection|
       get("https://www.webmerge.me/api/documents").map do |document|
-        [ document["name"], "#{document["id"]}|#{document["url"]}" ]
+        [document["name"], "#{document["id"]}|#{document["url"]}"]
       end
     end,
-	
-    routes: lambda do |connection|
+    
+    routes: lambda do |_connection|
       get("https://www.webmerge.me/api/routes").map do |route|
-        [ route["name"], "#{route["id"]}|#{route["url"]}" ]
+        [route["name"], "#{route["id"]}|#{route["url"]}"]
       end
     end
-	
-  },
-  
+  }
 }
