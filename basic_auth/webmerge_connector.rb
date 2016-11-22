@@ -30,12 +30,12 @@
 
   object_definitions: {
   
-	document: {
+    document: {
 
       fields: lambda do |connection, config_fields|
         # here, you can use the input from the input from the user (in this case, config_field)
         if config_fields.present?
-		  d = config_fields["document_id"].split('|');
+	  d = config_fields["document_id"].split('|');
           fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields")
           fields.map do |field|
             {
@@ -49,12 +49,12 @@
       end
     },	
 	
-	route: {
+    route: {
 
       fields: lambda do |connection, config_fields|
         # here, you can use the input from the input from the user (in this case, config_field)
         if config_fields.present?
-		  r = config_fields["route_id"].split('|');
+	  r = config_fields["route_id"].split('|');
           fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields")
           fields.map do |field|
             {
@@ -96,8 +96,8 @@
 
       execute: ->(_connection, input) {
         # your HTTP request code here
-		d = input["document_id"].split('|');
-	    post("#{d.last}", input)
+	d = input["document_id"].split('|');
+	post("#{d.last}", input)
       },
 
       output_fields: ->(object_definition) {
@@ -129,8 +129,8 @@
 
       execute: ->(_connection, input) {
         # your HTTP request code here
-		r = input["route_id"].split('|');
-	    post("#{r.last}", input)
+        r = input["route_id"].split('|');
+	post("#{r.last}", input)
       },
 
       output_fields: ->(object_definition) {
