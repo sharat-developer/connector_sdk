@@ -1,30 +1,29 @@
 {
-  title: 'WebMerge',
+  title: "WebMerge",
 
   # HTTP basic auth example.
   connection: {
     fields: [
       {
-        name: 'api_key',
+        name: "api_key",
         optional: false,
-        hint: 'Your WebMerge API Key'
+        hint: "Your WebMerge API Key"
       },
       {
-        name: 'api_secret',
-        control_type: 'password',
-        label: 'Your WebMerge API Secret'
+        name: "api_secret",
+        control_type: "password",
+        label: "Your WebMerge API Secret"
       }
     ],
 
     authorization: {
-      type: 'basic_auth',
+      type: "basic_auth",
 
-      # Basic auth credentials are just the username and password; framework handles adding
-      # them to the HTTP requests.
-      credentials: ->(connection) {
-        user(connection['api_key'])
-        password(connection['api_secret'])
-      }
+      # Basic auth credentials are just the username and password
+      credentials: lambda do |connection|
+        user(connection["api_key"])
+        password(connection["api_secret"])
+      end
     }
   },
 
