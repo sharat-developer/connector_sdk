@@ -18,7 +18,7 @@
         name: 'password',
         control_type: 'password',
         hint: 'The password for the Splunk username'
-      }
+      },
     ],
     authorization: {
       type: 'basic_auth',
@@ -28,9 +28,9 @@
       }
     }
   },
-
+  
   test: ->(connection) {
-      get("#{connection['server_url']}/services/workato/version")
+    get("#{connection['server_url']}/services/workato/version")
   },
 
   object_definitions: {
@@ -132,12 +132,58 @@
       },
   	},
   },
-
+  
   pick_lists: {
     saved_searches: ->(connection) {
       get("#{connection['server_url']}/services/workato/alerts").
         map { |name| [name,name] }
     }
+  },
+  
+  actions: {
+    send_event_to_splunk: {
+      input_fields: ->(){
+        [
+          { 
+            name: "payload", 
+            optional: false,
+          },
+          { 
+            name: "index", 
+            optional: true,
+            hint: "The name of the repository for Splunk to store the event in."
+          },
+          { 
+            name: "source", 
+            optional: true,
+            hint: "The source value to assign to the event data. For example, if you're sending data from an app you're developing, you could set this key to the name of the app."
+          },
+          { 
+            name: "sourcetype", 
+            optional: true,
+            hint: "The sourcetype value to assign to the event data. It identifies the data structure of an event. A source type determines how Splunk formats the data during the indexing and also parses the data during searching process."
+          },
+          { 
+            name: "host", 
+            optional: true,
+            hint: "The host value to assign to the event data. This is typically the hostname of the client/server/service from which the data came from."
+          },
+        ]
+      },
+      execute: ->(connection, input){
+        post(
+          "#{connection['server_url']}/services/workato/events",{
+          	payload: input['payload'],
+            index: input['index'],
+            source: input['source'],
+            sourcetype: input['sourcetype'],
+            host: input['host'],
+            })
+     	},
+      output_fields: ->(object_definitions){
+        []
+      },
+    }
   }
-
+  
 }
