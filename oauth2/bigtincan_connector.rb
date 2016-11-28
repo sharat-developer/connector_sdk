@@ -48,6 +48,7 @@
           { name: 'revision_id', type: 'string' },
           { name: 'perm_id', type: 'string' },
           { name: 'title', type: 'string'},
+          { name: 'description', type: 'string'},
           { name: 'channels', type: :array, of: :object,
             properties: [
               { name: 'id', type: 'string'}
@@ -92,7 +93,7 @@
                 fields.select { |field| field['label'].present? }.
                        map do |field|
                          {
-                           name: field['label'].gsub(/[ ]/, '_').downcase,
+                           name: field['label'].gsub(/[ ]/, '_'),
                            label: field['label'],
                            type: 'string'
                          }
@@ -348,7 +349,7 @@
          [
            { name: 'title', optional: false },
            { name: 'description', optional: false },
-           { name: 'channel_id', optional: false },
+           { name: 'channel_id', optional: false, type: :string , control_type: 'select', pick_list: 'channel_id' },
          ]
       },
       execute: ->(connection, input) {
@@ -375,7 +376,7 @@
          [
            { name: 'title', optional: true },
            { name: 'description', optional: true },
-           { name: 'channel_id', optional: false },
+           { name: 'channel_id', optional: false, type: :string , control_type: 'select', pick_list: 'channel_id' },
            { name: 'revision_id', optional: false },
          ]
       },
