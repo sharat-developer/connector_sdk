@@ -33,13 +33,10 @@
 
       fields: lambda do |_connection, config_fields|
         # here, you can use the input from the input from the user
-        if config_fields.present?
-          d = config_fields["document_id"].split("|")
-          fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields").
-          map { |field| field.slice("name") }
-        else
-          []
-        end
+        return [] if config_fields.blank?
+        d = config_fields["document_id"].split("|")
+        fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields").
+        map { |field| field.slice("name") }
       end
     },
 
@@ -47,13 +44,10 @@
 
       fields: lambda do |_connection, config_fields|
         # here, you can use the input from the input from the user
-        if config_fields.present?
-          r = config_fields["route_id"].split("|")
-          fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields").
-          map { |field| field.slice("name") }
-        else
-          []
-        end
+        return [] if config_fields.blank?
+        r = config_fields["route_id"].split("|")
+        fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields").
+        map { |field| field.slice("name") }
       end
     }
   },
