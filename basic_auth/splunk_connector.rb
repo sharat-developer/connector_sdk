@@ -7,8 +7,8 @@
         name: "server_url",
         label: "Server URL",
         control_type: "text",
-        hint: "The URL of the Splunk management port (e.g. https://yourdomain:8089). " \
-          "You MUST install the " \
+        hint: "The URL of the Splunk management port " \
+          "(e.g. https://yourdomain:8089). You MUST install the " \
           "<a href=\"https://splunkbase.splunk.com/apps/#/search/workato\">" \
           "Workato Add-on for Splunk</a> first."
       },
@@ -36,9 +36,11 @@
   object_definitions: {
     generic_alert: {
       fields: lambda do |_connection, config_fields|
-        config_fields["fields"].split(",").map { |name| {
-          name: name.strip
-          }}
+        config_fields["fields"].split(",").map {
+          |name| {
+            name: name.strip
+          }
+        }
       end
     },
     service_alert: {
@@ -65,8 +67,8 @@
           control_type: :select,
           pick_list: "saved_searches",
           optional: false,
-          hint: "Select one of the alerts saved in Splunk that have the Workato " \
-            "alert action assigned.",
+          hint: "Select one of the alerts saved in Splunk that " \
+            "have the Workato alert action assigned.",
         }]
       end,
       config_fields: [
@@ -117,14 +119,14 @@
         {
           server_url: connection["server_url"],
           search_name: data["search_name"],
-          callback_url: data["callback_url"],
+          callback_url: data["callback_url"]
         }
       end,
       webhook_unsubscribe: lambda do |subscription|
         delete(
           "#{subscription['server_url']}/services/workato/servicealerts",
           search_name: subscription["search_name"],
-          callback_url: subscription["callback_url"],
+          callback_url: subscription["callback_url"]
         )
       end,
       webhook_notification: lambda do |_input, payload|
@@ -160,8 +162,8 @@
           {
             name: "source",
             optional: true,
-            hint: "The source value to assign to the event data. For example, if " \
-              "you're sending data from an app you're developing," \
+            hint: "The source value to assign to the event data. For example," \
+              " if you're sending data from an app you're developing, " \
               "you could set this key to the name of the app."
           },
           {
@@ -169,8 +171,9 @@
             optional: true,
             hint: "The sourcetype value to assign to the event data. " \
               "It identifies the data structure of an event. " \
-              "A source type determines how Splunk formats the data during the" \
-              "indexing and also parses the data during searching process."
+              "A source type determines how Splunk formats the " \
+              "data during the indexing and also parses the data " \
+              "during searching process."
           },
           {
             name: "host",
