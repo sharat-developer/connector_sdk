@@ -180,9 +180,9 @@
             host: input["host"]
             })
       },
-      output_fields: ->(object_definitions){
+      output_fields: lambda do |object_definitions|
         []
-      },
+      end
     }
   }
 }
