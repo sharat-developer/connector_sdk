@@ -35,13 +35,8 @@
         # here, you can use the input from the input from the user
         if config_fields.present?
           d = config_fields["document_id"].split("|")
-          fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields")
-          fields.map do |field|
-            {
-              name: field["name"],
-              label: field["name"]
-            }
-          end
+          fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields").
+            map { |field| field.slice('name') }
         else
           []
         end
@@ -54,13 +49,8 @@
         # here, you can use the input from the input from the user
         if config_fields.present?
           r = config_fields["route_id"].split("|")
-          fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields")
-          fields.map do |field|
-            {
-              name: field["name"],
-              label: field["name"]
-            }
-          end
+          fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields").
+            map { |field| field.slice('name') }
         else
           []
         end
