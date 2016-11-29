@@ -1,6 +1,7 @@
 {
   title: "Splunk",
   secure_tunnel: true,
+
   connection: {
     fields: [
       {
@@ -22,6 +23,7 @@
         hint: "The password for the Splunk username"
       }
     ],
+
     authorization: {
       type: "basic_auth",
       credentials: lambda do |connection|
@@ -30,9 +32,11 @@
       end
     }
   },
+
   test: lambda do |connection|
     get("#{connection['server_url']}/services/workato/version")
   end,
+
   object_definitions: {
     generic_alert: {
       fields: lambda do |_connection, config_fields|
@@ -43,6 +47,7 @@
         end
       end
     },
+
     service_alert: {
       fields: lambda do |_connection, _config_fields|
         [
@@ -56,6 +61,7 @@
       end
     },
   },
+
   triggers: {
     new_generic_alert: {
       input_fields: lambda do |_object_definitions|
@@ -70,6 +76,7 @@
             "have the Workato alert action assigned.",
         }]
       end,
+
       config_fields: [
         {
           name: "fields",
@@ -80,6 +87,7 @@
             "data (e.g. host, count)",
         }
       ],
+
       webhook_subscribe: lambda do |callback_url, connection, input, _flow_id|
         data = post(
           "#{connection['server_url']}/services/workato/alerts",
@@ -92,6 +100,7 @@
           callback_url: data["callback_url"]
         }
       end,
+
       webhook_unsubscribe: lambda do |subscription|
         delete(
           "#{subscription['server_url']}/services/workato/alerts",
@@ -99,12 +108,15 @@
           callback_url: subscription["callback_url"]
         )
       end,
+
       webhook_notification: lambda do |_input, payload|
         payload
       end,
+
       dedup: lambda do |_event|
         rand()
       end,
+
       output_fields: lambda do |object_definitions|
         object_definitions["generic_alert"]
       end
@@ -121,6 +133,7 @@
           callback_url: data["callback_url"]
         }
       end,
+
       webhook_unsubscribe: lambda do |subscription|
         delete(
           "#{subscription['server_url']}/services/workato/servicealerts",
@@ -128,23 +141,28 @@
           callback_url: subscription["callback_url"]
         )
       end,
+
       webhook_notification: lambda do |_input, payload|
         payload
       end,
+
       dedup: lambda do |event|
         event["event_id"]
       end,
+      
       output_fields: lambda do |object_definitions|
         object_definitions["service_alert"]
       end
     },
   },
+
   pick_lists: {
     saved_searches: lambda do |connection|
       get("#{connection['server_url']}/services/workato/alerts").
         map { |name| [name,name] }
     end
   },
+
   actions: {
     send_event_to_splunk: {
       input_fields: lambda do
@@ -179,6 +197,7 @@
           },
         ]
       end,
+
       execute: lambda do |connection, input|
         post(
           "#{connection['server_url']}/services/workato/events",
@@ -189,6 +208,7 @@
           host: input["host"]
         )
       end,
+
       output_fields: lambda do |_object_definitions|
         []
       end
