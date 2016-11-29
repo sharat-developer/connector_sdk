@@ -156,19 +156,16 @@
           },
           {
             name: "index",
-            optional: true,
             hint: "The name of the repository for Splunk to store the event in."
           },
           {
             name: "source",
-            optional: true,
             hint: "The source value to assign to the event data. For example," \
               " if you're sending data from an app you're developing, " \
               "you could set this key to the name of the app."
           },
           {
             name: "sourcetype",
-            optional: true,
             hint: "The sourcetype value to assign to the event data. " \
               "It identifies the data structure of an event. " \
               "A source type determines how Splunk formats the " \
@@ -177,7 +174,6 @@
           },
           {
             name: "host",
-            optional: true,
             hint: "The host value to assign to the event data. " \
               "This is typically the hostname of the " \
               "client/server/service from which the data came from."
