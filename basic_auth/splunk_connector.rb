@@ -148,7 +148,7 @@
   },
   actions: {
     send_event_to_splunk: {
-      input_fields: lambda do ||
+      input_fields: lambda do
         [
           {
             name: "payload",
