@@ -77,21 +77,21 @@
       ],
       webhook_subscribe: ->(callback_url, connection, input, flow_id) {
         data = post(
-          "#{connection['server_url']}/services/workato/alerts",{
-          	callback_url: callback_url,
-          	search_name: input['search_name'],
-            })
+          "#{connection['server_url']}/services/workato/alerts",
+          callback_url: callback_url,
+          search_name: input['search_name']
+          )
         {
           server_url: connection['server_url'],
           search_name: data['search_name'],
-          callback_url: data['callback_url'],
+          callback_url: data['callback_url']
         }
       },
       webhook_unsubscribe: ->(subscription) {
-        delete("#{subscription['server_url']}/services/workato/alerts",{
-          search_name: subscription['search_name'],
-          callback_url: subscription['callback_url'],
-          })
+        delete("#{subscription['server_url']}/services/workato/alerts",
+        search_name: subscription['search_name'],
+        callback_url: subscription['callback_url']
+        )
       },
       webhook_notification: ->(input, payload) {
         payload
@@ -106,9 +106,9 @@
     new_service_alert: {
       webhook_subscribe: ->(callback_url, connection, input, flow_id) {
         data = post(
-          "#{connection['server_url']}/services/workato/servicealerts",{
-          	callback_url: callback_url
-            })
+          "#{connection['server_url']}/services/workato/servicealerts",
+          callback_url: callback_url
+          )
         {
           server_url: connection['server_url'],
           search_name: data['search_name'],
@@ -116,10 +116,10 @@
         }
       },
       webhook_unsubscribe: ->(subscription) {
-        delete("#{subscription['server_url']}/services/workato/servicealerts",{
-          search_name: subscription['search_name'],
-          callback_url: subscription['callback_url'],
-          })
+        delete("#{subscription['server_url']}/services/workato/servicealerts",
+        search_name: subscription['search_name'],
+        callback_url: subscription['callback_url'],
+        )
       },
       webhook_notification: ->(input, payload) {
         payload
@@ -172,13 +172,13 @@
       },
       execute: ->(connection, input){
         post(
-          "#{connection['server_url']}/services/workato/events", {
-            payload: input["payload"],
-            index: input["index"],
-            source: input["source"],
-            sourcetype: input["sourcetype"],
-            host: input["host"]
-            })
+          "#{connection['server_url']}/services/workato/events",
+          payload: input["payload"],
+          index: input["index"],
+          source: input["source"],
+          sourcetype: input["sourcetype"],
+          host: input["host"]
+          )
       },
       output_fields: lambda do |object_definitions|
         []
