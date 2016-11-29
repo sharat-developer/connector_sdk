@@ -146,29 +146,33 @@
     send_event_to_splunk: {
       input_fields: lambda do ||
         [
-          { 
-            name: "payload", 
+          {
+            name: "payload",
             optional: false,
           },
-          { 
-            name: "index", 
+          {
+            name: "index",
             optional: true,
             hint: "The name of the repository for Splunk to store the event in."
           },
-          { 
-            name: "source", 
+          {
+            name: "source",
             optional: true,
-            hint: "The source value to assign to the event data. For example, if you're sending data from an app you're developing, you could set this key to the name of the app."
+            hint: "The source value to assign to the event data. For example, if you're sending data from an " +
+              "app you're developing, you could set this key to the name of the app."
           },
-          { 
-            name: "sourcetype", 
+          {
+            name: "sourcetype",
             optional: true,
-            hint: "The sourcetype value to assign to the event data. It identifies the data structure of an event. A source type determines how Splunk formats the data during the indexing and also parses the data during searching process."
+            hint: "The sourcetype value to assign to the event data. It identifies the data structure of an event. " +
+              "A source type determines how Splunk formats the data during the indexing and also parses the data " +
+              "during searching process."
           },
-          { 
-            name: "host", 
+          {
+            name: "host",
             optional: true,
-            hint: "The host value to assign to the event data. This is typically the hostname of the client/server/service from which the data came from."
+            hint: "The host value to assign to the event data. This is typically the hostname of the "+
+              "client/server/service from which the data came from."
           },
         ]
       end,
