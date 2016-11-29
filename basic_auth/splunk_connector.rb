@@ -18,7 +18,7 @@
         name: 'password',
         control_type: 'password',
         hint: 'The password for the Splunk username'
-      },
+      }
     ],
     authorization: {
       type: 'basic_auth',
@@ -173,17 +173,16 @@
       execute: ->(connection, input){
         post(
           "#{connection['server_url']}/services/workato/events",{
-          	payload: input['payload'],
+            payload: input['payload'],
             index: input['index'],
             source: input['source'],
             sourcetype: input['sourcetype'],
-            host: input['host'],
+            host: input['host']
             })
-     	},
+      },
       output_fields: ->(object_definitions){
         []
       },
     }
-  }
-  
+  }  
 }
