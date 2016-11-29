@@ -36,11 +36,11 @@
   object_definitions: {
     generic_alert: {
       fields: lambda do |_connection, config_fields|
-        config_fields["fields"].split(",").map { |name|
+        config_fields["fields"].split(",").map do |name|
           {
             name: name.strip
           }
-        }
+        end
       end
     },
     service_alert: {
