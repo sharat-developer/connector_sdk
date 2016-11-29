@@ -56,7 +56,6 @@
       end
     },
   },
-
   triggers: {
     new_generic_alert: {
       input_fields: lambda do |_object_definitions|

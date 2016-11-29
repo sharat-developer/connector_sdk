@@ -24,7 +24,7 @@ Steps that will be executed when a recipe is triggered.
 
 There are 4 types of actions:
 
-1.  **Action**
+1. **Action**
   - Basic actions perform tasks like Search, Create, Update
 2. **Conditional action**
   - These actions behave like traffic control. They provide users with the capability to restrict certain actions based on conditions.
@@ -173,6 +173,7 @@ For APIs that expect API Key authentication, it is a slight variation from the b
 Make sure to include the required inputs from the user (subdomain, api_key, scope etc)
 
 Define
+
 1. type: ‘api_key’
 2. the appropriate parameter name for the api_key. In this case, it is simple “api_key”
 
@@ -212,7 +213,7 @@ connection: {
 
 ### OAuth 2.0
 
-For a more secure method of authentication, we recommend using OAuth 2.0. It is an open standard and is generally a more secure way for users to log into third party websites without exposing their credentials.
+For a more secure method of authentication, we recommend using [OAuth 2.0](https://tools.ietf.org/html/rfc6749). It is an open standard and is generally a more secure way for users to log into third party websites without exposing their credentials.
 
 ```ruby
 connection: {
@@ -239,9 +240,10 @@ connection: {
 }
 ```
 
-The Workato connector SDK currently supports the authorization code grant variant of the OAuth2 standard.
+The Workato connector SDK currently supports the [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) variant of the OAuth2 standard.
 
-Required components in OAuth 2.0 type connection
+Required components in OAuth 2.0 type connection:
+
 1. Type (use ‘oauth2’)
 2. Authorization_url
 3. Token_url
@@ -284,7 +286,11 @@ connection: {
 ```
 
 Note:
-SDK makes a POST request to token endpoint. Will not currently work for APIs expecting a different type of request.
+
+- SDK makes a POST request to token endpoint. Will not currently work for APIs expecting a different type of request.
+- Ensure that your implementation of OAuth 2.0 is compliant with the specifications stated in the RFC document. Else, your custom adapter might not start.
+  - For example, as stated in [Issuing an Access Token - Successful Response](https://tools.ietf.org/html/rfc6749#section-5.1) in the RFC document, Workato will be expecting a response with the following required parameters: `access_token`, `token_type` and `expires_in`. Returning the access token with a key of `accessToken` in a JSON response will result in an unsuccessful Workato request to your `token_url`.
+  - Usually this will not be a problem because most OAuth libraries out there will do most of the heavily-lifting for you, such as returning response in the right format etc. But good to be aware of this!
 
 ## Action
 
@@ -372,6 +378,10 @@ REST verb methods (inputs are expected to be in JSON format)
 - post(url, input)
 - put(url, input)
 - patch(url, input)
+
+Note:
+
+- `input` is actually a Ruby Hash that will be converted to JSON by the Connector SDK. Also, since `input` is the last argument of the method, we can optionally omit the curly braces.
 
 Ruby methods
 - each
