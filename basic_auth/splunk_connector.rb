@@ -172,7 +172,7 @@
       },
       execute: ->(connection, input){
         post(
-          "#{connection['server_url']}/services/workato/events",{
+          "#{connection['server_url']}/services/workato/events", {
             payload: input["payload"],
             index: input["index"],
             source: input["source"],
