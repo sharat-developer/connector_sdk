@@ -173,16 +173,16 @@
       execute: ->(connection, input){
         post(
           "#{connection['server_url']}/services/workato/events",{
-            payload: input['payload'],
-            index: input['index'],
-            source: input['source'],
-            sourcetype: input['sourcetype'],
-            host: input['host']
+            payload: input["payload"],
+            index: input["index"],
+            source: input["source"],
+            sourcetype: input["sourcetype"],
+            host: input["host"]
             })
       },
       output_fields: ->(object_definitions){
         []
       },
     }
-  }  
+  }
 }
