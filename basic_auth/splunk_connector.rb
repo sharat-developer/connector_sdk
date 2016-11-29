@@ -7,7 +7,10 @@
         name: "server_url",
         label: "Server URL",
         control_type: "text",
-        hint: "The URL of the Splunk management port (e.g. https://yourdomain:8089). You MUST install the <a href=\"https://splunkbase.splunk.com/apps/#/search/workato\">Workato Add-on for Splunk</a> first."
+        hint: "The URL of the Splunk management port (e.g. https://yourdomain:8089). " \
+          "You MUST install the " \
+          "<a href=\"https://splunkbase.splunk.com/apps/#/search/workato\">" \
+          "Workato Add-on for Splunk</a> first."
       },
       {
         name: "username",
@@ -164,16 +167,17 @@
           {
             name: "sourcetype",
             optional: true,
-            hint: "The sourcetype value to assign to the event data. It identifies " \
-              "the data structure of an event. " \
+            hint: "The sourcetype value to assign to the event data. " \
+              "It identifies the data structure of an event. " \
               "A source type determines how Splunk formats the data during the" \
               "indexing and also parses the data during searching process."
           },
           {
             name: "host",
             optional: true,
-            hint: "The host value to assign to the event data. This is typically the " \
-              "hostname of the client/server/service from which the data came from."
+            hint: "The host value to assign to the event data. " \
+              "This is typically the hostname of the " \
+              "client/server/service from which the data came from."
           },
         ]
       end,
