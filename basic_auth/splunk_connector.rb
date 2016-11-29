@@ -1,7 +1,6 @@
 {
   title: 'Splunk',
   secure_tunnel: true,
-
   connection: {
     fields: [
       {
@@ -28,11 +27,9 @@
       end
     }
   },
-  
   test: lambda do |connection|
     get("#{connection['server_url']}/services/workato/version")
   end,
-
   object_definitions: {
     generic_alert: {
       fields: lambda do |_connection, config_fields|
@@ -104,7 +101,7 @@
 	    end,
       output_fields: lambda do |object_definitions|
         object_definitions['generic_alert']
-      end,
+      end
   	},
     new_service_alert: {
       webhook_subscribe: lambda do |callback_url, connection, _input, _flow_id|
@@ -133,17 +130,15 @@
 	    end,
       output_fields: lambda do |object_definitions|
         object_definitions['service_alert']
-      end,
+      end
   	},
   },
-  
   pick_lists: {
     saved_searches: lambda do |connection|
       get("#{connection['server_url']}/services/workato/alerts").
         map { |name| [name,name] }
     end
   },
-  
   actions: {
     send_event_to_splunk: {
       input_fields: lambda do ||
@@ -160,20 +155,20 @@
           {
             name: "source",
             optional: true,
-            hint: "The source value to assign to the event data. For example, if you're sending data from an " +
+            hint: "The source value to assign to the event data. For example, if you're sending data from an " \
               "app you're developing, you could set this key to the name of the app."
           },
           {
             name: "sourcetype",
             optional: true,
-            hint: "The sourcetype value to assign to the event data. It identifies the data structure of an event. " +
-              "A source type determines how Splunk formats the data during the indexing and also parses the data " +
+            hint: "The sourcetype value to assign to the event data. It identifies the data structure of an event. " \
+              "A source type determines how Splunk formats the data during the indexing and also parses the data " \
               "during searching process."
           },
           {
             name: "host",
             optional: true,
-            hint: "The host value to assign to the event data. This is typically the hostname of the "+
+            hint: "The host value to assign to the event data. This is typically the hostname of the " \
               "client/server/service from which the data came from."
           },
         ]
