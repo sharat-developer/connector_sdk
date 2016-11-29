@@ -149,7 +149,7 @@
       dedup: lambda do |event|
         event["event_id"]
       end,
-      
+
       output_fields: lambda do |object_definitions|
         object_definitions["service_alert"]
       end
