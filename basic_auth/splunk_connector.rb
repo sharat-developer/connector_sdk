@@ -82,7 +82,7 @@
           "#{connection['server_url']}/services/workato/alerts",
           callback_url: callback_url,
           search_name: input['search_name']
-          )
+        )
         {
           server_url: connection['server_url'],
           search_name: data['search_name'],
@@ -90,9 +90,10 @@
         }
       end,
       webhook_unsubscribe: lambda do |subscription|
-        delete("#{subscription['server_url']}/services/workato/alerts",
-        search_name: subscription['search_name'],
-        callback_url: subscription['callback_url']
+        delete(
+          "#{subscription['server_url']}/services/workato/alerts",
+          search_name: subscription['search_name'],
+          callback_url: subscription['callback_url']
         )
       end,
       webhook_notification: lambda do |_input, payload|
@@ -110,7 +111,7 @@
         data = post(
           "#{connection['server_url']}/services/workato/servicealerts",
           callback_url: callback_url
-          )
+        )
         {
           server_url: connection['server_url'],
           search_name: data['search_name'],
@@ -118,9 +119,10 @@
         }
       end,
       webhook_unsubscribe: lambda do |subscription|
-        delete("#{subscription['server_url']}/services/workato/servicealerts",
-        search_name: subscription['search_name'],
-        callback_url: subscription['callback_url'],
+        delete(
+          "#{subscription['server_url']}/services/workato/servicealerts",
+          search_name: subscription['search_name'],
+          callback_url: subscription['callback_url'],
         )
       end,
       webhook_notification: lambda do |_input, payload|
@@ -184,7 +186,7 @@
           source: input["source"],
           sourcetype: input["sourcetype"],
           host: input["host"]
-          )
+        )
       end,
       output_fields: lambda do |_object_definitions|
         []
