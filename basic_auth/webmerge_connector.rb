@@ -36,7 +36,7 @@
         if config_fields.present?
           d = config_fields["document_id"].split("|")
           fields = get("https://www.webmerge.me/api/documents/#{d.first}/fields").
-            map { |field| field.slice('name') }
+          map { |field| field.slice("name") }
         else
           []
         end
@@ -50,7 +50,7 @@
         if config_fields.present?
           r = config_fields["route_id"].split("|")
           fields = get("https://www.webmerge.me/api/routes/#{r.first}/fields").
-            map { |field| field.slice('name') }
+          map { |field| field.slice("name") }
         else
           []
         end
