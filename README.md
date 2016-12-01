@@ -46,7 +46,7 @@ An Adapter is a connector to an application. Each Adapter has one or more trigge
 
 Connectors, also known as **custom adapters** built on the SDK have private scope. This means that the functions made available by this will only be visible to the workato account.
 
-To enable global scope for this connector, please submit a pull request to our [repository](https://github.com/workato/connector_sdk).
+To enable global scope for this connector, the code will need to go through review. You can begin this process by submitting a pull request to our [repository](https://github.com/workato/connector_sdk).
 
 ## Requirements
 
@@ -54,9 +54,11 @@ To enable global scope for this connector, please submit a pull request to our [
 
 Presently, only RESTful APIs are supported by the Connector SDK.
 
-### JSON Format
+### Format
 
-Presently, only JSON type data is supported by the Connector SDK.
+Presently, we support the following types
+  - JSON
+  - XML
 
 ### Bonus
 
@@ -102,7 +104,7 @@ connection: {
 }
 ```
 
-To set up a basic authentication, simply define type: 'basic_auth' and include the appropriate values in `user()` and `password()` in the credentials section.
+To set up a basic authentication, simply define type: 'basic_auth' and include the appropriate values in `user()` and `password()` in the credentials section. All requests made through the connector will contain the values defined in credentials.
 
 #### Variations
 
@@ -242,13 +244,11 @@ connection: {
 The Workato connector SDK currently supports the [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) variant of the OAuth2 standard.
 
 Required components in OAuth 2.0 type connection:
-
-Required components in OAuth 2.0 type connection
-1. Type (use 'oauth2')
-2. Authorization_url
-3. Token_url
-4. Client_id and client_secret
-5. Credentials
+1. type (use 'oauth2')
+2. authorization_url
+3. token_url
+4. client_id and client_secret
+5. credentials
 
 Redirect URI will be appended to the authorization request by the framework, so there is no need to include it. If the application requires that you register the redirect URI beforehand, use:
 https://www.workato.com/oauth/callback
@@ -289,8 +289,8 @@ Note:
 
 - SDK makes a POST request to token endpoint. Will not currently work for APIs expecting a different type of request.
 - Ensure that your implementation of OAuth 2.0 is compliant with the specifications stated in the RFC document. Else, your custom adapter might not start.
-  - For example, as stated in [Issuing an Access Token - Successful Response](https://tools.ietf.org/html/rfc6749#section-5.1) in the RFC document, Workato will be expecting a response with the following required parameters: `access_token`, `token_type` and `expires_in`. Returning the access token with a key of `accessToken` in a JSON response will result in an unsuccessful Workato request to your `token_url`.
-  - Usually this will not be a problem because most OAuth libraries out there will do most of the heavily-lifting for you, such as returning response in the right format etc. But good to be aware of this!
+  - For example, [Issuing an Access Token - Successful Response](https://tools.ietf.org/html/rfc6749#section-5.1) states that Workato will be expecting a response with the following required parameters: `access_token`, `token_type` and `expires_in`. Returning the access token with a key of `accessToken` in a JSON response will result in an unsuccessful Workato request to your `token_url`.
+  - Usually this will not be a problem because most OAuth libraries out there will do most of the heavily-lifting for you, such as returning response in the right format etc. It is good to be aware of this!
 
 ## Action
 
@@ -298,7 +298,7 @@ Note:
 
 An action can make one or more requests to various endpoints. Because the framework handles the authentication side of a request, you will not have to worry about that here.
 
-The most important thing is to identify which endpoint will address the purpose of the action. Here we will take a look at Close.io's Lead object and how to retrieve it via the API
+The most important thing is to identify which endpoint will address the purpose of the action. Here we will take a look at Close.io's Lead object and how to retrieve it via the API.
 
 ![close.io get lead object image](images/closeio-doc.png)
 
@@ -383,33 +383,31 @@ Note:
 
 - `input` is actually a Ruby Hash that will be converted to JSON by the Connector SDK. Also, since `input` is the last argument of the method, we can optionally omit the curly braces.
 
-Ruby methods
-- each
-- group_by
-- headers
-- ignored
-- inject
-- iso8601
-- lambda
-- map
-- merge
-- only
-- params
-- password
-- payload
-- pluck
-- rand
-- reject
-- required
-- select
-- sort
-- sort_by
-- user
-- utc
-- puts (ruby's console.log/stdout, not the same as put)
-- while
+Method | Description
+--- | ----------
+each | Basic iterator<br>`[1, 2, 3].each { |i| puts i }`
+group_by | [Group arrays into sets](http://apidock.com/rails/Enumerable/group_by)
+headers | Add headers to a request<br>`.headers(Authorization: "Bearer HTB674HJK1")`
+params | Add parameter to a request<br>`.params(api_key: "HTB674HJK1")`
+payload | Add payload to a request<br>`.payload(id: "345")`
+ignored | Ignore a comma-separate list of fields<br>`object_definition["user"].ignored("id", "created_at")`
+only | White list a comma-separate  of fields<br>`object_definition["user"].only("id", "name")`
+required | Make a comma-separate list of fields required<br>`object_definition["user"].required("id", "created_at")`
+inject | [Combine elements in an array using an operation](http://apidock.com/ruby/Enumerable/inject)
+iso8601 | Convert a date/date-time variable to ISO8601 format
+map | Returns a new array after invoking block on each element
+merge | Returns a new hash containing [merged contents](https://ruby-doc.org/core-2.2.0/Hash.html#method-i-merge) of another hash
+pluck | Select one or more attributes from an array of objects<br>`[{"id": 1, "name": "David"},{"id": 2, "name": "Peter"}].pluck("id")` returns `[1, 2]`
+rand | Random number between 0 and 1
+select | [Selectively returns](http://apidock.com/ruby/v1_9_3_392/Array/select) elements for which the block returns true
+reject | [Selectively returns](http://apidock.com/ruby/v1_9_3_392/Array/reject) elements for which the block returns false (similar but opposite of select)
+sort | [Sort function](http://apidock.com/ruby/Array/sort) returning new sorted array
+sort_by | [Sort function](http://apidock.com/ruby/v1_9_3_392/Array/sort_by) returning self
+utc | Convert Time to [utc](http://ruby-doc.org/core-2.2.0/Time.html#method-c-utc)
+puts | ruby version of console.log/stdout, not the same as put
+while | [while loop statement](https://www.tutorialspoint.com/ruby/ruby_loops.htm)
 
-(I may have missed some, feel free to contact [me](eeshan@workato.com) to update this list)
+(This list can and will be expanded constantly, feel free to contact [me](eeshan@workato.com) to update/add to this list)
 
 ## Trigger
 
