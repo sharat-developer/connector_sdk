@@ -44,7 +44,7 @@ An Adapter is a connector to an application. Each Adapter has one or more trigge
 
 ## Custom Adapters
 
-Connectors, also known as **custom adapters** built on the SDK have private scope. This means that the functions made available by this will only be visible to the workato account.
+Connectors built on the SDK are called **custom adapters**. These connectors have private scope. This means that they are only available to the connector owner.
 
 To enable global scope for this connector, the code will need to go through review. You can begin this process by submitting a pull request to our [repository](https://github.com/workato/connector_sdk).
 
