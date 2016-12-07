@@ -409,42 +409,43 @@ while | [while loop statement](https://www.tutorialspoint.com/ruby/ruby_loops.ht
 
 (This list can and will be expanded constantly, feel free to contact [me](eeshan@workato.com) to update/add to this list)
 
-## Trigger
+## Poll Trigger
+
+Records (tickets, leads, items) are called events in a poll. A poll trigger constantly executes a poll block for new events at fixed time intervals. This time interval depends on a user's subscription (5 or 10 minutes). At the same time, it is also able to support pagination. This is useful to prevent request timeout when making requests with large response results. A poll can be coded to execute immediate polls to retrieve events from successive pages. As a result, new events can be processed through a trigger either in time-triggered polls or in immediate polls.
+
+There are two types of trigger. The classic trigger type is used by default if a type is not specified. The other type is called the `paging_desc` trigger, which can be used only for endpoints that provide events sorted in descending order. This trigger type has an auto-paging mechanism that lets you build a simple and efficient trigger (described in detail below)
+
+A ruby hash is returned in each poll. This hash should contain a few keys. The array of events, or data, should be passed into the `events` key. At the same time, a cursor is saved in `next_page`/`next_poll` (depending on the trigger type). This cursor provides information about where the current poll stopped, and used in the next poll. In a classic type trigger, `can_poll_more` can be defined to conditionally fire immediate polls for multi-page results. Here is an example using a `paging_desc` type trigger.
 
 ```ruby
 triggers: {
-  new_company: {
-
+  new_record: {
     type: :paging_desc,
 
-    input_fields: lambda do
-      [
-        { name: "created_after", type: :timestamp, optional: false }
-      ]
+    input_fields: lambda do |object_definitions|
+      []
     end,
 
-    poll: lambda do |connection, input, last_created_since|
-      created_since = (last_created_since || input["created_after"] || Time.now).to_i # Accelo expects Unix Time Stamp
+    poll: lambda do |connection,input,page|
+      # Defaults to first page
+      page ||= 1
 
-      companies = get("https://#{connection['deployment']}.api.accelo.com/api/v0/companies.json").
-                 params(_filters: "date_created_after(#{created_since})",
-                        _limit: 2,
-                        _fields: "date_created,website,status,phone,fax")["response"]
+      response = get("https://api.knackhq.com/v1/objects/object_1/records").
+                   params(sort_field: 'id',
+                          sort_order: 'desc',
+                          page: page)
 
-      next_created_since = companies.last["date_created"] unless companies.blank?
+      # Increment page number until last page (return nil on last page)
+      next_page = response['total_pages'] == response['current_page'].to_i ? nil : (page + 1)
 
       {
-        events: companies,
-        next_page: next_created_since
+        events: response['records'],
+        next_page: next_page
       }
     end,
 
-    dedup: lambda do |company|
-      company["id"]
-    end,
-
     output_fields: lambda do |object_definitions|
-      object_definitions["company"]
+      object_definitions['object_1']
     end
   }
 }
@@ -452,31 +453,88 @@ triggers: {
 
 ### type (optional)
 
-`:paging_desc` - Descending order feature that sorts events (below)
+`:paging_desc` - This type should be used only if results are in descending order. A `paging_desc` trigger works by polling for events in descending order until a specified end point.
+
+A record of all event IDs (defined in `document_id` ) is kept in workato server for each recipe. Each recipe will "remember" all event IDs that goes through a trigger.
+
+Since a descending trigger is assumed, trigger can stop the polling cycle once a similar event IDs is observed. This is because further polls will return events "before" and would have already been processed by the trigger. At this point, the trigger drops this event data and process only the new events that have "new" event IDs. The Workato trigger framework handles deduplication in the background.
 
 ### poll
 
-Poll block is where you can define the behaviour of the trigger. It accepts [ruby syntax](http://ruby-doc.org/).
+Poll block is where you define the how events are obtained. Typically, a GET request is defined here to retrieve a list of events to be processed as trigger events.
 
-`since` - This parameter acts as a filter for the trigger. Typically, it is a datetime type data that tells the trigger to pick up events/records after a certain date and time.
+#### Arguments
+A poll block is given 3 arguments.
 
-It is usually a datetime type data. It can also take on record IDs, assuming that IDs are always incremental.
+```ruby
+type: :paging_desc,
 
-Order: SDK supports ascending or descending order in requests
+poll: lambda do |connection, input, page|
+  results = get("https://#{connection["domain"]}/api/...").
+          params(from: input["since_date"])
+  ...
+end
+```
+The first arguement is `connection`, used to access inputs from connection field values. This is frequently used to access domain or subdomain information from the user.
 
-### events
+`input` provides access to trigger input field values from the recipe. Inputs like "Created since" a particular date is usually used in a trigger to allow filtering historic records. In this case, Knack does not provide filtering by record created dates, input is given an empty array.
 
-Array of records to be processed. Each event should be a record to be processed in the recipe.
+lastly, `page` is the cursor "stored" from a previous poll. This is crucial to a good trigger design. It is used to determine where the last poll stopped and where to begin next. As an example,  it is usually given the page number of the next page to be polled. On the first recipe start, poll value is `nil`.
 
-### next_poll / next_page
+The arguments can be assigned any name. However, the order will determine which value is passed as argument(s).
 
-This is a nifty feature that allows the Workato Trigger Framework to recognise the last poll state. This will be used in consecutive polls to ensure that no data is re-polled.
+#### Output
 
-This value is passed to the next poll as the `Since` parameter.
+Classic poll trigger type behaves very similarly to the example above, except that the output of the `poll` block is different.
 
-### can_poll_more (optional)
+**Classic trigger**
+```ruby
 
-This is a boolean type component. It tells the Workato Trigger Poll Framework whether to trigger another poll. It is typically used to mark if there are more “pages” of records to be picked up.
+type: :paging_desc,
+
+poll: lambda do |connection, input, last_created_at|
+  results = get("url")
+  
+  # Boolean value. Are there more results currently?
+  more_results = results["next"].present?
+
+  {
+    events: results,
+    next_poll: results.last["created_at"],
+    can_poll_more: more_results
+  }
+end
+```
+In a classic type trigger, the expected output contains `events`, `next_poll` and `can_poll_more`.
+
+`events` expects an array of individual results to be processed through the recipe as individual events.
+
+`next_poll` is a cursor that will be passed on to the successive poll.
+
+**Important**:
+This trigger type does not have automatic-immediate polling. Immediate polling is determined by `can_poll_more`, which is a boolean value for whether an immediate poll should be made.
+
+`events`
+
+**paging_desc**
+```ruby
+
+type: :paging_desc,
+
+poll: lambda do |connection, input, page|
+  results = get("url")
+
+  {
+    events: results,
+    next_page: (results["next"] || nil)
+  }
+end
+```
+Similar to a classic trigger, the `events` in output here expects an array of results.
+
+`next_page` is used as the cursor here. Typically, it is used for passing the next page number to be polled.
+
+Since immediate polling is automatic, there is no need to defined `can_poll_more` here.
 
 ### dedup
 
