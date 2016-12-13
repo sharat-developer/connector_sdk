@@ -244,6 +244,7 @@ connection: {
 The Workato connector SDK currently supports the [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) variant of the OAuth2 standard.
 
 Required components in OAuth 2.0 type connection:
+
 1. type (use 'oauth2')
 2. authorization_url
 3. token_url
@@ -256,7 +257,7 @@ https://www.workato.com/oauth/callback
 Adjust headers format as required in the credentials section
 
 For example, Pushbullet expects the header to include token in this format:
-`OAuth2: \<access token>`
+`OAuth2: <access token>`
 
 So to adjust to suit this requirement, define the credentials portion like so:
 
@@ -459,7 +460,7 @@ updated_ticket: {
     object_definitions['ticket']
   end
 }
-```ruby
+```
 
 #### poll
 ##### Arguments
