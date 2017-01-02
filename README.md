@@ -112,7 +112,6 @@ Some APIs expect different conventions from a standard basic authentication.
 
 ```ruby
 connection: {
-
   fields: [
     {
       name: "api_key",
@@ -134,7 +133,7 @@ connection: {
 }
 ```
 
-In this example Close.io API expects an API Key generated inthe individual User’s account. It should be used as a username with a blank password in the standard basic authentication format.
+In this example Close.io API expects an API Key generated in the individual User’s account. It should be used as a username with a blank password in the standard basic authentication format.
 
 So, to adjust the connections portion of the code to suit this behaviour, simply request for an API instead of username + password.
 
@@ -292,6 +291,10 @@ Note:
 - Ensure that your implementation of OAuth 2.0 is compliant with the specifications stated in the RFC document. Else, your custom adapter might not start.
   - For example, [Issuing an Access Token - Successful Response](https://tools.ietf.org/html/rfc6749#section-5.1) states that Workato will be expecting a response with the following required parameters: `access_token`, `token_type` and `expires_in`. Returning the access token with a key of `accessToken` in a JSON response will result in an unsuccessful Workato request to your `token_url`.
   - Usually this will not be a problem because most OAuth libraries out there will do most of the heavily-lifting for you, such as returning response in the right format etc. It is good to be aware of this!
+
+### Custom Authentication
+
+
 
 ## Action
 
@@ -466,11 +469,11 @@ updated_ticket: {
 ##### Arguments
 A poll block is given 3 arguments.
 
-The first arguement is `connection`, used to access inputs from connection field values. This is frequently used to access domain or subdomain information from the user.
+The first argument is `connection`, used to access inputs from connection field values. This is frequently used to access domain or subdomain information from the user.
 
 `input` provides access to trigger input field values from the recipe. Inputs like "created_since" a particular date is usually used in a trigger to allow filtering historic records. In this case, Knack does not provide filtering by record created dates, input is given an empty array.
 
-The last arguement, usually given the name `last_updated_since` or `last_created_since`, is the cursor "stored" from a previous poll. This is crucial to a good trigger design. It is used to determine where the last poll stopped and where to begin next. As an example, it is usually given the last (latest) "updated"/"created" time. When the trigger is first started, this value is `nil`.
+The last argument, usually given the name `last_updated_since` or `last_created_since`, is the cursor "stored" from a previous poll. This is crucial to a good trigger design. It is used to determine where the last poll stopped and where to begin next. As an example, it is usually given the last (latest) "updated"/"created" time. When the trigger is first started, this value is `nil`.
 
 ##### Output
 ```ruby
@@ -524,7 +527,7 @@ At the end of the loop. The last (latest) created date is passed as `next_poll`.
 
 #### dedup
 
-Dedup block is used to identify individual events. It is given a single arguement "event", which corresponds to individual elements in the records array passed into "events".
+Dedup block is used to identify individual events. It is given a single argument "event", which corresponds to individual elements in the records array passed into "events".
 
 A typical dedup input is `event[‘id’]` where the `event` argument name can be replaced to make the code more readable. This should be used only in classic triggers.
 ```ruby
@@ -758,7 +761,7 @@ object_definitions: {
 }
 ```
 
-In this example, the object “Push” is being defined in the fields lambda literal `lambda do |)`
+In this example, the object “Push” is being defined in the fields lambda literal.
 
 Defined as an array of objects. Each field object corresponds to a field in the comment object.
 
