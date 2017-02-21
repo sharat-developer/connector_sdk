@@ -1,7 +1,6 @@
 {
   title: 'Docparser',
 
-  # HTTP basic auth example.
   connection: {
     fields: [
       {
@@ -84,7 +83,7 @@
     	end
   	}
 	},
-  
+
   actions: {
   	fetch_document_from_url: {
     	input_fields: lambda do
