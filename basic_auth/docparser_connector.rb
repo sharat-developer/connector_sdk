@@ -23,8 +23,8 @@
   pick_lists: {
     parsers: lambda do |connection|
       get("https://api.docparser.com/v1/parsers").
-        map { |parser| [parser["label"], parser["id"]] }
-      end
+      map { |parser| [parser["label"], parser["id"]] }
+    end
   },
 
   object_definitions: {
@@ -39,7 +39,7 @@
       end
     },
     parsed_data: {
-      fields: lambda do |connection, config_fields|
+      fields: lambda do |_connection, config_fields|
         get("https://api.docparser.com/v1/results/#{config_fields['parser_id']}/schema")
       end
     }
