@@ -1,18 +1,18 @@
 {
-  title: 'Docparser',
+  title: "Docparser",
 
   connection: {
     fields: [
       {
-        name: 'api_key',
-        label: 'Docparser Account API Key',
+        name: "api_key",
+        label: "Docparser Account API Key",
         optional: false,
-        hint: 'Enter your secret Docparser API key. You can find your API key inside your Docparser account or in the settings of your Document Parser.'
+        hint: "Enter your secret Docparser API key. You can find your API key inside your Docparser account or in the settings of your Document Parser."
       }
     ],
 
     authorization: {
-      type: 'basic_auth',
+      type: "basic_auth",
       credentials: lambda do |connection|
         user(connection['api_key'])
         password("")
