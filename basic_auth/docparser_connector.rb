@@ -19,7 +19,7 @@
       end
     }
   },
-  
+
   pick_lists: {
     parsers: lambda do |connection|
       get("https://api.docparser.com/v1/parsers").
@@ -32,7 +32,7 @@
       fields: lambda do
         [
           {
-            name: "id", 
+            name: "id",
             label: "Document Id"
           }
         ]
@@ -44,11 +44,11 @@
       end
     }
   },
-  
+
   test: lambda do |_connection|
     get("https://api.docparser.com/v1/ping")["msg"].present?
   end,
-  
+
   triggers: {
     parsed_data: {
       config_fields: [
@@ -78,7 +78,7 @@
       webhook_notification: lambda do |_input, payload|
         payload
       end,
-      dedup: lambda do |parsed_data| 
+      dedup: lambda do |parsed_data|
         parsed_data["id"]
       end,
       output_fields: lambda do |object_definitions|
@@ -91,11 +91,11 @@
     fetch_document_from_url: {
       input_fields: lambda do
         [
-          { 
-            name: "url", 
+          {
+            name: "url",
             label: "Source URL",
             hint: "Upload file from this URL",
-            optional: false 
+            optional: false
           },
           {
             name: "parser_id",
