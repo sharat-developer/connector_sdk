@@ -60,22 +60,22 @@
           optional: false
         }
       ],
-      poll: lambda do |connection, input, last_created_since|
+      poll: lambda do |_connection, input|
         parsed_data = get("https://api.docparser.com/v1/results/#{input['parser_id']}")
         {
           events: parsed_data
         }
       end,
-      webhook_subscribe: lambda do |webhook_url, connection, input, recipe_id|
+      webhook_subscribe: lambda do |webhook_url, _connection, input, recipe_id|
         post("https://api.docparser.com/v1/webhook/subscribe/#{input['parser_id']}/workato",
           target_url: webhook_url,
           webhook_token: recipe_id)
       end,
-      webhook_unsubscribe: lambda do |webhook, connection|
+      webhook_unsubscribe: lambda do |webhook|
         post("https://api.docparser.com/v1/webhook/unsubscribe/#{webhook['parser_id']}/workato",
           id: webhook['webhook_id'])
       end,
-      webhook_notification: lambda do |input, payload|
+      webhook_notification: lambda do |_input, payload|
         payload
       end,
       dedup: lambda do |parsed_data| 
@@ -107,8 +107,8 @@
           }
         ]
       end,
-      execute: lambda do |connection, input|
-        post("https://api.docparser.com/v1/document/fetch/#{input["parser_id"]}?url=#{input["url"]}")
+      execute: lambda do |_connection, input|
+        post("https://api.docparser.com/v1/document/fetch/#{input['parser_id']}?url=#{input['url']}")
       end,
       output_fields: lambda do |object_definitions|
         object_definitions["document"]
