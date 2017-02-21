@@ -45,7 +45,7 @@
     }
   },
   
-  test: lambda do |connection|
+  test: lambda do |_connection|
     get("https://api.docparser.com/v1/ping")["msg"].present?
   end,
   
