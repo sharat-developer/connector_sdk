@@ -702,6 +702,8 @@ end
 
 - [Watson Tone Analyzer connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/watson_tone_analyzer_connector.rb)
 
+- [Docparser connector](https://github.com/workato/connector_sdk/blob/master/basic_auth/docparser_connector.rb)
+
 ## OAuth2 Samples
 - [Podio connector](https://github.com/workato/connector_sdk/blob/master/oauth2/podio_connector.rb)
 
