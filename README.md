@@ -46,7 +46,7 @@ An Adapter is a connector to an application. Each Adapter has one or more trigge
 
 Connectors built on the SDK are called **custom adapters**. These connectors have private scope. This means that they are only available to the connector owner.
 
-To enable global scope for this connector, the code will need to go through review. You can begin this process by submitting a pull request to our [repository](https://github.com/workato/connector_sdk).
+To enable global scope for this connector, the code will need to go through review by the Workato team. You can begin this process by submitting a pull request to our [repository](https://github.com/workato/connector_sdk).
 
 ## Requirements
 
@@ -133,7 +133,7 @@ connection: {
 }
 ```
 
-In this example Close.io API expects an API Key generated in the individual User’s account. It should be used as a username with a blank password in the standard basic authentication format.
+In this example, Close.io API expects an API Key generated in the individual User’s account. It should be used as a username with a blank password in the standard basic authentication format.
 
 So, to adjust the connections portion of the code to suit this behaviour, simply request for an API instead of username + password.
 
