@@ -104,11 +104,17 @@
             control_type: :select,
             pick_list: "parsers",
             optional: false
+          },
+          {
+            name: "remote_id",
+            label: "Your Document ID",
+            hint: "Use this field to pipe your own document ID through the Docparser process.",
+            optional: true
           }
         ]
       end,
       execute: lambda do |_connection, input|
-        post("https://api.docparser.com/v1/document/fetch/#{input['parser_id']}?url=#{input['url']}")
+        post("https://api.docparser.com/v1/document/fetch/#{input['parser_id']}?url=#{input['url']}&remote_id=#{input['remote_id']}")
       end,
       output_fields: lambda do |object_definitions|
         object_definitions["document"]
