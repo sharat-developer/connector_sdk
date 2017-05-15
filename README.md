@@ -2,9 +2,7 @@
 
 # Introduction
 
-Welcome to the Workato Developer Program website. Here you will find the documentation you need to build application adapters using our SDK. If you are interested in applying to the Developer Program, click on the link below to sign up.
-
-**[Sign Up Here](http://bit.ly/WorkatoSDKRequest)**
+Welcome to the Workato Developer Program website. Here you will find the documentation you need to build application adapters using our SDK.
 
 Alternatively, Workato offers a [HTTP Connector](http://bit.ly/WorkatoHTTPConnector) where you can create your own app connectors without having to code.
 
