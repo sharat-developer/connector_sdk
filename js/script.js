@@ -1,6 +1,6 @@
 //Search Function
 function filterFunc() {
-	var input, filter, a, obj;
+	var input, filter, obj;
 	input = document.getElementById('search-form');
 	filter = input.value.toUpperCase();
 	obj = document.getElementsByClassName('filter');
