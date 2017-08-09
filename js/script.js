@@ -15,7 +15,7 @@ function filterFunc() {
 }
 
 //Generate App list from Json file
-$.getJSON("../test/js/adapters.json", function (json) {
+$.getJSON("../connector_sdk/js/adapters.json", function (json) {
 	var container = document.getElementById("container-apps");
     var listCol = 5;
 	for (var i = 0; i < json.adapters.length; i++) {
