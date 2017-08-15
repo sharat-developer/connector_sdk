@@ -7,8 +7,8 @@ function filterFunc(event) {
     } else {
       this.style.display = "none";
     }
-  })
-};
+  });
+}
 
 //Load JSON file to generate app listing
 $.getJSON("../test/adapters/adapters.json", function (json) {
