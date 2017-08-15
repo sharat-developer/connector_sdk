@@ -11,7 +11,7 @@ function filterFunc(event) {
 }
 
 //Load JSON file to generate app listing
-$.getJSON("../test/adapters/adapters.json", function (json) {
+$.getJSON("../connector_sdk/adapters/adapters.json", function (json) {
   var container = $("#container-apps");
   var listCol = 5;
 
