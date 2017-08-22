@@ -1,0 +1,65 @@
+{
+  "adapters":[
+    {
+      "id":"1",
+      "name":"Aftership",
+      "image":"images/aftership.png",
+      "link":"https://www.workato.com/custom_adapters/1316?token=b83769ad"
+    },		
+    {
+      "id":"2",
+      "name":"Chartmogul",
+      "image":"images/chartmogul.png",
+      "link":"https://www.workato.com/custom_adapters/1319?token=51dd82ec"
+    },		
+    {
+      "id":"3",
+      "name":"Constant Contact",
+      "image":"images/constantcontact.png",
+      "link":"https://www.workato.com/custom_adapters/1320?token=f6157902"
+    },
+    {
+      "id":"4",
+      "name":"Domo",
+      "image":"images/domo.png",
+      "link":"https://www.workato.com/custom_adapters/1321?token=5cd5b806"
+    },
+    {
+      "id":"5",
+      "name":"Google Analytics",
+      "image":"images/googleanalytics.png",
+      "link":"https://www.workato.com/custom_adapters/1270?token=8d23a89c"
+    },
+    {
+      "id":"6",
+      "name":"Microsoft Office 365",
+      "image":"images/microsoftoffice365.png",
+      "link":"https://www.workato.com/custom_adapters/1284?token=d6601d81"
+    },
+    {
+      "id":"7",
+      "name":"Shopware",
+      "image":"images/shopware.png",
+      "link":"https://www.workato.com/custom_adapters/1324?token=bdb1c519"
+    },
+    {
+      "id":"8",
+      "name":"Spotify",
+      "image":"images/spotify.png",
+      "link":"https://www.workato.com/custom_adapters/1326?token=6f014f44"
+    },
+    {
+      "id":"9",
+      "name":"Stripe",
+      "image":"images/stripe.png",
+      "link":"https://www.workato.com/custom_adapters/1327?token=0f626598"
+    },
+
+    {
+      "id":"10",
+      "name":"Transdirect",
+      "image":"images/transdirect.png",
+      "link":"https://www.workato.com/custom_adapters/1329?token=d180f84e"
+    }
+  ]
+}
